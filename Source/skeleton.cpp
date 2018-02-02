@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <cmath>
 #include <stdio.h>
+#include <glm/gtx/norm.hpp>
 #include <glm/gtx/normal.hpp> 
 using namespace std;
 
@@ -91,13 +92,37 @@ bool ClosestIntersection(vec4 start, vec4 dir, vector<Triangle> &triangles, Inte
     return found;
 }
 
-
 void PrintProgress(double percentage) {
     printf("\rProgress:%3d%% ", (int) (percentage * 100));
     fflush(stdout);
 }
 
-vec3 GetLightIntensity(LightSource lightSource, Intersection point){
+bool IsOccluded(Intersection point, LightSource lightSource, vector<Triangle> triangles){
+
+    vec4 dir = lightSource.position - point.position;
+    for (int i=0; i<triangles.size(); i++) {
+        vec3 intersect = GetIntersection(point.position, dir, triangles[i]);
+
+        float t = intersect.x;
+        float u = intersect.y;
+        float v = intersect.z;
+        
+        if(0 < t && 0 <= u && 0 <= v && u + v <= 1)
+            return true;
+    }
+
+    return false;
+}
+
+
+vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Triangle> triangles){
+
+    /* If occluded, return a shadow */
+    if (IsOccluded(point, lightSource, triangles)) {
+        return vec3(0.01, 0.01, 0.01);
+    }
+
+    /* Otherwise scale the point's color by the light intensity hitting is */
     float dist = distance(lightSource.position, point.position);
     float power = lightSource.power;
 
@@ -107,24 +132,30 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point){
     float dotProduct = dot(surfaceNormal, lightToPoint);
     float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
 
-    return point.triangle->color * powPerSurface;
+    return point.triangle->color * lightSource.color * powPerSurface;
 }
 
-/*Place your drawing here*/
+
 void Draw(screen* screen, const Camera camera, const LightSource lightSource, vector<Triangle> triangles) {
-    /* Clear buffer */
+
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
+
     for(int i=0; i<screen->width; i++) {
         for(int j=0; j<screen->height; j++) {
-            vec3 color(0.0,0.0,0.0);
+
             vec4 dir = vec4(i - SCREEN_WIDTH/2 - camera.position.x, 
                             j - SCREEN_HEIGHT/2 - camera.position.y, 
                             camera.focalLength - camera.position.z, 
                             1);
+
             Intersection intersection;
+            /* If visible to camera */
             if (ClosestIntersection(camera.position, dir, triangles, intersection)) {
-                vec3 intensity = GetLightIntensity(lightSource, intersection);
-                PutPixelSDL(screen, i, j, intensity);
+                vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
+                vec3 indirectLight = 0.5f * vec3(1,1,1);
+                vec3 color = intersection.triangle->color * (directlight + indirectLight);
+                PutPixelSDL(screen, i, j, color);
+
             }
         }
     }
@@ -141,9 +172,10 @@ void Update()
 
 bool ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& camera){
     switch( key.keysym.sym ){
+        /* MOVE LIGHT SOURCE */
         case SDLK_w:
            printf("W\n");
-            lightSource.position += vec4(0,0,-0.2,0);
+            lightSource.position += vec4(0,0,0.2,0);
             break; 
         case SDLK_a :
             printf("A\n");
@@ -151,7 +183,7 @@ bool ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& cam
             break;
         case SDLK_s:
             printf("S\n");
-            lightSource.position += vec4(0,0,0.2,0);
+            lightSource.position += vec4(0,0,-0.2,0);
             break;
         case SDLK_d :
             printf("D\n");
