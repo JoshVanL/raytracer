@@ -9,7 +9,7 @@
 #include <cmath>
 #include <stdio.h>
 #include <glm/gtx/norm.hpp>
-#include <glm/gtx/normal.hpp> 
+#include <glm/gtx/normal.hpp>
 using namespace std;
 
 using glm::vec3;
@@ -22,31 +22,30 @@ using glm::mat4;
 #define SCREEN_HEIGHT 256
 #define FULLSCREEN_MODE false
 
-typedef struct Intersection{
+typedef struct Intersection {
     vec4 position;
     float distance;
     int triangleIndex;
     Triangle* triangle;
 } Intersection;
 
-typedef struct LightSource{
+typedef struct LightSource {
     vec4 position;
     vec3 color;
     float power;
 } LightSource;
 
-typedef struct Camera{
+typedef struct Camera {
     vec4 position;
     float focalLength;
     std::map<int, std::map<int, Triangle*>> depthMap;
 } Camera;
 
-typedef struct	BSPTree
-{
-   vec3 plane[3];
-   vector<Triangle> triangles;
-   BSPTree  *front,
-            *back;
+typedef struct BSPTree {
+    vec3 plane[3];
+    vector<Triangle> triangles;
+    BSPTree  *front,
+             *back;
 } BSPTree;
 
 /* ----------------------------------------------------------------------------*/
@@ -63,18 +62,18 @@ vec4 WorldToCamCoordinates(float u, float v, Triangle tri) {
 }
 
 vec3 GetIntersection(vec4 start, vec4 dir, Triangle triangle){
-  vec4 v0 = triangle.v0;
-  vec4 v1 = triangle.v1;
-  vec4 v2 = triangle.v2;
-  vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
-  vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
-  vec3 b = vec3(start.x - v0.x, start.y - v0.y, start.z - v0.z);
-  vec3 d = (vec3) dir;
-  mat3 A( -d, e1, e2 );
-  vec3 x = glm::inverse( A ) * b;
+    vec4 v0 = triangle.v0;
+    vec4 v1 = triangle.v1;
+    vec4 v2 = triangle.v2;
+    vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
+    vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
+    vec3 b = vec3(start.x - v0.x, start.y - v0.y, start.z - v0.z);
+    vec3 d = (vec3) dir;
+    mat3 A( -d, e1, e2 );
+    vec3 x = glm::inverse( A ) * b;
 
-  return x;
-} 
+    return x;
+}
 
 bool ClosestIntersection(vec4 start, vec4 dir, vector<Triangle> &triangles, Intersection &closestIntersection) {
     closestIntersection.distance = std::numeric_limits<float>::max();
@@ -99,12 +98,12 @@ bool ClosestIntersection(vec4 start, vec4 dir, vector<Triangle> &triangles, Inte
             }
         }
     }
-    
+
     return found;
 }
 
 void PrintProgress(double percentage) {
-    printf("\rProgress:%3d%% ", (int) (percentage * 100));
+    printf("\rProgress:%3d%% ", (int) ((percentage/320) * 100));
     fflush(stdout);
 }
 
@@ -120,18 +119,18 @@ bool IsOccluded(Intersection point, LightSource lightSource, vector<Triangle> tr
         float t = intersect.x;
         float u = intersect.y;
         float v = intersect.z;
-        
+
         if(0 < t && 0 <= u && 0 <= v && u + v <= 1 &&
-               (t_p != triangles[i].v0 || 
-                u_p != triangles[i].v1 || 
-                v_p != triangles[i].v2))
+                (t_p != triangles[i].v0 ||
+                 u_p != triangles[i].v1 ||
+                 v_p != triangles[i].v2))
             return true;
     }
 
     return false;
 }
 
-bool IsOccluded(Intersection point, LightSource lightSource, Triangle triangle){
+bool IsOccluded(Intersection point, LightSource lightSource, Triangle triangle) {
 
     vec4 t_p = point.triangle->v0;
     vec4 u_p = point.triangle->v1;
@@ -143,14 +142,14 @@ bool IsOccluded(Intersection point, LightSource lightSource, Triangle triangle){
     float t = intersect.x;
     float u = intersect.y;
     float v = intersect.z;
-    
+
     if(0 < t && 0 <= u && 0 <= v && u + v <= 1 && (t_p != triangle.v0 || u_p != triangle.v1 || v_p != triangle.v2))
         return true;
 
     return false;
 }
 
-vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Triangle> triangles){
+vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Triangle> triangles) {
 
     /* If occluded, return a shadow */
     if (IsOccluded(point, lightSource, triangles)) {
@@ -170,7 +169,7 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Trian
     return point.triangle->color * lightSource.color * powPerSurface;
 }
 
-vec3 GetLightIntensity(LightSource lightSource, Intersection point, Triangle triangle){
+vec3 GetLightIntensity(LightSource lightSource, Intersection point, Triangle triangle) {
 
     /* If occluded, return a shadow */
     if (IsOccluded(point, lightSource, triangle)) {
@@ -193,10 +192,10 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point, Triangle tri
 void ZInitialise(Camera camera, vector<Triangle> triangles) {
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
-            vec4 dir = vec4(i - SCREEN_WIDTH/2 - camera.position.x, 
-                            j - SCREEN_HEIGHT/2 - camera.position.y, 
-                            camera.focalLength - camera.position.z, 
-                            1);
+            vec4 dir = vec4(i - SCREEN_WIDTH/2 - camera.position.x,
+                    j - SCREEN_HEIGHT/2 - camera.position.y,
+                    camera.focalLength - camera.position.z,
+                    1);
             Intersection intersection;
             if (ClosestIntersection(camera.position, dir, triangles, intersection)) {
                 camera.depthMap[i][j] = intersection.triangle;// .insert(make_pair(i, make_pair(j,intersection.triangle) ));
@@ -212,15 +211,15 @@ void Draw(screen* screen, const Camera camera, const LightSource lightSource, ve
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
 
-            vec4 dir = vec4(i - SCREEN_WIDTH/2 - camera.position.x, 
-                            j - SCREEN_HEIGHT/2 - camera.position.y, 
-                            camera.focalLength - camera.position.z, 
-                            1);
+            vec4 dir = vec4(i - SCREEN_WIDTH/2 - camera.position.x,
+                    j - SCREEN_HEIGHT/2 - camera.position.y,
+                    camera.focalLength - camera.position.z,
+                    1);
 
             Intersection intersection;
             /* If visible to camera */
             if (ClosestIntersection(camera.position, dir, triangles, intersection)) {
-                
+
                 vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
                 vec3 indirectLight = 0.5f * vec3(1,1,1);
                 vec3 color = intersection.triangle->color * (directlight + indirectLight);
@@ -228,12 +227,13 @@ void Draw(screen* screen, const Camera camera, const LightSource lightSource, ve
 
             }
         }
+        PrintProgress(i+1);
     }
+    printf("\rProgress: done.\n");
     fflush(stdout);
 }
 
-void Update()
-{
+void Update() {
     static int t = SDL_GetTicks();
     int t2 = SDL_GetTicks();
     float dt = float(t2-t);
@@ -244,9 +244,9 @@ bool ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& cam
     switch( key.keysym.sym ){
         /* MOVE LIGHT SOURCE */
         case SDLK_w:
-           printf("W\n");
+            printf("W\n");
             lightSource.position += vec4(0,0,0.2,0);
-            break; 
+            break;
         case SDLK_a :
             printf("A\n");
             lightSource.position += vec4(-0.2,0,0,0);
@@ -268,8 +268,7 @@ bool ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& cam
     return true;
 }
 
-int main( int argc, char* argv[] )
-{  
+int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
     LightSource lightSource;
@@ -279,7 +278,7 @@ int main( int argc, char* argv[] )
 
     Camera camera;
     camera.position           = vec4(0, 0, -2.25, 1);
-    camera.focalLength        = SCREEN_WIDTH/2; 
+    camera.focalLength        = SCREEN_WIDTH/2;
 
     vector<Triangle> triangles;
     LoadTestModel(triangles);
@@ -287,7 +286,7 @@ int main( int argc, char* argv[] )
 
     SDL_Event event;
     bool runProgram = true;
-    
+
     Draw(screen, camera, lightSource, triangles);
     SDL_Renderframe(screen);
 
@@ -298,7 +297,7 @@ int main( int argc, char* argv[] )
                     runProgram = ProcessKeyDown(event.key, lightSource, camera);
                     if(!runProgram) break;
                     Draw(screen, camera, lightSource, triangles);
-                    SDL_Renderframe(screen);    
+                    SDL_Renderframe(screen);
                     break;
                 default:
                     break;
