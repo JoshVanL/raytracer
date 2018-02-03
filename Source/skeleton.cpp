@@ -38,6 +38,7 @@ typedef struct Camera{
     vec4 position;
     float focalLength;
 } Camera;
+
 /* ----------------------------------------------------------------------------*/
 /* FUNCTIONS                                                                   */
 void Update();
@@ -99,6 +100,9 @@ void PrintProgress(double percentage) {
 
 bool IsOccluded(Intersection point, LightSource lightSource, vector<Triangle> triangles){
 
+    vec4 t_p = point.triangle->v0;
+    vec4 u_p = point.triangle->v1;
+    vec4 v_p = point.triangle->v2;
     vec4 dir = lightSource.position - point.position;
     for (int i=0; i<triangles.size(); i++) {
         vec3 intersect = GetIntersection(point.position, dir, triangles[i]);
@@ -107,7 +111,10 @@ bool IsOccluded(Intersection point, LightSource lightSource, vector<Triangle> tr
         float u = intersect.y;
         float v = intersect.z;
         
-        if(0 < t && 0 <= u && 0 <= v && u + v <= 1)
+        if(0 < t && 0 <= u && 0 <= v && u + v <= 1 &&
+               (t_p != triangles[i].v0 || 
+                u_p != triangles[i].v1 || 
+                v_p != triangles[i].v2))
             return true;
     }
 
@@ -119,7 +126,7 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Trian
 
     /* If occluded, return a shadow */
     if (IsOccluded(point, lightSource, triangles)) {
-        return vec3(0.01, 0.01, 0.01);
+        return vec3(0.0001, 0.0001, 0.0001);
     }
 
     /* Otherwise scale the point's color by the light intensity hitting is */
@@ -203,9 +210,9 @@ int main( int argc, char* argv[] )
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
     LightSource lightSource;
-    lightSource.position      = vec4(0, -0.5, -0.7, 1.0);
+    lightSource.position      = vec4(0, -0.5, -1.4, 1.0);
     lightSource.color         = vec3(1,1,1);
-    lightSource.power         = 14.f;
+    lightSource.power         = 10.f;
 
     Camera camera;
     camera.position           = vec4(0, 0, -2.25, 1);
@@ -224,10 +231,10 @@ int main( int argc, char* argv[] )
             switch( event.type ){
                 case SDL_KEYDOWN:
                     runProgram = ProcessKeyDown(event.key, lightSource, camera);
+                    if(!runProgram) break;
                     Draw(screen, camera, lightSource, triangles);
                     SDL_Renderframe(screen);    
                     break;
-
                 default:
                     break;
             }
