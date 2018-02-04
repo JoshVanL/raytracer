@@ -130,25 +130,6 @@ bool IsOccluded(Intersection point, LightSource lightSource, vector<Triangle> tr
     return false;
 }
 
-bool IsOccluded(Intersection point, LightSource lightSource, Triangle triangle) {
-
-    vec4 t_p = point.triangle->v0;
-    vec4 u_p = point.triangle->v1;
-    vec4 v_p = point.triangle->v2;
-    vec4 dir = lightSource.position - point.position;
-
-    vec3 intersect = GetIntersection(point.position, dir, triangle);
-
-    float t = intersect.x;
-    float u = intersect.y;
-    float v = intersect.z;
-
-    if(0 < t && 0 <= u && 0 <= v && u + v <= 1 && (t_p != triangle.v0 || u_p != triangle.v1 || v_p != triangle.v2))
-        return true;
-
-    return false;
-}
-
 vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Triangle> triangles) {
 
     /* If occluded, return a shadow */
@@ -167,41 +148,6 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Trian
     float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
 
     return point.triangle->color * lightSource.color * powPerSurface;
-}
-
-vec3 GetLightIntensity(LightSource lightSource, Intersection point, Triangle triangle) {
-
-    /* If occluded, return a shadow */
-    if (IsOccluded(point, lightSource, triangle)) {
-        return vec3(0.0001, 0.0001, 0.0001);
-    }
-
-    /* Otherwise scale the point's color by the light intensity hitting is */
-    float dist = distance(lightSource.position, point.position);
-    float power = lightSource.power;
-
-    vec3 surfaceNormal = normalize(triangleNormal((vec3) point.triangle->v0, (vec3) point.triangle->v1, (vec3) point.triangle->v2));
-    vec3 lightToPoint = normalize((vec3) point.position - (vec3)lightSource.position);
-
-    float dotProduct = dot(surfaceNormal, lightToPoint);
-    float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
-
-    return point.triangle->color * lightSource.color * powPerSurface;
-}
-
-void ZInitialise(Camera camera, vector<Triangle> triangles) {
-    for(int i=0; i<SCREEN_WIDTH; i++) {
-        for(int j=0; j<SCREEN_HEIGHT; j++) {
-            vec4 dir = vec4(i - SCREEN_WIDTH/2 - camera.position.x,
-                    j - SCREEN_HEIGHT/2 - camera.position.y,
-                    camera.focalLength - camera.position.z,
-                    1);
-            Intersection intersection;
-            if (ClosestIntersection(camera.position, dir, triangles, intersection)) {
-                camera.depthMap[i][j] = intersection.triangle;// .insert(make_pair(i, make_pair(j,intersection.triangle) ));
-            }
-        }
-    }
 }
 
 void Draw(screen* screen, const Camera camera, const LightSource lightSource, vector<Triangle> triangles) {
