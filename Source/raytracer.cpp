@@ -37,16 +37,12 @@ typedef struct LightSource {
 
 typedef struct Camera {
     vec4 position;
+    mat4 rotation;
+    float yaw;
     float focalLength;
-    std::map<int, std::map<int, Triangle*>> depthMap;
 } Camera;
 
-typedef struct BSPTree {
-    vec3 plane[3];
-    vector<Triangle> triangles;
-    BSPTree  *front,
-             *back;
-} BSPTree;
+bool LCTRL = false;
 
 /* ----------------------------------------------------------------------------*/
 /* FUNCTIONS                                                                   */
@@ -150,6 +146,22 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Trian
     return point.triangle->color * lightSource.color * powPerSurface;
 }
 
+void RotateY(mat4& rotation, float degrees){
+    vec4 col1(cos(degrees), 0, -sin(degrees), 0);
+    vec4 col2(0, 1, 0, 0);
+    vec4 col3(sin(degrees), 0, cos(degrees), 0);
+    vec4 col4(0,0,0,1);
+    mat4 rotationApp = mat4(col1, col2, col3, col4);
+    rotation = rotationApp * rotation;
+}
+void RotateX(mat4& rotation, float degrees){
+    vec4 col1(1, 0, 0, 0);
+    vec4 col2(0, cos(degrees), sin(degrees), 0);
+    vec4 col3(0, -sin(degrees), cos(degrees), 0);
+    vec4 col4(0,0,0,1);
+    mat4 rotationApp = mat4(col1, col2, col3, col4);
+    rotation = rotationApp * rotation;
+}
 void Draw(screen* screen, const Camera camera, const LightSource lightSource, vector<Triangle> triangles) {
 
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
@@ -157,7 +169,7 @@ void Draw(screen* screen, const Camera camera, const LightSource lightSource, ve
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
 
-            vec4 dir = vec4(i - SCREEN_WIDTH/2 - camera.position.x,
+            vec4 dir = camera.rotation * vec4(i - SCREEN_WIDTH/2 - camera.position.x,
                     j - SCREEN_HEIGHT/2 - camera.position.y,
                     camera.focalLength - camera.position.z,
                     1);
@@ -165,7 +177,6 @@ void Draw(screen* screen, const Camera camera, const LightSource lightSource, ve
             Intersection intersection;
             /* If visible to camera */
             if (ClosestIntersection(camera.position, dir, triangles, intersection)) {
-
                 vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
                 vec3 indirectLight = 0.5f * vec3(1,1,1);
                 vec3 color = intersection.triangle->color * (directlight + indirectLight);
@@ -186,32 +197,87 @@ void Update() {
     t = t2;
 }
 
-bool ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& camera){
-    switch( key.keysym.sym ){
-        /* MOVE LIGHT SOURCE */
+void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
+     switch( key.keysym.sym ){
         case SDLK_w:
-            printf("W\n");
             lightSource.position += vec4(0,0,0.2,0);
             break;
         case SDLK_a :
-            printf("A\n");
             lightSource.position += vec4(-0.2,0,0,0);
             break;
         case SDLK_s:
-            printf("S\n");
             lightSource.position += vec4(0,0,-0.2,0);
             break;
-        case SDLK_d :
-            printf("D\n");
+        case SDLK_d:
             lightSource.position += vec4(0.2,0,0,0);
             break;
-        case SDLK_ESCAPE:
-            return false;
+     }
+}
+
+void translateCamera(SDL_KeyboardEvent key,  Camera& camera){
+    switch( key.keysym.sym ){
+        case SDLK_UP:
+            camera.position += camera.rotation*vec4(0,0,1,0);
+            break;
+        case SDLK_LEFT:
+            camera.position += camera.rotation*vec4(-0.5,0,0,0);
+            break;
+        case SDLK_DOWN:
+            camera.position += camera.rotation*vec4(0,0,-1,0);
+            break;
+        case SDLK_RIGHT :
+            camera.position += camera.rotation*(vec4(0.5,0,0,0));
+            break;
+    }
+}
+
+void rotateCamera(SDL_KeyboardEvent key,  Camera& camera){
+    switch( key.keysym.sym ){
+        case SDLK_UP:
+            RotateX(camera.rotation, 0.5);
+            break;
+        case SDLK_LEFT:
+            RotateY(camera.rotation, -0.5);
+            break;
+        case SDLK_DOWN:
+            RotateX(camera.rotation, -0.5);
+            break;
+        case SDLK_RIGHT :
+            RotateY(camera.rotation, 0.5);
+            break;
+     }
+}
+
+int ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& camera){
+    if(key.keysym.sym == SDLK_LCTRL){
+        LCTRL = true;
+        return 0;
+    }
+    else if(key.keysym.sym == SDLK_UP || key.keysym.sym == SDLK_DOWN || key.keysym.sym == SDLK_LEFT || key.keysym.sym == SDLK_RIGHT){
+        if(LCTRL)
+            rotateCamera(key, camera);
+        else
+            translateCamera(key, camera);
+        return 1;
+    }
+    else if(key.keysym.sym == SDLK_a || key.keysym.sym ==  SDLK_s || key.keysym.sym ==  SDLK_d || key.keysym.sym ==  SDLK_w){
+        translateLight(key, lightSource);
+        return 1;
+    }
+    else if(key.keysym.sym == SDLK_ESCAPE){
+        return -1;
+    }
+    return 0;
+}
+void ProcessKeyUp(SDL_KeyboardEvent key){
+    switch( key.keysym.sym ){
+        case SDLK_LCTRL:
+            if(LCTRL)
+                LCTRL = false;
             break;
         default:
             break;
     }
-    return true;
 }
 
 int main( int argc, char* argv[] ) {
@@ -223,28 +289,33 @@ int main( int argc, char* argv[] ) {
     lightSource.power         = 10.f;
 
     Camera camera;
+    camera.rotation = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1));
     camera.position           = vec4(0, 0, -2.25, 1);
     camera.focalLength        = SCREEN_WIDTH/2;
 
     vector<Triangle> triangles;
     LoadTestModel(triangles);
 
-
     SDL_Event event;
-    bool runProgram = true;
+    int runProgram = 0;
 
     Draw(screen, camera, lightSource, triangles);
     SDL_Renderframe(screen);
 
-    while(runProgram){
+    while(runProgram != -1){
         while( SDL_PollEvent( &event ) ){
             switch( event.type ){
                 case SDL_KEYDOWN:
                     runProgram = ProcessKeyDown(event.key, lightSource, camera);
-                    if(!runProgram) break;
-                    Draw(screen, camera, lightSource, triangles);
-                    SDL_Renderframe(screen);
+                    if(runProgram == -1) 
+                        break;
+                    else if(runProgram == 1){
+                        Draw(screen, camera, lightSource, triangles);
+                        SDL_Renderframe(screen);
+                    }
                     break;
+                case SDL_KEYUP:
+                    ProcessKeyUp(event.key);
                 default:
                     break;
             }
