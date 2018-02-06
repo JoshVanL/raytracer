@@ -10,7 +10,7 @@ GLMDIR=../glm/
 EXEC=$(B_DIR)/$(FILE)
 
 # default build settings
-CC_OPTS=-c -std=c++0x -pipe -Wno-switch -ggdb -g3 
+CC_OPTS=-c -fopenmp -std=c++0x -pipe -Wno-switch -ggdb -g3 
 LN_OPTS=
 CC=g++
 
@@ -40,7 +40,7 @@ $(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp $(S_DIR)/SDLauxiliary.h $(S_DIR)/TestM
 ########
 #   Main build rule
 Build : $(OBJ) Makefile
-	$(CC) $(LN_OPTS) -o $(EXEC) $(OBJ) `sdl2-config --cflags --libs`
+	$(CC) -fopenmp $(LN_OPTS) -o $(EXEC) $(OBJ) `sdl2-config --cflags --libs`
 
 
 clean:
