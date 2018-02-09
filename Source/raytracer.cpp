@@ -23,10 +23,11 @@ using glm::mat4;
 #define SCREEN_HEIGHT 256
 #define FULLSCREEN_MODE false
 #define INDIRECT_LIGHT  vec3(0.5,0.5,0.5)
-#define ROTATE_RIGHT    mat4(vec4(cos(-5), 0, -sin(-5), 0), vec4(0, 1, 0, 0),               vec4(sin(-5), 0, cos(-5), 0),    vec4(0,0,0,1))
-#define ROTATE_LEFT     mat4(vec4(cos(5), 0, -sin(5), 0),   vec4(0, 1, 0, 0),               vec4(sin(5), 0,  cos(5), 0),      vec4(0,0,0,1))
-#define ROTATE_DOWN     mat4(vec4(1, 0, 0, 0),              vec4(0, cos(5), sin(5), 0),     vec4(0, -sin(5), cos(5), 0),     vec4(0,0,0,1))
-#define ROTATE_UP       mat4(vec4(1, 0, 0, 0),              vec4(0, cos(-5), sin(-5), 0),   vec4(0, -sin(-5), cos(-5), 0),   vec4(0,0,0,1))
+#define ANG 0.1
+#define ROTATE_RIGHT    mat4(vec4(cos(-ANG), 0, -sin(-ANG), 0), vec4(0, 1, 0, 0),               vec4(sin(-ANG), 0, cos(-ANG), 0),    vec4(0,0,0,1))
+#define ROTATE_LEFT     mat4(vec4(cos(ANG), 0, -sin(ANG), 0),   vec4(0, 1, 0, 0),               vec4(sin(ANG), 0,  cos(ANG), 0),      vec4(0,0,0,1))
+#define ROTATE_UP       mat4(vec4(1, 0, 0, 0),              vec4(0, cos(ANG), sin(ANG), 0),     vec4(0, -sin(ANG), cos(ANG), 0),     vec4(0,0,0,1))
+#define ROTATE_DOWN     mat4(vec4(1, 0, 0, 0),              vec4(0, cos(-ANG), sin(-ANG), 0),   vec4(0, -sin(-ANG), cos(-ANG), 0),   vec4(0,0,0,1))
 
 typedef struct Intersection {
     vec4 position;
@@ -39,7 +40,6 @@ typedef struct LightSource {
     vec4 position;
     vec3 color;
     float power;
-    bool changedSinceLastFrame;
 } LightSource;
 
 typedef struct Camera {
@@ -47,7 +47,6 @@ typedef struct Camera {
     mat4 rotation;
     float yaw;
     float focalLength;
-    bool changedSinceLastFrame;
     Triangle** triangleBuffer;
 } Camera;
 
@@ -169,30 +168,16 @@ void Draw(screen* screen, const Camera camera, LightSource lightSource, vector<T
                     1);
             Intersection intersection;
             
-            if(camera.changedSinceLastFrame){
-                if (ClosestIntersection(camera.position, dir, triangles, intersection)){
-                    vec3 color = intersection.triangle->color;
-                    if(lightSource.changedSinceLastFrame){
-                        vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
-                        color = intersection.triangle->color * (directlight + INDIRECT_LIGHT);
-                    }
-                    camera.triangleBuffer[i][j] = *(intersection.triangle);
-                    PutPixelSDL(screen, i, j, color);
-                }
-            }
-            else if(lightSource.changedSinceLastFrame) {
-                vec3 color = camera.triangleBuffer[i][j].color;
-                if(lightSource.changedSinceLastFrame){
-                    vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
-                    color = intersection.triangle->color * (directlight + INDIRECT_LIGHT);
-                }
+
+            if (ClosestIntersection(camera.position, dir, triangles, intersection)){
+                vec3 color = intersection.triangle->color;
+                vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
+                color *= (directlight + INDIRECT_LIGHT);
                 PutPixelSDL(screen, i, j, color);
             }
+            
         }
         PrintProgress(i+1);
-    }
-    if(lightSource.changedSinceLastFrame){
-        lightSource.changedSinceLastFrame = false;
     }
     printf("\rProgress: done.\n");
     fflush(stdout);
@@ -220,7 +205,6 @@ void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
             lightSource.position += vec4(0.2,0,0,0);
             break;
      }
-     lightSource.changedSinceLastFrame = true;
 }
 
 void translateCamera(SDL_KeyboardEvent key,  Camera& camera){
@@ -267,7 +251,6 @@ int ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& came
             rotateCamera(key, camera);
         else
             translateCamera(key, camera);
-        camera.changedSinceLastFrame = true;
         return 1;
     }
     else if(key.keysym.sym == SDLK_a || key.keysym.sym ==  SDLK_s || key.keysym.sym ==  SDLK_d || key.keysym.sym ==  SDLK_w){
@@ -297,17 +280,11 @@ int main( int argc, char* argv[] ) {
     lightSource.position      = vec4(0, -0.5, -1.4, 1.0);
     lightSource.color         = vec3(1,1,1);
     lightSource.power         = 10.f;
-    lightSource.changedSinceLastFrame = true;
 
     Camera camera;
     camera.rotation                 = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1));
     camera.position                 = vec4(0, 0, -2.25, 1);
     camera.focalLength              = SCREEN_WIDTH/2;
-    camera.changedSinceLastFrame    = true;
-    camera.triangleBuffer           = (Triangle**) malloc(sizeof(Triangle*) * SCREEN_WIDTH);
-    for(int i = 0; i < SCREEN_WIDTH; i++){
-        camera.triangleBuffer[i] = (Triangle*) malloc(sizeof(Triangle) * SCREEN_HEIGHT);
-    }
 
     vector<Triangle> triangles;
     LoadTestModel(triangles);
