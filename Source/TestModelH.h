@@ -78,8 +78,8 @@ void LoadTestModel( std::vector<Triangle>& triangles )
     vec4 H(0,L,L,1);
 
     // Floor:
-    triangles.push_back( Triangle( C, B, A, green , highGloss) );
-    triangles.push_back( Triangle( C, D, B, green , highGloss) );
+    triangles.push_back( Triangle( C, B, A, green , someGloss) );
+    triangles.push_back( Triangle( C, D, B, green , someGloss) );
 
     // Left wall
     triangles.push_back( Triangle( A, E, C, purple, highGloss ) );
@@ -111,24 +111,24 @@ void LoadTestModel( std::vector<Triangle>& triangles )
     H = vec4( 82,165,225,1);
 
     // Front
-    triangles.push_back( Triangle(E,B,A,red, normalGloss) );
-    triangles.push_back( Triangle(E,F,B,red, normalGloss) );
+    triangles.push_back( Triangle(E,B,A,red, someGloss) );
+    triangles.push_back( Triangle(E,F,B,red, someGloss) );
 
     // Front
-    triangles.push_back( Triangle(F,D,B,red, normalGloss) );
-    triangles.push_back( Triangle(F,H,D,red, normalGloss) );
+    triangles.push_back( Triangle(F,D,B,red, someGloss) );
+    triangles.push_back( Triangle(F,H,D,red, someGloss) );
 
     // BACK
-    triangles.push_back( Triangle(H,C,D,red, normalGloss) );
-    triangles.push_back( Triangle(H,G,C,red, normalGloss) );
+    triangles.push_back( Triangle(H,C,D,red, someGloss) );
+    triangles.push_back( Triangle(H,G,C,red, someGloss) );
 
     // LEFT
-    triangles.push_back( Triangle(G,E,C,red, normalGloss) );
-    triangles.push_back( Triangle(E,A,C,red, normalGloss) );
+    triangles.push_back( Triangle(G,E,C,red, someGloss) );
+    triangles.push_back( Triangle(E,A,C,red, someGloss) );
 
     // TOP
-    triangles.push_back( Triangle(G,F,E,red, highGloss) );
-    triangles.push_back( Triangle(G,H,F,red, highGloss) );
+    triangles.push_back( Triangle(G,F,E,red, someGloss) );
+    triangles.push_back( Triangle(G,H,F,red, someGloss) );
 
     // ---------------------------------------------------------------------------
     // Tall block
@@ -144,24 +144,24 @@ void LoadTestModel( std::vector<Triangle>& triangles )
     H = vec4(314,330,456,1);
 
     // Front
-    triangles.push_back( Triangle(E,B,A,blue, moreGloss) );
-    triangles.push_back( Triangle(E,F,B,blue, moreGloss) );
+    triangles.push_back( Triangle(E,B,A,blue, highGloss) );
+    triangles.push_back( Triangle(E,F,B,blue, highGloss) );
 
     // Front
     triangles.push_back( Triangle(F,D,B,blue, highGloss) );
     triangles.push_back( Triangle(F,H,D,blue, highGloss) );
 
     // BACK
-    triangles.push_back( Triangle(H,C,D,blue, moreGloss) );
-    triangles.push_back( Triangle(H,G,C,blue, moreGloss) );
+    triangles.push_back( Triangle(H,C,D,blue, highGloss) );
+    triangles.push_back( Triangle(H,G,C,blue, highGloss) );
 
     // LEFT
-    triangles.push_back( Triangle(G,E,C,blue, moreGloss) );
-    triangles.push_back( Triangle(E,A,C,blue, moreGloss) );
+    triangles.push_back( Triangle(G,E,C,blue, highGloss) );
+    triangles.push_back( Triangle(E,A,C,blue, highGloss) );
 
     // TOP
-    triangles.push_back( Triangle(G,F,E,blue, moreGloss) );
-    triangles.push_back( Triangle(G,H,F,blue, moreGloss) );
+    triangles.push_back( Triangle(G,F,E,blue, highGloss) );
+    triangles.push_back( Triangle(G,H,F,blue, highGloss) );
 
 
     // ----------------------------------------------
