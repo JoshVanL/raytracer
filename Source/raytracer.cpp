@@ -22,7 +22,7 @@ using glm::mat4;
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 256
 #define FULLSCREEN_MODE false
-#define INDIRECT_LIGHT  vec3(0.5,0.5,0.5)
+#define INDIRECT_LIGHT  vec3(0.2,0.2,0.28)
 #define ANG 0.1
 #define ROTATE_RIGHT    mat4(vec4(cos(-ANG), 0, -sin(-ANG), 0), vec4(0, 1, 0, 0),               vec4(sin(-ANG), 0, cos(-ANG), 0),    vec4(0,0,0,1))
 #define ROTATE_LEFT     mat4(vec4(cos(ANG), 0, -sin(ANG), 0),   vec4(0, 1, 0, 0),               vec4(sin(ANG), 0,  cos(ANG), 0),      vec4(0,0,0,1))
@@ -158,7 +158,7 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Trian
 void Draw(screen* screen, const Camera camera, LightSource lightSource, vector<Triangle> triangles) {
 
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
-    #pragma omp parallel for 
+#pragma omp parallel for
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
 
@@ -167,15 +167,15 @@ void Draw(screen* screen, const Camera camera, LightSource lightSource, vector<T
                     camera.focalLength - camera.position.z,
                     1);
             Intersection intersection;
-            
+
 
             if (ClosestIntersection(camera.position, dir, triangles, intersection)){
                 vec3 color = intersection.triangle->color;
                 vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
-                color *= (directlight + INDIRECT_LIGHT);
+                color *= (directlight + INDIRECT_LIGHT) * intersection.triangle->gloss;
                 PutPixelSDL(screen, i, j, color);
             }
-            
+
         }
         PrintProgress(i+1);
     }
@@ -191,7 +191,7 @@ void Update() {
 }
 
 void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
-     switch( key.keysym.sym ){
+    switch( key.keysym.sym ){
         case SDLK_w:
             lightSource.position += vec4(0,0,0.2,0);
             break;
@@ -204,7 +204,7 @@ void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
         case SDLK_d:
             lightSource.position += vec4(0.2,0,0,0);
             break;
-     }
+    }
 }
 
 void translateCamera(SDL_KeyboardEvent key,  Camera& camera){
@@ -238,7 +238,7 @@ void rotateCamera(SDL_KeyboardEvent key,  Camera& camera){
         case SDLK_RIGHT :
             camera.rotation = camera.rotation*ROTATE_RIGHT;
             break;
-     }
+    }
 }
 
 int ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& camera){
@@ -291,7 +291,7 @@ int main( int argc, char* argv[] ) {
 
     SDL_Event event;
     int runProgram = 0;
-    
+
     Draw(screen, camera, lightSource, triangles);
     SDL_Renderframe(screen);
 
@@ -300,7 +300,7 @@ int main( int argc, char* argv[] ) {
             switch( event.type ){
                 case SDL_KEYDOWN:
                     runProgram = ProcessKeyDown(event.key, lightSource, camera);
-                    if(runProgram == -1) 
+                    if(runProgram == -1)
                         break;
                     else if(runProgram == 1){
                         Draw(screen, camera, lightSource, triangles);

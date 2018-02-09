@@ -9,29 +9,30 @@
 // Used to describe a triangular surface:
 class Triangle
 {
-public:
-	glm::vec4 v0;
-	glm::vec4 v1;
-	glm::vec4 v2;
-	glm::vec4 normal;
-	glm::vec3 color;
+    public:
+        glm::vec4 v0;
+        glm::vec4 v1;
+        glm::vec4 v2;
+        glm::vec4 normal;
+        glm::vec3 color;
+        glm::vec3 gloss;
 
-	Triangle( glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, glm::vec3 color )
-		: v0(v0), v1(v1), v2(v2), color(color)
-	{
-		ComputeNormal();
-	}
+        Triangle( glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, glm::vec3 color, glm::vec3 gloss)
+            : v0(v0), v1(v1), v2(v2), color(color), gloss(gloss)
+        {
+            ComputeNormal();
+        }
 
-	void ComputeNormal()
-	{
-	  glm::vec3 e1 = glm::vec3(v1.x-v0.x,v1.y-v0.y,v1.z-v0.z);
-	  glm::vec3 e2 = glm::vec3(v2.x-v0.x,v2.y-v0.y,v2.z-v0.z);
-	  glm::vec3 normal3 = glm::normalize( glm::cross( e2, e1 ) );
-	  normal.x = normal3.x;
-	  normal.y = normal3.y;
-	  normal.z = normal3.z;
-	  normal.w = 1.0;
-	}
+        void ComputeNormal()
+        {
+            glm::vec3 e1 = glm::vec3(v1.x-v0.x,v1.y-v0.y,v1.z-v0.z);
+            glm::vec3 e2 = glm::vec3(v2.x-v0.x,v2.y-v0.y,v2.z-v0.z);
+            glm::vec3 normal3 = glm::normalize( glm::cross( e2, e1 ) );
+            normal.x = normal3.x;
+            normal.y = normal3.y;
+            normal.z = normal3.z;
+            normal.w = 1.0;
+        }
 };
 
 // Loads the Cornell Box. It is scaled to fill the volume:
@@ -40,150 +41,156 @@ public:
 // -1 <= z <= +1
 void LoadTestModel( std::vector<Triangle>& triangles )
 {
-	using glm::vec3;
-	using glm::vec4;
+    using glm::vec3;
+    using glm::vec4;
 
-	// Defines colors:
-	vec3 red(    0.75f, 0.15f, 0.15f );
-	vec3 yellow( 0.75f, 0.75f, 0.15f );
-	vec3 green(  0.15f, 0.75f, 0.15f );
-	vec3 cyan(   0.15f, 0.75f, 0.75f );
-	vec3 blue(   0.15f, 0.15f, 0.75f );
-	vec3 purple( 0.75f, 0.15f, 0.75f );
-	vec3 white(  0.75f, 0.75f, 0.75f );
+    // Defines colors:
+    vec3 red(    0.75f, 0.15f, 0.15f );
+    vec3 yellow( 0.75f, 0.75f, 0.15f );
+    vec3 green(  0.15f, 0.75f, 0.15f );
+    vec3 cyan(   0.15f, 0.75f, 0.75f );
+    vec3 blue(   0.15f, 0.15f, 0.75f );
+    vec3 purple( 0.75f, 0.15f, 0.75f );
+    vec3 white(  0.75f, 0.75f, 0.75f );
 
-	triangles.clear();
-	triangles.reserve( 5*2*3 );
+    vec3 lowGloss(0.7, 0.7, 0.7);
+    vec3 normalGloss(1, 1, 1);
+    vec3 someGloss(1.2, 1.2, 1.2);
+    vec3 moreGloss(1.5, 1.5, 1.5);
+    vec3 highGloss(2, 2, 2);
 
-	// ---------------------------------------------------------------------------
-	// Room
+    triangles.clear();
+    triangles.reserve( 5*2*3 );
 
-	float L = 555;			// Length of Cornell Box side.
+    // ---------------------------------------------------------------------------
+    // Room
 
-	vec4 A(L,0,0,1);
-	vec4 B(0,0,0,1);
-	vec4 C(L,0,L,1);
-	vec4 D(0,0,L,1);
+    float L = 555;			// Length of Cornell Box side.
 
-	vec4 E(L,L,0,1);
-	vec4 F(0,L,0,1);
-	vec4 G(L,L,L,1);
-	vec4 H(0,L,L,1);
+    vec4 A(L,0,0,1);
+    vec4 B(0,0,0,1);
+    vec4 C(L,0,L,1);
+    vec4 D(0,0,L,1);
 
-	// Floor:
-	triangles.push_back( Triangle( C, B, A, green ) );
-	triangles.push_back( Triangle( C, D, B, green ) );
+    vec4 E(L,L,0,1);
+    vec4 F(0,L,0,1);
+    vec4 G(L,L,L,1);
+    vec4 H(0,L,L,1);
 
-	// Left wall
-	triangles.push_back( Triangle( A, E, C, purple ) );
-	triangles.push_back( Triangle( C, E, G, purple ) );
+    // Floor:
+    triangles.push_back( Triangle( C, B, A, green , highGloss) );
+    triangles.push_back( Triangle( C, D, B, green , highGloss) );
 
-	// Right wall
-	triangles.push_back( Triangle( F, B, D, yellow ) );
-	triangles.push_back( Triangle( H, F, D, yellow ) );
+    // Left wall
+    triangles.push_back( Triangle( A, E, C, purple, highGloss ) );
+    triangles.push_back( Triangle( C, E, G, purple, highGloss ) );
 
-	// Ceiling
-	triangles.push_back( Triangle( E, F, G, cyan ) );
-	triangles.push_back( Triangle( F, H, G, cyan ) );
+    // Right wall
+    triangles.push_back( Triangle( F, B, D, yellow, lowGloss ) );
+    triangles.push_back( Triangle( H, F, D, yellow, lowGloss ) );
 
-	// Back wall
-	triangles.push_back( Triangle( G, D, C, white ) );
-	triangles.push_back( Triangle( G, H, D, white ) );
+    // Ceiling
+    triangles.push_back( Triangle( E, F, G, cyan , normalGloss) );
+    triangles.push_back( Triangle( F, H, G, cyan , normalGloss) );
 
-	// ---------------------------------------------------------------------------
-	// Short block
+    // Back wall
+    triangles.push_back( Triangle( G, D, C, white, someGloss ) );
+    triangles.push_back( Triangle( G, H, D, white, someGloss ) );
 
-	A = vec4(290,0,114,1);
-	B = vec4(130,0, 65,1);
-	C = vec4(240,0,272,1);
-	D = vec4( 82,0,225,1);
-	       
-	E = vec4(290,165,114,1);
-	F = vec4(130,165, 65,1);
-	G = vec4(240,165,272,1);
-	H = vec4( 82,165,225,1);
+    // ---------------------------------------------------------------------------
+    // Short block
 
-	// Front
-	triangles.push_back( Triangle(E,B,A,red) );
-	triangles.push_back( Triangle(E,F,B,red) );
+    A = vec4(290,0,114,1);
+    B = vec4(130,0, 65,1);
+    C = vec4(240,0,272,1);
+    D = vec4( 82,0,225,1);
 
-	// Front
-	triangles.push_back( Triangle(F,D,B,red) );
-	triangles.push_back( Triangle(F,H,D,red) );
+    E = vec4(290,165,114,1);
+    F = vec4(130,165, 65,1);
+    G = vec4(240,165,272,1);
+    H = vec4( 82,165,225,1);
 
-	// BACK
-	triangles.push_back( Triangle(H,C,D,red) );
-	triangles.push_back( Triangle(H,G,C,red) );
+    // Front
+    triangles.push_back( Triangle(E,B,A,red, normalGloss) );
+    triangles.push_back( Triangle(E,F,B,red, normalGloss) );
 
-	// LEFT
-	triangles.push_back( Triangle(G,E,C,red) );
-	triangles.push_back( Triangle(E,A,C,red) );
+    // Front
+    triangles.push_back( Triangle(F,D,B,red, normalGloss) );
+    triangles.push_back( Triangle(F,H,D,red, normalGloss) );
 
-	// TOP
-	triangles.push_back( Triangle(G,F,E,red) );
-	triangles.push_back( Triangle(G,H,F,red) );
+    // BACK
+    triangles.push_back( Triangle(H,C,D,red, normalGloss) );
+    triangles.push_back( Triangle(H,G,C,red, normalGloss) );
 
-	// ---------------------------------------------------------------------------
-	// Tall block
+    // LEFT
+    triangles.push_back( Triangle(G,E,C,red, normalGloss) );
+    triangles.push_back( Triangle(E,A,C,red, normalGloss) );
 
-	A = vec4(423,0,247,1);
-	B = vec4(265,0,296,1);
-	C = vec4(472,0,406,1);
-	D = vec4(314,0,456,1);
-	       
-	E = vec4(423,330,247,1);
-	F = vec4(265,330,296,1);
-	G = vec4(472,330,406,1);
-	H = vec4(314,330,456,1);
+    // TOP
+    triangles.push_back( Triangle(G,F,E,red, highGloss) );
+    triangles.push_back( Triangle(G,H,F,red, highGloss) );
 
-	// Front
-	triangles.push_back( Triangle(E,B,A,blue) );
-	triangles.push_back( Triangle(E,F,B,blue) );
+    // ---------------------------------------------------------------------------
+    // Tall block
 
-	// Front
-	triangles.push_back( Triangle(F,D,B,blue) );
-	triangles.push_back( Triangle(F,H,D,blue) );
+    A = vec4(423,0,247,1);
+    B = vec4(265,0,296,1);
+    C = vec4(472,0,406,1);
+    D = vec4(314,0,456,1);
 
-	// BACK
-	triangles.push_back( Triangle(H,C,D,blue) );
-	triangles.push_back( Triangle(H,G,C,blue) );
+    E = vec4(423,330,247,1);
+    F = vec4(265,330,296,1);
+    G = vec4(472,330,406,1);
+    H = vec4(314,330,456,1);
 
-	// LEFT
-	triangles.push_back( Triangle(G,E,C,blue) );
-	triangles.push_back( Triangle(E,A,C,blue) );
+    // Front
+    triangles.push_back( Triangle(E,B,A,blue, moreGloss) );
+    triangles.push_back( Triangle(E,F,B,blue, moreGloss) );
 
-	// TOP
-	triangles.push_back( Triangle(G,F,E,blue) );
-	triangles.push_back( Triangle(G,H,F,blue) );
+    // Front
+    triangles.push_back( Triangle(F,D,B,blue, highGloss) );
+    triangles.push_back( Triangle(F,H,D,blue, highGloss) );
+
+    // BACK
+    triangles.push_back( Triangle(H,C,D,blue, moreGloss) );
+    triangles.push_back( Triangle(H,G,C,blue, moreGloss) );
+
+    // LEFT
+    triangles.push_back( Triangle(G,E,C,blue, moreGloss) );
+    triangles.push_back( Triangle(E,A,C,blue, moreGloss) );
+
+    // TOP
+    triangles.push_back( Triangle(G,F,E,blue, moreGloss) );
+    triangles.push_back( Triangle(G,H,F,blue, moreGloss) );
 
 
-	// ----------------------------------------------
-	// Scale to the volume [-1,1]^3
+    // ----------------------------------------------
+    // Scale to the volume [-1,1]^3
 
-	for( size_t i=0; i<triangles.size(); ++i )
-	{
-		triangles[i].v0 *= 2/L;
-		triangles[i].v1 *= 2/L;
-		triangles[i].v2 *= 2/L;
+    for( size_t i=0; i<triangles.size(); ++i )
+    {
+        triangles[i].v0 *= 2/L;
+        triangles[i].v1 *= 2/L;
+        triangles[i].v2 *= 2/L;
 
-		triangles[i].v0 -= vec4(1,1,1,1);
-		triangles[i].v1 -= vec4(1,1,1,1);
-		triangles[i].v2 -= vec4(1,1,1,1);
+        triangles[i].v0 -= vec4(1,1,1,1);
+        triangles[i].v1 -= vec4(1,1,1,1);
+        triangles[i].v2 -= vec4(1,1,1,1);
 
-		triangles[i].v0.x *= -1;
-		triangles[i].v1.x *= -1;
-		triangles[i].v2.x *= -1;
+        triangles[i].v0.x *= -1;
+        triangles[i].v1.x *= -1;
+        triangles[i].v2.x *= -1;
 
-		triangles[i].v0.y *= -1;
-		triangles[i].v1.y *= -1;
-		triangles[i].v2.y *= -1;
+        triangles[i].v0.y *= -1;
+        triangles[i].v1.y *= -1;
+        triangles[i].v2.y *= -1;
 
-		triangles[i].v0.w = 1.0;
-		triangles[i].v1.w = 1.0;
-		triangles[i].v2.w = 1.0;
-		
-		triangles[i].ComputeNormal();
-	}
+        triangles[i].v0.w = 1.0;
+        triangles[i].v1.w = 1.0;
+        triangles[i].v2.w = 1.0;
+
+        triangles[i].ComputeNormal();
+    }
 }
 
 #endif
