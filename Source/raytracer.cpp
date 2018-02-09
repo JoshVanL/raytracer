@@ -22,7 +22,7 @@ using glm::mat4;
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 256
 #define FULLSCREEN_MODE false
-#define INDIRECT_LIGHT  vec3(0.2,0.2,0.28)
+#define INDIRECT_LIGHT  vec3(0.3,0.2,0.18)
 #define ANG 0.1
 #define ROTATE_RIGHT    mat4(vec4(cos(-ANG), 0, -sin(-ANG), 0), vec4(0, 1, 0, 0),               vec4(sin(-ANG), 0, cos(-ANG), 0),    vec4(0,0,0,1))
 #define ROTATE_LEFT     mat4(vec4(cos(ANG), 0, -sin(ANG), 0),   vec4(0, 1, 0, 0),               vec4(sin(ANG), 0,  cos(ANG), 0),      vec4(0,0,0,1))

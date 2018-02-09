@@ -58,6 +58,7 @@ void LoadTestModel( std::vector<Triangle>& triangles )
     vec3 someGloss(1.2, 1.2, 1.2);
     vec3 moreGloss(1.5, 1.5, 1.5);
     vec3 highGloss(2, 2, 2);
+    vec3 superGloss(5, 5, 5);
 
     triangles.clear();
     triangles.reserve( 5*2*3 );
@@ -78,8 +79,8 @@ void LoadTestModel( std::vector<Triangle>& triangles )
     vec4 H(0,L,L,1);
 
     // Floor:
-    triangles.push_back( Triangle( C, B, A, green , someGloss) );
-    triangles.push_back( Triangle( C, D, B, green , someGloss) );
+    triangles.push_back( Triangle( C, B, A, green , moreGloss) );
+    triangles.push_back( Triangle( C, D, B, green , moreGloss) );
 
     // Left wall
     triangles.push_back( Triangle( A, E, C, purple, highGloss ) );
@@ -127,8 +128,8 @@ void LoadTestModel( std::vector<Triangle>& triangles )
     triangles.push_back( Triangle(E,A,C,red, someGloss) );
 
     // TOP
-    triangles.push_back( Triangle(G,F,E,red, someGloss) );
-    triangles.push_back( Triangle(G,H,F,red, someGloss) );
+    triangles.push_back( Triangle(G,F,E,red, superGloss) );
+    triangles.push_back( Triangle(G,H,F,red, superGloss) );
 
     // ---------------------------------------------------------------------------
     // Tall block
@@ -160,8 +161,8 @@ void LoadTestModel( std::vector<Triangle>& triangles )
     triangles.push_back( Triangle(E,A,C,blue, highGloss) );
 
     // TOP
-    triangles.push_back( Triangle(G,F,E,blue, highGloss) );
-    triangles.push_back( Triangle(G,H,F,blue, highGloss) );
+    triangles.push_back( Triangle(G,F,E,blue, superGloss) );
+    triangles.push_back( Triangle(G,H,F,blue, superGloss) );
 
 
     // ----------------------------------------------
