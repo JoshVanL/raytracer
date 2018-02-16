@@ -7,6 +7,7 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/normal.hpp>
 #include "Shapes/sphere.h"
+#include "Shapes/polygonmesh.h"
 #include "Shapes/cuboid.h"
 #include <cstdlib> 
 #include <cstdio> 
@@ -163,7 +164,7 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Trian
 void Draw(screen* screen, const Camera camera, LightSource lightSource, vector<Triangle> triangles) {
 
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
-#pragma omp parallel for
+    #pragma omp parallel for
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
 
@@ -323,6 +324,7 @@ void ProcessKeyUp(SDL_KeyboardEvent key){
     // SDL_SaveImage( screen, "screenshot.bmp" );
 
     // KillSDL(screen);
+// }
 int main(int argc, char **argv)
 {
     srand48(13);

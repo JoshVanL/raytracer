@@ -23,6 +23,14 @@ class Triangle
             ComputeNormal();
         }
 
+        bool operator== (Triangle& other) const {
+            if( (v0 == other.v0 || v0 == other.v1 || v0 == other.v2) && 
+                (v1 == other.v0 || v1 == other.v1 || v1 == other.v2) &&
+                (v2 == other.v0 || v2 == other.v1 || v2 == other.v2))
+                return false;
+            return true;
+        }
+
         void ComputeNormal()
         {
             glm::vec3 e1 = glm::vec3(v1.x-v0.x,v1.y-v0.y,v1.z-v0.z);

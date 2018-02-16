@@ -10,7 +10,7 @@
 #include <vector>
 #define MAX_RAY_DEPTH_ 5
 #define M_PI_ 3.141592653589793 
-#define INFINITY_ 1e8 
+
 
 class Sphere : public Shape {
 public:
