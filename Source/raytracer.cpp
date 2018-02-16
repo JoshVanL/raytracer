@@ -1,17 +1,22 @@
-#include <iostream>
 #include <glm/glm.hpp>
 #include <SDL2/SDL.h>
 #include "SDLauxiliary.h"
 #include "TestModelH.h"
 #include <stdio.h>
 #include <omp.h>
-#include <map>
-#include <stdint.h>
-#include <cmath>
-#include <stdio.h>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/normal.hpp>
-using namespace std;
+#include "Shapes/sphere.h"
+#include "Shapes/cuboid.h"
+#include <cstdlib> 
+#include <cstdio> 
+#include <cmath> 
+#include <fstream> 
+#include <vector> 
+#include <iostream> 
+#include <cassert>
+ 
+using namespace std; 
 
 using glm::vec3;
 using glm::mat3;
@@ -273,50 +278,64 @@ void ProcessKeyUp(SDL_KeyboardEvent key){
     }
 }
 
-int main( int argc, char* argv[] ) {
-    screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
+// int main( int argc, char* argv[] ) {
+    // screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
-    LightSource lightSource;
-    lightSource.position      = vec4(0, -0.5, -1.4, 1.0);
-    lightSource.color         = vec3(1,1,1);
-    lightSource.power         = 10.f;
+    // LightSource lightSource;
+    // lightSource.position      = vec4(0, -0.5, -1.4, 1.0);
+    // lightSource.color         = vec3(1,1,1);
+    // lightSource.power         = 10.f;
 
-    Camera camera;
-    camera.rotation                 = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1));
-    camera.position                 = vec4(0, 0, -2.25, 1);
-    camera.focalLength              = SCREEN_WIDTH/2;
+    // Camera camera;
+    // camera.rotation                 = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1));
+    // camera.position                 = vec4(0, 0, -2.25, 1);
+    // camera.focalLength              = SCREEN_WIDTH/2;
 
-    vector<Triangle> triangles;
-    LoadTestModel(triangles);
+    // vector<Triangle> triangles;
+    // LoadTestModel(triangles);
 
-    SDL_Event event;
-    int runProgram = 0;
+    // SDL_Event event;
+    // int runProgram = 0;
 
-    Draw(screen, camera, lightSource, triangles);
-    SDL_Renderframe(screen);
+    // Draw(screen, camera, lightSource, triangles);
+    // SDL_Renderframe(screen);
 
-    while(runProgram != -1){
-        while( SDL_PollEvent( &event ) ){
-            switch( event.type ){
-                case SDL_KEYDOWN:
-                    runProgram = ProcessKeyDown(event.key, lightSource, camera);
-                    if(runProgram == -1)
-                        break;
-                    else if(runProgram == 1){
-                        Draw(screen, camera, lightSource, triangles);
-                        SDL_Renderframe(screen);
-                    }
-                    break;
-                case SDL_KEYUP:
-                    ProcessKeyUp(event.key);
-                default:
-                    break;
-            }
-        }
-    }
+    // while(runProgram != -1){
+    //     while( SDL_PollEvent( &event ) ){
+    //         switch( event.type ){
+    //             case SDL_KEYDOWN:
+    //                 runProgram = ProcessKeyDown(event.key, lightSource, camera);
+    //                 if(runProgram == -1)
+    //                     break;
+    //                 else if(runProgram == 1){
+    //                     Draw(screen, camera, lightSource, triangles);
+    //                     SDL_Renderframe(screen);
+    //                 }
+    //                 break;
+    //             case SDL_KEYUP:
+    //                 ProcessKeyUp(event.key);
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    // }
 
-    SDL_SaveImage( screen, "screenshot.bmp" );
+    // SDL_SaveImage( screen, "screenshot.bmp" );
 
-    KillSDL(screen);
+    // KillSDL(screen);
+int main(int argc, char **argv)
+{
+    srand48(13);
+    std::vector<Sphere> spheres;
+    // position, radius, surface color, reflectivity, transparency, emission color
+    spheres.push_back(Sphere(vec3( 0.0, -10004, -20), 10000, vec3(0.20, 0.20, 0.20), 0, 0.0));
+    spheres.push_back(Sphere(vec3( 0.0,      0, -20),     4, vec3(1.00, 0.32, 0.36), 1, 0.5));
+    spheres.push_back(Sphere(vec3( 5.0,     -1, -15),     2, vec3(0.90, 0.76, 0.46), 1, 0.0));
+    spheres.push_back(Sphere(vec3( 5.0,      0, -25),     3, vec3(0.65, 0.77, 0.97), 1, 0.0));
+    spheres.push_back(Sphere(vec3(-5.5,      0, -15),     3, vec3(0.90, 0.90, 0.90), 1, 0.0));
+    // light
+    spheres.push_back(Sphere(vec3( 0.0,     20, -30),     3, vec3(0.00, 0.00, 0.00), 0, 0.0, vec3(3)));
+    Sphere::render(spheres);
+    
     return 0;
 }
