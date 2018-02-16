@@ -92,7 +92,7 @@ bool ClosestIntersection(vec4 start, vec4 dir, vector<Triangle> &triangles, Inte
         vec3 worldIntersectionCoordinates = GetIntersection(start, dir, triangles[i]);
         float t = worldIntersectionCoordinates.x;
         float u = worldIntersectionCoordinates.y;
-        float v = worldIntersectionCoordinates.z;
+        float v = worldIntersectionCoordinates.z; 
 
         if (0 <= t && 0 <= u && 0 <= v && u + v <= 1) {
             vec4 camIntersectionCoordinates = WorldToCamCoordinates(u, v, triangles[i]);
