@@ -12,20 +12,24 @@
 #define M_PI_ 3.141592653589793 
 
 
-class Sphere : public Shape {
+class Sphere {
 public:
-                        
-    float radius, radius2;         
+    glm::vec3 center;                           /// position of the sphere 
+    float radius, radius2;                  /// sphere radius and radius^2 
+    glm::vec3 surfaceColor, emissionColor;      /// surface color and emission (light) 
+    float transparency, reflection;       
     Sphere(
         const glm::vec3 &c,
         const float &r,
         const glm::vec3 &sc,
         const float &refl = 0,
         const float &transp = 0,
-        const glm::vec3 &ec = glm::vec3(0,0,0)) : radius(r), radius2(r * r), Shape(c, sc, ec, refl, transp)
-    {  }
+        const glm::vec3 &ec = glm::vec3(0,0,0)) : radius(r), radius2(r * r), center(c), surfaceColor(sc), emissionColor(ec), transparency(transp), reflection(refl)
+    {   
+        
+    }
 
-    virtual bool intersect(const glm::vec3 &rayorig, const glm::vec3 &raydir, float &t0, float &t1) const
+    bool intersect(const glm::vec3 &rayorig, const glm::vec3 &raydir, float &t0, float &t1) const
     {
         glm::vec3 l = center - rayorig;
         float tca = glm::dot(raydir, l);
@@ -35,10 +39,12 @@ public:
         float thc = sqrt(radius2 - d2);
         t0 = tca - thc;
         t1 = tca + thc;
-        
         return true;
     }
-
+    static float mix(const float &a, const float &b, const float &mix) 
+    { 
+        return b * mix + a * (1 - mix); 
+    };
  
     static glm::vec3 trace( const glm::vec3 &rayorig, const glm::vec3 &raydir, const std::vector<Sphere> &spheres, const int &depth) 
     { 
