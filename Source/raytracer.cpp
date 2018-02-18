@@ -1,7 +1,8 @@
+
 #include <glm/glm.hpp>
 #include <SDL2/SDL.h>
-#include "SDLauxiliary.h"
-#include "TestModelH.h"
+#include "Scene/SDLauxiliary.h"
+#include "Scene/TestModelH.h"
 #include <stdio.h>
 #include <omp.h>
 #include <glm/gtx/norm.hpp>
@@ -16,7 +17,9 @@
 #include <vector> 
 #include <iostream> 
 #include <cassert>
- 
+#include "Light/lightsource.h"
+#include "Scene/camera.h"
+#include "Scene/keyboard.h"
 using namespace std; 
 
 using glm::vec3;
@@ -42,19 +45,19 @@ typedef struct Intersection {
     Triangle* triangle;
 } Intersection;
 
-typedef struct LightSource {
-    vec4 position;
-    vec3 color;
-    float power;
-} LightSource;
+// typedef struct LightSource {
+//     vec4 position;
+//     vec3 color;
+//     float power;
+// } LightSource;
 
-typedef struct Camera {
-    vec4 position;
-    mat4 rotation;
-    float yaw;
-    float focalLength;
-    Triangle** triangleBuffer;
-} Camera;
+// typedef struct Camera {
+//     vec4 position;
+//     mat4 rotation;
+//     float yaw;
+//     float focalLength;
+//     Triangle** triangleBuffer;
+// } Camera;
 
 bool LCTRL = false;
 
@@ -159,218 +162,128 @@ vec3 GetLightIntensity(LightSource lightSource, Intersection point, vector<Trian
 
     return point.triangle->color * lightSource.color * powPerSurface;
 }
-    // static void render(const std::vector<Sphere> &spheres) 
-    // { 
-    
-    //     float invWidth = 1 / float(width), invHeight = 1 / float(height); 
-    //     float fov = 30, aspectratio = width / float(height); 
-    //     float angle = glm::tan(M_PI * 0.5 * fov / 180.); 
-    //     // Trace rays
-    //     for (int y = 0; y < height; ++y) { 
-    //         for (int x = 0; x < width; ++x, ++pixel) { 
-    //             float xx = (2 * ((x + 0.5) * invWidth) - 1) * angle * aspectratio; 
-    //             float yy = (1 - 2 * ((y + 0.5) * invHeight)) * angle; 
-    //             glm::vec3 raydir(xx, yy, -1); 
-    //             raydir=glm::normalize(raydir); 
-    //             *pixel = trace(glm::vec3(0,0,0), raydir, spheres, 0); 
-    //         } 
-    //     } 
-    // } 
 
-void Draw(screen* screen, const Camera camera, LightSource lightSource, vector<Sphere>& spheres) {
+void Draw(screen* screen, Camera camera, LightSource lightSource, vector<Triangle>& triangles) {
 
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
+    #pragma omp parallel for
+    for(int i=0; i<SCREEN_WIDTH; i++) {
+        for(int j=0; j<SCREEN_HEIGHT; j++) {
+            vec4 dir = camera.rotation * vec4(i - SCREEN_WIDTH/2 - camera.position.x,
+                    j - SCREEN_HEIGHT/2 - camera.position.y,
+                    camera.focalLength - camera.position.z,
+                    1);
+            dir = normalize(dir);
 
-
-        float invWidth = 1 / float(SCREEN_WIDTH), invHeight = 1 / float(SCREEN_HEIGHT); 
-        float fov = 30, aspectratio = SCREEN_WIDTH / float(SCREEN_HEIGHT); 
-        float angle = tan(M_PI * 0.5 * fov / 180.); 
-        // Trace rays
-        for (int y = 0; y < SCREEN_HEIGHT; ++y) { 
-            for (int x = 0; x < SCREEN_WIDTH; ++x) { 
-                float xx = (2 * ((x + 0.5) * (1/SCREEN_WIDTH)) - 1) * tan(M_PI * 0.5 * 30 / 180) * (SCREEN_WIDTH/SCREEN_HEIGHT); 
-                float yy = (1 - 2 * ((y + 0.5) * (1/SCREEN_HEIGHT))) * tan(M_PI * 0.5 * 30 / 180);
-                vec4 dir4 = camera.rotation * vec4(x - SCREEN_WIDTH/2 - camera.position.x,
-                                                  y - SCREEN_HEIGHT/2 - camera.position.y,
-                                                  camera.focalLength - camera.position.z, 
-                                                  1);
-                vec3 dir = (vec3) dir4;
-                dir = normalize(dir); 
-                const int depth = 0;
-                glm::vec3 color = Sphere::trace(vec3(0,0,0), dir, spheres, depth); 
-                PutPixelSDL(screen, x, y, color);
-            } 
-        } 
- printf("\rProgress: done.\n");
-
-
-    // #pragma omp parallel for
-    // for(int i=0; i<SCREEN_WIDTH; i++) {
-    //     for(int j=0; j<SCREEN_HEIGHT; j++) {
-    //         float xx = (2 * ((i + 0.5) * (1/SCREEN_WIDTH)) - 1) * tan(M_PI * 0.5 * 30 / 180) * (SCREEN_WIDTH/SCREEN_HEIGHT); 
-    //         float yy = (1 - 2 * ((j + 0.5) * (1/SCREEN_HEIGHT))) * tan(M_PI * 0.5 * 30 / 180);
-    //         vec3 dir(xx,yy, -1);
-        
-    //         // vec4 dir = camera.rotation * vec4(i - SCREEN_WIDTH/2 - camera.position.x,
-    //         //         j - SCREEN_HEIGHT/2 - camera.position.y,
-    //         //         camera.focalLength - camera.position.z,
-    //         //         1);
-    //         dir = normalize(dir);
-
-    //         const int depth = 0;
-    //         vec3 color = Sphere::trace(vec3(0,0,0), dir, spheres, depth);
-    //         // vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
-    //         // color *= (directlight + INDIRECT_LIGHT) * intersection.triangle->gloss;
-    //         PutPixelSDL(screen, i, j, color);
-    //     }
-    //     PrintProgress(i+1);
-    // }
-    // printf("\rProgress: done.\n");
-    // fflush(stdout);
+            Intersection intersection;
+            if(ClosestIntersection(camera.position, dir, triangles, intersection)){
+                vec3 color = intersection.triangle->color;
+                vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
+                color *= (directlight + INDIRECT_LIGHT) * intersection.triangle->gloss;
+                PutPixelSDL(screen, i, j, color);
+            }
+        }
+        PrintProgress(i+1);
+    }
+    printf("\rProgress: done.\n");
+    fflush(stdout);
 }
 
-void Update() {
-    static int t = SDL_GetTicks();
-    int t2 = SDL_GetTicks();
-    float dt = float(t2-t);
-    t = t2;
-}
 
-void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
-    switch( key.keysym.sym ){
-        case SDLK_w:
-            lightSource.position += vec4(0,0,0.2,0);
-            break;
-        case SDLK_a :
-            lightSource.position += vec4(-0.2,0,0,0);
-            break;
-        case SDLK_s:
-            lightSource.position += vec4(0,0,-0.2,0);
-            break;
-        case SDLK_d:
-            lightSource.position += vec4(0.2,0,0,0);
-            break;
-    }
-}
+// void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
+//     switch( key.keysym.sym ){
+//         case SDLK_w:
+//             lightSource.position += vec4(0,0,0.2,0);
+//             break;
+//         case SDLK_a :
+//             lightSource.position += vec4(-0.2,0,0,0);
+//             break;
+//         case SDLK_s:
+//             lightSource.position += vec4(0,0,-0.2,0);
+//             break;
+//         case SDLK_d:
+//             lightSource.position += vec4(0.2,0,0,0);
+//             break;
+//     }
+// }
 
-void translateCamera(SDL_KeyboardEvent key,  Camera& camera){
-    switch( key.keysym.sym ){
-        case SDLK_UP:
-            camera.position += camera.rotation*vec4(0,0,1,0);
-            break;
-        case SDLK_LEFT:
-            camera.position += camera.rotation*vec4(-0.5,0,0,0);
-            break;
-        case SDLK_DOWN:
-            camera.position += camera.rotation*vec4(0,0,-1,0);
-            break;
-        case SDLK_RIGHT :
-            camera.position += camera.rotation*(vec4(0.5,0,0,0));
-            break;
-    }
-}
 
-void rotateCamera(SDL_KeyboardEvent key,  Camera& camera){
-    switch( key.keysym.sym ){
-        case SDLK_UP:
-            camera.rotation = camera.rotation*ROTATE_UP;
-            break;
-        case SDLK_LEFT:
-            camera.rotation = camera.rotation*ROTATE_LEFT;
-            break;
-        case SDLK_DOWN:
-            camera.rotation = camera.rotation*ROTATE_DOWN;
-            break;
-        case SDLK_RIGHT :
-            camera.rotation = camera.rotation*ROTATE_RIGHT;
-            break;
-    }
-}
+// int ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& camera){
+//     if(key.keysym.sym == SDLK_LCTRL){
+//         LCTRL = true;
+//         return 0;
+//     }
+//     else if(key.keysym.sym == SDLK_UP || key.keysym.sym == SDLK_DOWN || key.keysym.sym == SDLK_LEFT || key.keysym.sym == SDLK_RIGHT){
+//         if(LCTRL)
+//             camera.rotateCamera(key);
+//         else
+//             camera.translateCamera(key);
+//         return 1;
+//     }
+//     else if(key.keysym.sym == SDLK_a || key.keysym.sym ==  SDLK_s || key.keysym.sym ==  SDLK_d || key.keysym.sym ==  SDLK_w){
+//         translateLight(key, lightSource);
+//         return 1;
+//     }
+//     else if(key.keysym.sym == SDLK_ESCAPE){
+//         return -1;
+//     }
+//     return 0;
+// }
 
-int ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& camera){
-    if(key.keysym.sym == SDLK_LCTRL){
-        LCTRL = true;
-        return 0;
-    }
-    else if(key.keysym.sym == SDLK_UP || key.keysym.sym == SDLK_DOWN || key.keysym.sym == SDLK_LEFT || key.keysym.sym == SDLK_RIGHT){
-        if(LCTRL)
-            rotateCamera(key, camera);
-        else
-            translateCamera(key, camera);
-        return 1;
-    }
-    else if(key.keysym.sym == SDLK_a || key.keysym.sym ==  SDLK_s || key.keysym.sym ==  SDLK_d || key.keysym.sym ==  SDLK_w){
-        translateLight(key, lightSource);
-        return 1;
-    }
-    else if(key.keysym.sym == SDLK_ESCAPE){
-        return -1;
-    }
-    return 0;
-}
-void ProcessKeyUp(SDL_KeyboardEvent key){
-    switch( key.keysym.sym ){
-        case SDLK_LCTRL:
-            if(LCTRL)
-                LCTRL = false;
+// void ProcessKeyUp(SDL_KeyboardEvent key){
+//     switch( key.keysym.sym ){
+//         case SDLK_LCTRL:
+//             if(LCTRL)
+//                 LCTRL = false;
+//             break;
+//         default:
+//             break;
+//     }
+// }
+
+int Update(SDL_Event& event, Camera& camera, LightSource& lightSource, Keyboard& keyboard, int& runProgram){
+    
+    switch( event.type ){
+        case SDL_KEYDOWN:
+            runProgram = keyboard.ProcessKeyDown(event.key, lightSource, camera);
             break;
+        case SDL_KEYUP:
+            keyboard.ProcessKeyUp(event.key);
         default:
             break;
     }
+    return 1;
 }
 
 int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
     LightSource lightSource;
-    lightSource.position      = vec4(0, -0.5, -1.4, 1.0);
-    lightSource.color         = vec3(1,1,1);
-    lightSource.power         = 10.f;
+    // lightSource.position      = vec4(0, -0.5, -1.4, 1.0);
+    // lightSource.color         = vec3(1,1,1);
+    // lightSource.power         = 10.f;
 
     Camera camera;
-    camera.rotation                 = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1));
-    camera.position                 = vec4(0, 0, -2.25, 1);
-    camera.focalLength              = SCREEN_WIDTH/2;
-
+    Keyboard keyboard;
     vector<Triangle> triangles;
     LoadTestModel(triangles);
 
     SDL_Event event;
     int runProgram = 0;
-    srand48(13);
-    std::vector<Sphere> spheres ;
-    // position, radius, surface color, reflectivity, transparency, emission color
-    spheres.push_back(Sphere(vec3( 0.0, -10004, -20), 10000, vec3(0.20, 0.20, 0.20), 0, 0.0)); 
-    spheres.push_back(Sphere(vec3( 0.0,      0, -20),     4, vec3(1.00, 0.32, 0.36), 1, 0.5)); 
-    spheres.push_back(Sphere(vec3( 5.0,     -1, -15),     2, vec3(0.90, 0.76, 0.46), 1, 0.0)); 
-    spheres.push_back(Sphere(vec3( 5.0,      0, -25),     3, vec3(0.65, 0.77, 0.97), 1, 0.0)); 
-    spheres.push_back(Sphere(vec3(-5.5,      0, -15),     3, vec3(0.90, 0.90, 0.90), 1, 0.0)); 
-  
-    spheres.push_back(Sphere(vec3( 0.0, 20, 50),     3, vec3(0.00, 0.00, 0.00), 0, 0.0, vec3(3)));
-    Sphere::render(spheres);
-    Draw(screen, camera, lightSource, spheres);
+
+    // // Sphere::render(spheres);
+    Draw(screen, camera, lightSource, triangles);
     SDL_Renderframe(screen);
 
     while(runProgram != -1){
         while( SDL_PollEvent( &event ) ){
-            switch( event.type ){
-                case SDL_KEYDOWN:
-                    runProgram = ProcessKeyDown(event.key, lightSource, camera);
-                    if(runProgram == -1)
-                        break;
-                    else if(runProgram == 1){
-                        Draw(screen, camera, lightSource, spheres);
-                        SDL_Renderframe(screen);
-                    }
-                    break;
-                case SDL_KEYUP:
-                    ProcessKeyUp(event.key);
-                default:
-                    break;
+            Update(event, camera, lightSource, keyboard, runProgram);
+            if(runProgram == 1){
+                Draw(screen, camera, lightSource, triangles);
+                SDL_Renderframe(screen);
             }
         }
     }
-
     SDL_SaveImage( screen, "screenshot.bmp" );
 
     KillSDL(screen);

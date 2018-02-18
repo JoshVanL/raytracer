@@ -1,7 +1,7 @@
 #ifndef POLYGONMESH_H
 #define POLYGONMESH_H 
 #include "shape.h"
-#include "../TestModelH.h"
+#include "../Scene/TestModelH.h"
 #include <vector>
 
 #define INFINITY_ 1e8 
