@@ -1,15 +1,15 @@
 #ifndef CUBOID_H
 #define CUBOID_H 
-#include "shape.h"
+#include "shape3D.h"
 
-class Cuboid : public Shape {
+class Cuboid : public Shape3D {
 public:
     float width, height;
     float xmin, xmax, ymin, ymax, zmin, zmax;
     glm::vec3 bounds[2]; 
 
     Cuboid(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax, glm::vec3 surfaceColor, glm::vec3 emissionColor, float transparency, float reflection):
-        Shape(setcenter(xmin, xmax, ymin, ymax, zmin, zmax), surfaceColor, emissionColor, transparency, reflection), 
+        Shape3D(setcenter(xmin, xmax, ymin, ymax, zmin, zmax), surfaceColor, emissionColor, transparency, reflection), 
         xmin(xmin), xmax(xmax), ymin(ymin), ymax(ymax), zmin(zmin), zmax(zmax){
             bounds[0] = glm::vec3(xmin, ymin, zmin);
             bounds[1] = glm::vec3(xmax, ymax, zmax);

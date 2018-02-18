@@ -1,16 +1,16 @@
 #ifndef POLYGONMESH_H
 #define POLYGONMESH_H 
-#include "shape.h"
+#include "shape3D.h"
 #include "../Scene/TestModelH.h"
 #include <vector>
 
 #define INFINITY_ 1e8 
-class PolygonMesh : public Shape{
+class PolygonMesh : public Shape3D{
 
     std::vector<Triangle> triangles;
     std::vector<glm::vec3> vertices;
     PolygonMesh(std::vector<Triangle> triangles, glm::vec3 surfaceColor, glm::vec3 emissionColor,float transparency,float reflection)
-    : triangles(triangles), Shape(getcenter(triangles), surfaceColor, emissionColor, transparency, reflection) {
+    : triangles(triangles), Shape3D(getcenter(triangles), surfaceColor, emissionColor, transparency, reflection) {
 
     };
 

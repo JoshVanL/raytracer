@@ -1,7 +1,7 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 #include "SDL.h"
-#include "../Light/lightsource.h"
+#include "../Light/ray.h"
 
 class Keyboard {
 public:
@@ -11,7 +11,7 @@ public:
 
     }
 
-    void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
+    void translateLight(SDL_KeyboardEvent key, Ray& lightSource){
         switch( key.keysym.sym ){
             case SDLK_w:
                 lightSource.position += vec4(0,0,0.2,0);
@@ -29,26 +29,29 @@ public:
     }
 
 
-    int ProcessKeyDown(SDL_KeyboardEvent key, LightSource lightSource, Camera& camera){
+    void ProcessKeyDown(SDL_KeyboardEvent key, Ray& lightSource, Camera& camera, int& runProgram){
         if(key.keysym.sym == SDLK_LCTRL){
             LCTRL = true;
-            return 0;
+            runProgram = 0;
+            return;
         }
         else if(key.keysym.sym == SDLK_UP || key.keysym.sym == SDLK_DOWN || key.keysym.sym == SDLK_LEFT || key.keysym.sym == SDLK_RIGHT){
             if(LCTRL)
                 camera.rotateCamera(key);
             else
                 camera.translateCamera(key);
-            return 1;
+            runProgram = 1;
+            return;
         }
         else if(key.keysym.sym == SDLK_a || key.keysym.sym ==  SDLK_s || key.keysym.sym ==  SDLK_d || key.keysym.sym ==  SDLK_w){
             translateLight(key, lightSource);
-            return 1;
+            runProgram = 1;
+            return;
         }
         else if(key.keysym.sym == SDLK_ESCAPE){
-            return -1;
+            runProgram = -1;
+            return;
         }
-        return 0;
     }
 
     void ProcessKeyUp(SDL_KeyboardEvent key){

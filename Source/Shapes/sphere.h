@@ -2,9 +2,9 @@
 #define SPHERE_H
 #include "SDL.h"
 #include <iostream>
+#include "shape3D.h"
 #include <stdio.h>
 #include <glm/glm.hpp>
-#include "shape.h"
 #include <cmath>
 #include <fstream> 
 #include <vector>

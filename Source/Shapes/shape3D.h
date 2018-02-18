@@ -7,19 +7,19 @@
 
 #define INFINITY_ 1e8 
 
-class Shape {
+class Shape3D {
 public:
     glm::vec3 center,surfaceColor, emissionColor;
     float transparency, reflection; 
-    Shape(glm::vec3 centre, glm::vec3 surfaceColor, glm::vec3 emissionColor,float transparency,float reflection):
+    Shape3D(glm::vec3 centre, glm::vec3 surfaceColor, glm::vec3 emissionColor,float transparency,float reflection):
         center(center), surfaceColor(surfaceColor), emissionColor(emissionColor), transparency(transparency), reflection(reflection) {
     };
-    virtual ~Shape() = 0;
+    virtual ~Shape3D() = 0;
     static float mix(const float &a, const float &b, const float &mix) 
     { 
         return b * mix + a * (1 - mix); 
     };
 };
-Shape::~Shape(){}
+Shape3D::~Shape3D(){}
 
 #endif
