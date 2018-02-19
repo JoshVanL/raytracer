@@ -36,7 +36,7 @@ public:
     :   position(pos), focal_length(foc), rotation(rot), primary_ray(pos, vec3(0,0,0), 0)
     {
     }
-    
+
     Camera()
     {
         rotation           = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1));
@@ -95,7 +95,5 @@ public:
 
 
 };
-
-
 
 #endif

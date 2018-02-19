@@ -56,11 +56,15 @@ public:
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;
-    bool operator==(const Shape2D& other) const
-    {
+    bool operator==(const Shape2D& other) const {
         // If the derived types are the same then compare them
         return typeid(*this) == typeid(other) && isEqual(other);
     }
+
+    virtual vec3 minPosition() {return vec3();};
+    virtual vec3 maxPosition() {return vec3();};
+    virtual vec3 midpoint()    {return vec3();};
+
 private:
     virtual bool isEqual(const Shape2D& other) const = 0;
 };
