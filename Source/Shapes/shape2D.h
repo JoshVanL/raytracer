@@ -61,9 +61,15 @@ public:
         return typeid(*this) == typeid(other) && isEqual(other);
     }
 
-    virtual vec3 minPosition() {return vec3();};
-    virtual vec3 maxPosition() {return vec3();};
-    virtual vec3 midpoint()    {return vec3();};
+    virtual vec3 minPosition() {
+        return vec3();
+    };
+    virtual vec3 maxPosition() {
+        return vec3();
+    };
+    virtual vec3 midpoint() {
+        return vec3();
+    };
 
 private:
     virtual bool isEqual(const Shape2D& other) const = 0;

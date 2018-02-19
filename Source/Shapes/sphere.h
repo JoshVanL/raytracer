@@ -85,14 +85,14 @@ class Sphere : public Shape2D {
             return cam_intersect;
         }
 
-        virtual vec3 minPostion() {
+        virtual vec3 minPosition() override {
             return vec3{center.x - radius, center.y - radius, center.z - radius};
         }
-        virtual vec3 maxPostion() {
+        virtual vec3 maxPosition() override {
             return vec3{center.x + radius, center.y + radius, center.z + radius};
         }
-        virtual vec3 midpoint() {
-            return (vec3)center;
+        virtual vec3 midpoint() override {
+            return vec3{center.x, center.y, center.z};
         }
 
 

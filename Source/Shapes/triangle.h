@@ -71,7 +71,7 @@ class Triangle : public Shape2D
             return  glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
         }
 
-        virtual vec3 minPostion() {
+        virtual vec3 minPosition() override {
             vec3 minPos = (vec3)v0;
             for (int i = 0; i < 3; i++) {
                 if ( v1[i] < minPos[i] ) minPos[i] = v1[i];
@@ -82,7 +82,7 @@ class Triangle : public Shape2D
             return minPos;
         }
 
-        virtual vec3 maxPostion() {
+        virtual vec3 maxPosition() override {
             vec3 maxPos = (vec3)v0;
             for (int i = 0; i < 3; i++) {
                 if ( v1[i] > maxPos[i] ) maxPos[i] = v1[i];
@@ -93,7 +93,7 @@ class Triangle : public Shape2D
             return maxPos;
         }
 
-        virtual vec3 midpoint() {
+        virtual vec3 midpoint() override {
             vec3 point = vec3(0, 0, 0);
             point.x = (v0.x + v1.x + v2.x) / 3.0;
             point.y = (v0.y + v1.y + v2.y) / 3.0;

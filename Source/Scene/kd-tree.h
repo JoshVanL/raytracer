@@ -4,6 +4,7 @@
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
 #include "../Shapes/shape2D.h"
+#include "glm/ext.hpp"
 
 class BoundingBox {
     public:
@@ -159,11 +160,11 @@ class KDNode {
         }
 
 
-        bool hit(KDNode* node, Camera& camera, vec4 dir, Intersection &intersection) {
+        bool hit(KDNode* node, Camera& camera, vec4 dir, Intersection &intersection, int index) {
             if (bbox->hit(camera, dir)) {
                 if (node->left->shapes.size() > 0 || node->right->shapes.size() > 0) {
-                    bool hitleft = hit(node->left, camera, dir, intersection);
-                    bool hitright = hit(node->right, camera, dir, intersection);
+                    bool hitleft = hit(node->left, camera, dir, intersection, index);
+                    bool hitright = hit(node->right, camera, dir, intersection, index);
 
                     return hitleft || hitright;
 
