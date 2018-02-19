@@ -32,11 +32,12 @@ using glm::vec4;
 using glm::mat4;
 
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 256
+#define SCREEN_WIDTH 600
+#define SCREEN_HEIGHT 600
 #define FULLSCREEN_MODE false
 #define INDIRECT_LIGHT  vec3(0.3,0.2,0.18)
 #define ANG 0.1
+#define NUM_THREADS 16
 
 bool LCTRL = false;
 
@@ -55,6 +56,8 @@ void PrintProgress(double percentage) {
 
 void Draw(screen* screen, Camera& camera, Ray& lightSource, KDNode* tree) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
+
+    omp_set_num_threads(NUM_THREADS);
 
     #pragma omp parallel for
     for(int i=0; i<SCREEN_WIDTH; i++) {
@@ -82,7 +85,12 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, Ray& lightSource, 
         case SDL_KEYDOWN:
             keyboard.ProcessKeyDown(event.key, lightSource, camera, runProgram);
             if(runProgram == 1){
+                auto started = std::chrono::high_resolution_clock::now();
                 Draw(screen, camera, lightSource, tree);
+                auto done = std::chrono::high_resolution_clock::now();
+                cout << "Render time: ";
+                cout << chrono::duration_cast<chrono::milliseconds>(done-started).count();
+                cout << " ms \n";
                 SDL_Renderframe(screen);
             }
             break;
