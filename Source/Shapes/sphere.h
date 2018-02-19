@@ -93,7 +93,7 @@ private:
         vec3 L = (vec3) center - rayorig;
         float tca = dot(L, dir);
         float d2 = dot(L, L) - tca * tca;
-        if (d2 > radius2) { 
+        if (d2 > (radius2 + radius2*0.1f)) { 
             return false;
         }
 

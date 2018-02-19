@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/normal.hpp>
+//////////////////////////////////////// 
+// UNUSED
+////////////////////////////////////////
 
 using glm::vec3;
 using glm::vec4;
@@ -25,10 +28,6 @@ using glm::vec4;
 class Shape3D {
 public:
   
-    ////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////
-
     glm::vec3 center, surfaceColor, emissionColor;
     float transparency, reflection; 
 

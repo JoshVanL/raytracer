@@ -23,14 +23,14 @@ public:
             color         = glm::vec3(1,1,1);
             power         = 10.f;
     };
-    bool ClosestIntersection(vec4 dir, std::vector<Shape2D*>& shapes, Intersection &closestIntersection) {
+    bool ClosestIntersection(vec4 dir, std::vector<Shape2D*>& shapes, Intersection &closestIntersection, const Shape2D* exclusion = nullptr) {
         closestIntersection.distance = std::numeric_limits<float>::max();
         bool found = false;
 
         glm::vec4 intersectionPoint;
 
         for (size_t i=0; i<shapes.size(); i++) {
-            if(shapes[i]->intersect(*(this), (vec3) dir, intersectionPoint)){
+            if((shapes[i]->intersect(*(this), (vec3) dir, intersectionPoint)) && (shapes[i] != exclusion)){
 
                 float d = glm::distance(intersectionPoint, position);
 
@@ -66,7 +66,7 @@ public:
     bool IsOccluded(Intersection& point, vector<Shape2D*>& shapes){
         Intersection intersect;
         vec4 dir = point.position - position;
-        if(ClosestIntersection(dir, shapes, intersect)){
+        if(ClosestIntersection(dir, shapes, intersect, intersect.shape2D)){
             if(intersect.shape2D != point.shape2D)
                 return true;
         }
