@@ -59,13 +59,13 @@ class BoundingBox {
             return true;
         }
 
-        void expand(BoundingBox* bbox) {
+        void expand(BoundingBox& bbox) {
             for (int i = 0; i < 3; i++) {
-                if (minPos[i] > bbox->minPos[i]) {
-                    minPos[i] = bbox->minPos[i];
+                if (minPos[i] > bbox.minPos[i]) {
+                    minPos[i] = bbox.minPos[i];
                 }
-                if (maxPos[i] < bbox->maxPos[i]) {
-                    maxPos[i] = bbox->maxPos[i];
+                if (maxPos[i] < bbox.maxPos[i]) {
+                    maxPos[i] = bbox.maxPos[i];
                 }
             }
         }
@@ -73,13 +73,13 @@ class BoundingBox {
 
 class KDNode {
     public:
-        BoundingBox* bbox;
+        BoundingBox bbox;
         KDNode* left;
         KDNode* right;
         vector<Shape2D*> shapes;
 
         KDNode() {
-            bbox = new BoundingBox();
+            bbox = BoundingBox();
             left = NULL;
             right = NULL;
             shapes = vector<Shape2D*>();
@@ -95,18 +95,18 @@ class KDNode {
             }
 
             if (shapes.size() == 1) {
-                node->bbox->get_bounding_box(shapes[0]);
+                node->bbox.get_bounding_box(shapes[0]);
                 node->left = new KDNode();
                 node->right = new KDNode();
                 return node;
             }
 
-            node->bbox->get_bounding_box(shapes[0]);
+            node->bbox.get_bounding_box(shapes[0]);
 
             for (int i = 1; i< shapes.size(); i++) {
-                BoundingBox* bbx = new BoundingBox();
-                bbx->get_bounding_box(shapes[i]);
-                node->bbox->expand(bbx);
+                BoundingBox bbx = BoundingBox();
+                bbx.get_bounding_box(shapes[i]);
+                node->bbox.expand(bbx);
             }
 
             vec3 midpoint = vec3(0, 0, 0);
@@ -119,7 +119,7 @@ class KDNode {
 
             vector<Shape2D*> lefts;
             vector<Shape2D*> rights;
-            int axis = node->bbox->longest_axis();
+            int axis = node->bbox.longest_axis();
             for (int i = 0; i < shapes.size(); i++) {
                 switch (axis) {
                     case 0:
@@ -161,7 +161,7 @@ class KDNode {
 
 
         bool hit(Camera& camera, vec4 dir, Intersection &intersection, int index) {
-            if (bbox->hit(camera, dir)) {
+            if (bbox.hit(camera, dir)) {
                 if (left->shapes.size() > 0 || right->shapes.size() > 0) {
                     bool hitleft = left->hit(camera, dir, intersection, index);
                     bool hitright = right->hit(camera, dir, intersection, index);
