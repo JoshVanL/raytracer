@@ -66,7 +66,7 @@ void Draw(screen* screen, Camera& camera, Ray& lightSource, KDNode* tree) {
             dir = normalize(dir);
 
             Intersection intersection;
-            if(tree->hit(tree, camera, dir, intersection)) {
+            if(tree->hit(camera, dir, intersection)) {
                 vec3 color          = (vec3) intersection.shape2D->color;
                 vec3 directlight    = lightSource.GetDirectLight(intersection, tree->shapes);
                 vec3 indirectlight  = lightSource.GetIndirectLight();
