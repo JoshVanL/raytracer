@@ -7,7 +7,6 @@
 #include <omp.h>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/normal.hpp>
-#include "Shapes/sphere.h"
 #include "Shapes/polygonmesh.h"
 #include "Shapes/cuboid.h"
 #include "Shapes/triangle.h"
@@ -54,7 +53,7 @@ void PrintProgress(double percentage) {
 }
 
 
-void Draw(screen* screen, Camera& camera, Ray& lightSource, vector<Triangle>& triangles) {
+void Draw(screen* screen, Camera& camera, Ray& lightSource, vector<Shape2D*>& shapes) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
     #pragma omp parallel for
     for(int i=0; i<SCREEN_WIDTH; i++) {
@@ -66,11 +65,11 @@ void Draw(screen* screen, Camera& camera, Ray& lightSource, vector<Triangle>& tr
             dir = normalize(dir);
             
             Intersection intersection;
-            if(camera.primary_ray.ClosestIntersectionTriangles(dir, triangles, intersection)){
-                vec3 color          = intersection.triangle->color;
-                vec3 directlight    = lightSource.GetDirectLightAtTriangles(intersection, triangles);
-                vec3 indirectlight  = lightSource.GetIndirectLightAt();
-                color *= (directlight + INDIRECT_LIGHT) * intersection.triangle->gloss;
+            if(camera.primary_ray.ClosestIntersection(dir, shapes, intersection)){
+                vec3 color          = intersection.shape2D->color;
+                vec3 directlight    = lightSource.GetDirectLight(intersection, shapes);
+                vec3 indirectlight  = lightSource.GetIndirectLight();
+                color *= (directlight + INDIRECT_LIGHT) * intersection.shape2D->gloss;
                 PutPixelSDL(screen, i, j, color);
             }
         }
@@ -80,12 +79,12 @@ void Draw(screen* screen, Camera& camera, Ray& lightSource, vector<Triangle>& tr
     fflush(stdout);
 }
 
-void Update(screen* screen, SDL_Event& event, Camera& camera, Ray& lightSource, Keyboard& keyboard, vector<Triangle>& triangles, int& runProgram){
+void Update(screen* screen, SDL_Event& event, Camera& camera, Ray& lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram){
     switch(event.type ){
         case SDL_KEYDOWN:
             keyboard.ProcessKeyDown(event.key, lightSource, camera, runProgram);
             if(runProgram == 1){
-                Draw(screen, camera, lightSource, triangles);
+                Draw(screen, camera, lightSource, shapes);
                 SDL_Renderframe(screen);
             }
             break;
@@ -103,18 +102,18 @@ int main( int argc, char* argv[] ) {
     Ray lightSource;
     Camera camera;
     Keyboard keyboard;
-    vector<Triangle> triangles;
-    LoadTestModel(triangles);
+    vector<Shape2D*> shapes;
+    LoadTestModel(shapes);
 
     SDL_Event event;
     int runProgram = 0;
 
-    Draw(screen, camera, lightSource, triangles);
+    Draw(screen, camera, lightSource, shapes);
     SDL_Renderframe(screen);
 
     while(runProgram != -1){
         while( SDL_PollEvent( &event ) ){
-            Update(screen, event, camera, lightSource, keyboard, triangles, runProgram);
+            Update(screen, event, camera, lightSource, keyboard, shapes, runProgram);
         }
     }
     SDL_SaveImage( screen, "screenshot.bmp" );
