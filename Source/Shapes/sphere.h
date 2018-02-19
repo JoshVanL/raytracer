@@ -64,6 +64,7 @@ public:
         float t = t0;
         vec3 temp = vec3(ray.position) + (t * dir);
         intersection = vec4(temp.x, temp.y, temp.z, 1);
+        printf("%f %f %f \n", intersection.x, intersection.y, intersection.z);
         return true;
     }
 
