@@ -160,11 +160,11 @@ class KDNode {
         }
 
 
-        bool hit(KDNode* node, Camera& camera, vec4 dir, Intersection &intersection, int index) {
+        bool hit(Camera& camera, vec4 dir, Intersection &intersection, int index) {
             if (bbox->hit(camera, dir)) {
-                if (node->left->shapes.size() > 0 || node->right->shapes.size() > 0) {
-                    bool hitleft = hit(node->left, camera, dir, intersection, index);
-                    bool hitright = hit(node->right, camera, dir, intersection, index);
+                if (left->shapes.size() > 0 || right->shapes.size() > 0) {
+                    bool hitleft = left->hit(camera, dir, intersection, index);
+                    bool hitright = right->hit(camera, dir, intersection, index);
 
                     return hitleft || hitright;
 
