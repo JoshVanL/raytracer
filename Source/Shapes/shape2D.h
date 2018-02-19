@@ -11,9 +11,9 @@ using glm::vec3;
 
 class Shape2D{
 public:
-
+    int foo = 0;
     const float L = 555;			// Length of Cornell Box side.
-    int foo;
+
     vec3 color, emissionColor, gloss;
     float transparency, reflection; 
 
@@ -32,14 +32,14 @@ public:
 
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
     virtual glm::vec4 tocamcoordinates(float u, float v) = 0;
-    virtual glm::vec3 getnormal() = 0;
-    virtual bool operator==(const Shape2D& other) const{
-        if (typeid(*this) != typeid(other))
-            return false;
-
-        return foo == other.foo;
+    virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;
+    bool operator==(const Shape2D& other) const
+    {
+        // If the derived types are the same then compare them
+        return typeid(*this) == typeid(other) && isEqual(other);
     }
-    
+private:
+    virtual bool isEqual(const Shape2D& other) const = 0;
 };
 
 #endif

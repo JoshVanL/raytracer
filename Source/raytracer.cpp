@@ -10,6 +10,7 @@
 #include "Shapes/polygonmesh.h"
 #include "Shapes/cuboid.h"
 #include "Shapes/triangle.h"
+#include "Shapes/sphere.h"
 #include <cstdlib> 
 #include <cstdio> 
 #include <cmath> 
@@ -100,7 +101,7 @@ int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
     Ray lightSource;
-    Camera camera;
+    Camera camera(vec4(0, 0, -2.25, 1), SCREEN_WIDTH/2);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
     LoadTestModel(shapes);

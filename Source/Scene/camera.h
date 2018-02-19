@@ -32,11 +32,8 @@ public:
     Ray primary_ray;
 
     Camera(vec4 pos, float foc, const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
-    :   position(pos), focal_length(foc), rotation(rot)
+    :   position(pos), focal_length(foc), rotation(rot), primary_ray(pos, vec3(0,0,0), 0)
     {
-        primary_ray.color = vec3(1,1,1);
-        primary_ray.position = position;
-        primary_ray.power = 0;
     }
     
     Camera()
