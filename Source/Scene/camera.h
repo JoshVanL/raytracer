@@ -4,6 +4,7 @@
 
 #include "../Light/ray.h"
 #include <glm/glm.hpp>
+#include <glm/gtx/normal.hpp>
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
@@ -44,6 +45,13 @@ public:
         primary_ray.color = vec3(1,1,1);
         primary_ray.position = position;
         primary_ray.power = 0;
+    }
+
+    vec4 getDirection(int i, int j){
+        return glm::normalize(rotation * vec4(  i - SCREEN_WIDTH/2 - position.x,
+                                                j - SCREEN_HEIGHT/2 - position.y,
+                                                focal_length - position.z,
+                                                1));
     }
 
     void translateCamera(SDL_KeyboardEvent key){

@@ -1,33 +1,38 @@
-#ifndef SHAPE2D_H
-#define SHAPE2D_H
+
 #include <typeinfo>
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
-
-
-class Ray;
-
+#include <string>
 using glm::vec3;
 using glm::vec4;
+
+#ifndef SHAPE2D_H
+#define SHAPE2D_H
+
+class Ray;
+class Material;
+
 class Shape2D{
 public:
     const float L = 555;// Length of Cornell Box side.
 
-    vec3 color, emissionColor, gloss;
-    float transparency, reflection; 
+    vec3    color;
+    vec3    gloss;
+    Material* material = nullptr;
     std::string name;
-    Shape2D(vec3 color, vec3 gloss, vec3 emissCol, float transp, float refl): 
-        color(color), gloss(gloss), emissionColor(emissCol), transparency(transp), reflection(refl){
+
+    Shape2D(vec3 color, vec3 gloss, Material* material): 
+        color(color), gloss(gloss), material(material){
+    };
+
+    Shape2D(vec3 color) : color(color), gloss(vec3(1,1,1)){
 
     };
 
-    Shape2D(vec3 color) : color(color), gloss(vec3(0,0,0)), emissionColor(vec3(0,0,0)), transparency(0), reflection(0){
+    Shape2D(vec3 color, vec3 gloss) : color(color), gloss(gloss) {
 
-    }
+    };
 
-    Shape2D(vec3 color, vec3 gloss) : color(color), gloss(gloss), emissionColor(vec3(0,0,0)), transparency(0), reflection(0){
-
-    }
     vec4 scalevec4(vec4 v) {
         v *= 2/L;
         v -= vec4(1,1,1,1);
@@ -47,8 +52,9 @@ public:
         v *= 2/L;
         return v;
     }
+    virtual glm::vec3 compute_color() = 0;
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
-    virtual glm::vec4 tocamcoordinates(float u, float v) = 0;
+    virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;
     bool operator==(const Shape2D& other) const
     {

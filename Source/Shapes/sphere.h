@@ -2,6 +2,8 @@
 #define SPHERE_H
 #include "SDL.h"
 #include "shape2D.h"
+#include "../Light/intersection.h"
+#include "../Light/ray.h"
 #include <vector>
 
 #define MAX_RAY_DEPTH_ 5
@@ -20,20 +22,18 @@ public:
     float radius, radius2;                     
 
     Sphere(
-        glm::vec4 &c,
-        float &r,
-        glm::vec3 sc,
-        float &refl,
-        float &transp,
-        glm::vec3 &ec, 
-        glm::vec3 gloss) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(c)), Shape2D(sc, gloss, ec, transp, refl)
+        glm::vec4 &cent, float r,
+        glm::vec3 col,
+        glm::vec3 gloss,
+        Material* material) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(col, gloss, material)
     {   
         name = "Sphere";
     };
-    Sphere(glm::vec4 &c, float &r, glm::vec3 sc) : 
-        center(scalevec4(c)), radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), Shape2D(sc, vec3(0,0,0), vec3(0,0,0), 0, 0) {
+    Sphere(glm::vec4 &cent, float &r, glm::vec3 col) : 
+        center(scalevec4(cent)), radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), 
+        Shape2D(col) 
+    {
         name = "Sphere";
-        printf("centre %f %f %f     radius %f \n",center.x, center.y, center.z, radius);
     };
 
     virtual bool intersect(Ray &ray, vec3 dir, vec4& intersection) override
@@ -64,10 +64,15 @@ public:
         float t = t0;
         vec3 temp = vec3(ray.position) + (t * dir);
         intersection = vec4(temp.x, temp.y, temp.z, 1);
-        printf("%f %f %f \n", intersection.x, intersection.y, intersection.z);
         return true;
     }
-
+    virtual glm::vec3 compute_color() override {
+        vec3 t_color;
+        if(material)
+            return material->material_color(this);
+        else 
+            return color;
+    }
     virtual glm::vec3 getnormal(vec4 start, vec4 dir) override {
         glm::vec4 intersectpoint;
         if(intersect(start, dir, intersectpoint)){
@@ -76,8 +81,8 @@ public:
             return glm::normalize(intersectNormal);
         }
     }
-    virtual glm::vec4 tocamcoordinates(float u, float v) override{
-        return center;
+    virtual glm::vec4 toworldcoordinates(vec4 cam_intersect) override{
+        return cam_intersect;
     }
 private:
     virtual bool isEqual(const Shape2D& other) const override {

@@ -7,6 +7,7 @@
 #include <vector>
 #include "../Shapes/triangle.h"
 #include "../Shapes/sphere.h"
+#include "../Materials/solid.h"
 // Used to describe a triangular surface:
 
 
@@ -143,7 +144,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     float empty = 0;
     A = vec4(255, 150, 50, 1);
     vec3 emptyv3 =  vec3(0,0,0);
-    shapes.push_back( new Sphere( A, radius, blue, empty, empty, emptyv3, highGloss));
+    shapes.push_back( new Sphere( A, radius, blue));
 
 }
 

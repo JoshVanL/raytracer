@@ -7,10 +7,6 @@
 #include <omp.h>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/normal.hpp>
-#include "Shapes/polygonmesh.h"
-#include "Shapes/cuboid.h"
-#include "Shapes/triangle.h"
-#include "Shapes/sphere.h"
 #include <cstdlib> 
 #include <cstdio> 
 #include <cmath> 
@@ -19,9 +15,11 @@
 #include <iostream> 
 #include <cassert>
 #include "Light/ray.h"
-
 #include "Scene/camera.h"
 #include "Scene/keyboard.h"
+#include "Shapes/cuboid.h"
+#include "Shapes/triangle.h"
+#include "Shapes/sphere.h"
 
 using namespace std; 
 
@@ -56,26 +54,22 @@ void PrintProgress(double percentage) {
 
 void Draw(screen* screen, Camera& camera, Ray& lightSource, vector<Shape2D*>& shapes) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
+
     #pragma omp parallel for
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
-            vec4 dir = camera.rotation * vec4(i - SCREEN_WIDTH/2 - camera.position.x,
-                    j - SCREEN_HEIGHT/2 - camera.position.y,
-                    camera.focal_length - camera.position.z,
-                    1);
-            dir = normalize(dir);
-            
+
+            vec4 dir = camera.getDirection(i, j);
+
             Intersection intersection;
             if(camera.primary_ray.ClosestIntersection(dir, shapes, intersection)){
-                vec3 color          = (vec3) intersection.shape2D->color;
-                vec3 directlight    = lightSource.GetDirectLight(intersection, shapes);
-                vec3 indirectlight  = lightSource.GetIndirectLight();
-                color *= ((directlight + INDIRECT_LIGHT) *  (vec3) intersection.shape2D->gloss);
+                vec3 color = intersection.compute_color(lightSource, shapes);
                 PutPixelSDL(screen, i, j, color);
             }
         }
         PrintProgress(i+1);
     }
+
     printf("\rProgress: done.\n");
     fflush(stdout);
 }

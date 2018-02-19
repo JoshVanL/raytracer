@@ -17,8 +17,18 @@ public:
     glm::vec4 v2;
     glm::vec4 normal;
 
-    Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, glm::vec3 color, glm::vec3 gloss)
-        :  Shape2D(color, gloss), v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
+    Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, 
+             glm::vec3 color, glm::vec3 gloss, Material* mat)
+        :   Shape2D(color, gloss, mat), 
+            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
+    {
+         name = "Triangle";
+    }
+
+    Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, 
+             glm::vec3 color, glm::vec3 gloss)
+        :   Shape2D(color, gloss), 
+            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
          name = "Triangle";
     }
@@ -36,13 +46,22 @@ public:
         float v = x.z; 
 
         if (0 <= t && 0 <= u && 0 <= v && u + v <= 1) { 
-            intersectionpoint = tocamcoordinates(x.y, x.z);
+            intersectionpoint = toworldcoordinates(vec4(t,u,v,1));
             return true;
         }
         return false;
     }
-
-    virtual vec4 tocamcoordinates(float u, float v){
+    virtual vec3 compute_color() override{
+        vec3 t_color;
+        if(material){
+            t_color = material->material_color(this);
+        }
+        else{
+            return color;
+        }
+    }
+    virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {
+        float u = cam_intersect[1], v = cam_intersect[2];
         vec4 e1 = v1 - v0;
         vec4 e2 = v2 - v0;
         return v0 + u * e1 + v * e2;

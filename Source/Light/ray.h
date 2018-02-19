@@ -2,7 +2,7 @@
 #define RAY_H
 
 #include <glm/glm.hpp>
-#include "../Shapes/shape2D.h"
+#include "intersection.h"
 #include <vector>
 
 #define PI           3.14159265358979323846
@@ -61,7 +61,7 @@ public:
 
         float dotProduct = glm::dot(surfaceNormal, lightToPoint);
         float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
-        return point.shape2D->color * color * powPerSurface;
+        return color * powPerSurface;
     }
     bool IsOccluded(Intersection& point, vector<Shape2D*>& shapes){
         Intersection intersect;

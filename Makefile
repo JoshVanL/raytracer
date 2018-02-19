@@ -10,7 +10,7 @@ GLMDIR=../glm/
 EXEC=$(B_DIR)/$(FILE)
 
 # default build settings
-CC_OPTS=-c -fopenmp -std=c++0x -pipe -Wno-switch -ggdb -g3 
+CC_OPTS=-c -fopenmp -std=c++11 -pipe -Wno-switch -ggdb -g3 
 LN_OPTS=
 CC=g++
 
@@ -33,14 +33,14 @@ OBJ = $(B_DIR)/$(FILE).o
 
 ########
 #   Objects
-$(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp $(S_DIR)/Scene/SDLauxiliary.h $(S_DIR)/Scene/scene.h
+$(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp   $(S_DIR)/Light/intersection.cpp $(S_DIR)/Scene/SDLauxiliary.h $(S_DIR)/Scene/scene.h
 	$(CC) $(CC_OPTS) -o $(B_DIR)/$(FILE).o $(S_DIR)/$(FILE).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
 
 
 ########
 #   Main build rule
 Build : $(OBJ) Makefile
-	$(CC) -fopenmp $(LN_OPTS) -o $(EXEC) $(OBJ) `sdl2-config --cflags --libs`
+	$(CC) -fopenmp -fopenmp -std=c++11 -o $(EXEC) $(OBJ) $(LN_OPTS) $(S_DIR)/Light/intersection.cpp  `sdl2-config --cflags --libs`
 
 
 clean:
