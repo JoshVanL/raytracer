@@ -33,7 +33,7 @@ OBJ = $(B_DIR)/$(FILE).o
 
 ########
 #   Objects
-$(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp $(S_DIR)/Scene/SDLauxiliary.h $(S_DIR)/Scene/TestModelH.h
+$(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp $(S_DIR)/Scene/SDLauxiliary.h $(S_DIR)/Scene/scene.h
 	$(CC) $(CC_OPTS) -o $(B_DIR)/$(FILE).o $(S_DIR)/$(FILE).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
 
 

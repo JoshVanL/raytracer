@@ -18,8 +18,9 @@ public:
     glm::vec4 normal;
 
     Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, glm::vec3 color, glm::vec3 gloss)
-        :  Shape2D(color, gloss), v0(scalevertex(v0)), v1(scalevertex(v1)), v2(scalevertex(v2)), normal(ComputeNormal())
+        :  Shape2D(color, gloss), v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
+         name = "Triangle";
     }
 
     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
@@ -78,15 +79,5 @@ private:
         norm.w = 1.0;
         return norm;
     }
-
-    vec4 scalevertex(vec4 v) {
-        v *= 2/L;
-        v -= vec4(1,1,1,1);
-        v.x *= -1;
-        v.y *= -1;
-        v.w = 1.0;
-        return v;
-    }
-
 };
 #endif

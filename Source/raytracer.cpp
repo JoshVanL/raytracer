@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <SDL2/SDL.h>
 #include "Scene/SDLauxiliary.h"
-#include "Scene/TestModelH.h"
+#include "Scene/scene.h"
 #include <stdio.h>
 #include <omp.h>
 #include <glm/gtx/norm.hpp>
@@ -67,10 +67,10 @@ void Draw(screen* screen, Camera& camera, Ray& lightSource, vector<Shape2D*>& sh
             
             Intersection intersection;
             if(camera.primary_ray.ClosestIntersection(dir, shapes, intersection)){
-                vec3 color          = intersection.shape2D->color;
+                vec3 color          = (vec3) intersection.shape2D->color;
                 vec3 directlight    = lightSource.GetDirectLight(intersection, shapes);
                 vec3 indirectlight  = lightSource.GetIndirectLight();
-                color *= (directlight + INDIRECT_LIGHT) * intersection.shape2D->gloss;
+                color *= ((directlight + INDIRECT_LIGHT) *  (vec3) intersection.shape2D->gloss);
                 PutPixelSDL(screen, i, j, color);
             }
         }
