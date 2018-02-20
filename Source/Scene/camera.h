@@ -33,26 +33,19 @@ public:
     Ray primary_ray;
 
     Camera(vec4 pos, float foc, const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
-    :   position(pos), focal_length(foc), rotation(rot), primary_ray(pos, rot*vec4(0,0,1,0))
+    :   position(pos), focal_length(foc), rotation(rot), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2))
     {
     }
     
-    Camera()
+    Camera() : position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1))), focal_length(SCREEN_WIDTH/2), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2))
     {
-        rotation           = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1));
-        position           = vec4(0, 0, 0, 1);
-        focal_length       = SCREEN_WIDTH/2;
-        primary_ray.position = position;
-        primary_ray.direction = vec4(0,0,0,1);
-        primary_ray.bounces = 0;
     }
 
-    vec4 setDirection(int i, int j){
-        primary_ray.direction =  glm::normalize(rotation * vec4(  i - SCREEN_WIDTH/2 - position.x,
+    vec4 getDirection(int i, int j){
+        return glm::normalize(rotation * vec4(  i - SCREEN_WIDTH/2 - position.x,
                                                 j - SCREEN_HEIGHT/2 - position.y,
                                                 focal_length - position.z,
                                                 1));
-        return primary_ray.direction;
     }
 
     void translateCameraVert(SDL_KeyboardEvent key){
@@ -114,13 +107,11 @@ public:
         }
     }
 
-    Ray createNewRay(int i, int j) {
-        float camera_x = i - SCREEN_WIDTH / 2;
-        float camera_y = j - SCREEN_HEIGHT / 2;
+    Ray createNewRay(int i, int j) const {
 
-        vec4 dir = vec4((i - SCREEN_WIDTH / 2) - position.x, 
-                        (j - SCREEN_HEIGHT/ 2) - position.y, 
-                        focal_length - position.z, 1);
+        vec4 dir = glm::normalize(  rotation * vec4(i - SCREEN_WIDTH / 2 - position.x, 
+                                    j - SCREEN_HEIGHT/ 2 - position.y, 
+                                    focal_length - position.z, 1));
 
         return Ray(position, dir, 0);
     }

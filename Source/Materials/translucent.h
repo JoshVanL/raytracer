@@ -20,7 +20,6 @@ public:
  
     virtual vec3 material_color(const Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes)  override {
         Shape2D* shape2D = intersection.shape2D;   
-
         glm::vec3 normal = glm::normalize(shape2D->getnormal(primary_ray.position, intersection.direction));
         glm::vec3 ray_dir = (vec3) glm::normalize(intersection.direction); 
        
@@ -41,13 +40,14 @@ public:
             float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
             kr = (Rs * Rs + Rp * Rp) / 2;
         }
-        // vec3 refraction = refract(primary_ray, intersection.position, intersection.direction, ikntersection.shape2D, shapes, 0);
-        // return refraction;
+        vec3 refraction = refract(primary_ray, intersection, intersection.shape2D, shapes);
+        return refraction;
        
-       /* vec3 reflection = reflect(ray, intersection.position, intersection.direction, intersection.shape2D, shapes, 0);
+        /*vec3 reflection = reflect(ray, intersection.position, intersection.direction, intersection.shape2D, shapes, 0);
         
         return glm::mix(refraction, reflection, kr);
-    */}
+        */
+    }
 
     // vec3 reflect(const Ray& originalRay, vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape, const std::vector<Shape2D*>& shapes, int depth){
     //     Intersection reflected_intersection; 
@@ -62,8 +62,8 @@ public:
     //     }
     // }
 
-    vec3 refract(const Ray& primary_ray, Intersection intersection, 
-                Shape2D* t_shape, const std::vector<Shape2D*>& shapes){
+    vec3 refract(const Ray& primary_ray, const Intersection intersection, 
+                Shape2D* t_shape, const std::vector<Shape2D*>& shapes) {
 
         int currentdepth = primary_ray.bounces;
         if(currentdepth >= primary_ray.max_bounces)
@@ -74,7 +74,7 @@ public:
         Ray refracted_ray(intersection.position, refracted_dir, currentdepth + 1);
 
         Intersection refracted_intersection;
-        if(refracted_ray.ClosestIntersection(shapes, refracted_intersection)){
+        if(refracted_ray.ClosestIntersection(shapes, refracted_intersection, t_shape)){
             return refracted_intersection.compute_color(refracted_ray, shapes);
         }
         else {

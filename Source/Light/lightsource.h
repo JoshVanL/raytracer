@@ -22,7 +22,7 @@ public:
     LightSource(){
         position    = glm::vec4(0, -0.5, -1.4, 1.0);
         color       = glm::vec3(1,1,1);
-        power       = 10.f;
+        power       = 5.f;
     }
     
 
@@ -51,11 +51,15 @@ public:
 
     bool IsOccluded(Intersection& point, const std::vector<Shape2D*>& shapes){
         Intersection intersect; 
-        vec4 shadow_dir = position - point.position;
-        Ray shadow_ray(position, shadow_dir);
+        // vec4 shadow_dir = position - point.position;
+        // Ray shadow_ray(position, shadow_dir);
+        vec4 shadow_dir = point.position - position;
+        Ray shadow_ray(position + shadow_dir*0.01f, shadow_dir);
         if(shadow_ray.ClosestIntersection(shapes, intersect, intersect.shape2D)){
-            if(intersect.shape2D != point.shape2D)
+            if(intersect.shape2D->name != point.shape2D->name){
+                printf("occluded\n");
                 return true;
+            }
         }
         return false;
     }

@@ -53,21 +53,20 @@ void PrintProgress(double percentage) {
 
 int scount = 0;
 
-void Draw(screen* screen, Camera& camera, LightSource& lightSource, const vector<Shape2D*>& shapes) {
+void Draw(screen* screen, const Camera& camera, LightSource& lightSource, const vector<Shape2D*>& shapes) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
 
     #pragma omp parallel for
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
-
-            camera.setDirection(i, j);
-
+            
+            Ray ray     = camera.createNewRay(i,j);
             Intersection intersection;
-            if(camera.primary_ray.ClosestIntersection(shapes, intersection)){
-                Ray ray = camera.createNewRay(i,j);
-                vec3 color = intersection.compute_color(ray, shapes);
+            if(ray.ClosestIntersection(shapes, intersection)){
+               
+                vec3 flat_color = intersection.compute_color(ray, shapes);
                 vec3 light = lightSource.light_at_position(intersection, shapes);
-                vec3 final_color = color * light;
+                vec3 final_color = flat_color * (light * intersection.shape2D->gloss);
                 PutPixelSDL(screen, i, j, final_color);
             }
         }

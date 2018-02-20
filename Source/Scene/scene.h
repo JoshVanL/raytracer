@@ -76,35 +76,35 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     // Short block
 
-    // A = vec4(290,0,114,1);
-    // B = vec4(130,0, 65,1);
-    // C = vec4(240,0,272,1);
-    // D = vec4( 82,0,225,1);
+    A = vec4(290,0,114,1);
+    B = vec4(130,0, 65,1);
+    C = vec4(240,0,272,1);
+    D = vec4( 82,0,225,1);
 
-    // E = vec4(290,165,114,1);
-    // F = vec4(130,165, 65,1);
-    // G = vec4(240,165,272,1);
-    // H = vec4( 82,165,225,1);
+    E = vec4(290,165,114,1);
+    F = vec4(130,165, 65,1);
+    G = vec4(240,165,272,1);
+    H = vec4( 82,165,225,1);
 
-    // // Front
-    // shapes.push_back( new Triangle(E,B,A,red, someGloss, new Translucent(0.8, 0.6)) );
-    // shapes.push_back( new Triangle(E,F,B,red, someGloss, new Translucent(0.8, 0.6)) );
+    // Front
+    shapes.push_back( new Triangle(E,B,A,red, someGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(E,F,B,red, someGloss, new Translucent(0.8, 0.6)) );
 
-    // // Front
-    // shapes.push_back( new Triangle(F,D,B,red, someGloss, new Translucent(0.8, 0.6)) );
-    // shapes.push_back( new Triangle(F,H,D,red, someGloss, new Translucent(0.8, 0.6)) );
+    // Front
+    shapes.push_back( new Triangle(F,D,B,red, someGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(F,H,D,red, someGloss, new Translucent(0.8, 0.6)) );
 
-    // // BACK
-    // shapes.push_back( new Triangle(H,C,D,red, someGloss, new Translucent(0.8, 0.6)) );
-    // shapes.push_back( new Triangle(H,G,C,red, someGloss, new Translucent(0.8, 0.6)) );
+    // BACK
+    shapes.push_back( new Triangle(H,C,D,red, someGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(H,G,C,red, someGloss, new Translucent(0.8, 0.6)) );
 
-    // // LEFT
-    // shapes.push_back( new Triangle(G,E,C,red, someGloss, new Translucent(0.8, 0.6)) );
-    // shapes.push_back( new Triangle(E,A,C,red, someGloss, new Translucent(0.8, 0.6)) );
+    // LEFT
+    shapes.push_back( new Triangle(G,E,C,red, someGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(E,A,C,red, someGloss, new Translucent(0.8, 0.6)) );
 
-    // // TOP
-    // shapes.push_back( new Triangle(G,F,E,red, superGloss, new Translucent(0.8, 0.6)) );
-    // shapes.push_back( new Triangle(G,H,F,red, superGloss, new Translucent(0.8, 0.6)) );
+    // TOP
+    shapes.push_back( new Triangle(G,F,E,red, superGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(G,H,F,red, superGloss, new Translucent(0.8, 0.6)) );
 
     // ---------------------------------------------------------------------------
     // Tall block
