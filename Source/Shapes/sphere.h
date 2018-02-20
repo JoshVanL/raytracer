@@ -29,6 +29,7 @@ public:
     {   
         name = "Sphere";
     };
+
     Sphere(glm::vec4 &cent, float &r, glm::vec3 col) : 
         center(scalevec4(cent)), radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), 
         Shape2D(col) 
@@ -66,10 +67,10 @@ public:
         intersection = vec4(temp.x, temp.y, temp.z, 1);
         return true;
     }
-    virtual glm::vec3 compute_color() override {
+    virtual glm::vec3 getcolor(Intersection& intersection, Ray& ray, const std::vector<Shape2D*>& shapes)  override {
         vec3 t_color;
         if(material)
-            return material->material_color(this);
+            return material->material_color(intersection, ray, shapes);
         else 
             return color;
     }

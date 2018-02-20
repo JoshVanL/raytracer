@@ -7,6 +7,7 @@ class Keyboard {
 public:
 
     bool LCTRL = false;
+    bool LSHIFT = false;
     Keyboard(){
 
     }
@@ -35,10 +36,17 @@ public:
             runProgram = 0;
             return;
         }
+        else if(key.keysym.sym == SDLK_LSHIFT){
+            LSHIFT = true;
+            runProgram = 0;
+            return;
+        }
         else if(key.keysym.sym == SDLK_UP || key.keysym.sym == SDLK_DOWN || key.keysym.sym == SDLK_LEFT || key.keysym.sym == SDLK_RIGHT){
             if(LCTRL)
                 camera.rotateCamera(key);
-            else
+            else if(LSHIFT)
+                camera.translateCameraVert(key);
+            else 
                 camera.translateCamera(key);
             runProgram = 1;
             return;
@@ -59,6 +67,10 @@ public:
             case SDLK_LCTRL:
                 if(LCTRL)
                     LCTRL = false;
+                break;
+            case SDLK_LSHIFT:
+                if(LSHIFT)
+                    LSHIFT = false;
                 break;
             default:
                 break;

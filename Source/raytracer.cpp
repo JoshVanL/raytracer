@@ -51,8 +51,9 @@ void PrintProgress(double percentage) {
     fflush(stdout);
 }
 
+int scount = 0;
 
-void Draw(screen* screen, Camera& camera, Ray& lightSource, vector<Shape2D*>& shapes) {
+void Draw(screen* screen, Camera& camera, Ray& lightSource, const vector<Shape2D*>& shapes) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
 
     #pragma omp parallel for

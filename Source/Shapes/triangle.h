@@ -51,10 +51,10 @@ public:
         }
         return false;
     }
-    virtual vec3 compute_color() override{
+    virtual glm::vec3 getcolor(Intersection& intersection, Ray& ray, const std::vector<Shape2D*>& shapes) override{
         vec3 t_color;
         if(material){
-            t_color = material->material_color(this);
+            t_color = material->material_color(intersection, ray, shapes);
         }
         else{
             return color;

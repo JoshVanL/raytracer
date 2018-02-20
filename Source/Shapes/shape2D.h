@@ -11,6 +11,7 @@ using glm::vec4;
 
 class Ray;
 class Material;
+class Intersection;
 
 class Shape2D{
 public:
@@ -52,10 +53,12 @@ public:
         v *= 2/L;
         return v;
     }
-    virtual glm::vec3 compute_color() = 0;
+    virtual glm::vec3 getcolor(Intersection& intersection, Ray& ray, const std::vector<Shape2D*>& shapes) = 0;
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;
+
+
     bool operator==(const Shape2D& other) const
     {
         // If the derived types are the same then compare them

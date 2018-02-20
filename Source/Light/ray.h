@@ -23,7 +23,7 @@ public:
             color         = glm::vec3(1,1,1);
             power         = 10.f;
     };
-    bool ClosestIntersection(vec4 dir, std::vector<Shape2D*>& shapes, Intersection &closestIntersection, const Shape2D* exclusion = nullptr) {
+    bool ClosestIntersection(vec4 dir, const std::vector<Shape2D*>& shapes, Intersection &closestIntersection, const Shape2D* exclusion = nullptr) {
         closestIntersection.distance = std::numeric_limits<float>::max();
         bool found = false;
 
@@ -48,7 +48,7 @@ public:
         return found;
     }
 
-    vec3 GetDirectLight(Intersection& point, vector<Shape2D*>& shapes) {
+    vec3 GetDirectLight(Intersection& point, const vector<Shape2D*>& shapes) {
 
         if (IsOccluded(point, shapes)) {
             return vec3(0.0001, 0.0001, 0.0001);
@@ -63,7 +63,7 @@ public:
         float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
         return color * powPerSurface;
     }
-    bool IsOccluded(Intersection& point, vector<Shape2D*>& shapes){
+    bool IsOccluded(Intersection& point, const vector<Shape2D*>& shapes){
         Intersection intersect;
         vec4 dir = point.position - position;
         if(ClosestIntersection(dir, shapes, intersect, intersect.shape2D)){

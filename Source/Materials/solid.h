@@ -2,16 +2,19 @@
 #define SOLID_H
 #include "material.h"
 #include "../Shapes/shape2D.h"
-class Solid : public Material{
+#include "../Light/intersection.h"
 
+class Solid : public Material{
+public:
     Solid(){
 
     };
 
-    virtual glm::vec3 material_color(Shape2D* shape2D) override {
-        return shape2D->color;
+    virtual glm::vec3 material_color(const Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes) override {
+        return intersection.shape2D->color;
     }
-   
+
+ 
 }; 
 
 

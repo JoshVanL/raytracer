@@ -21,7 +21,7 @@ public:
     Intersection(){
 
     };
-    glm::vec3 compute_color(Ray& ray, std::vector<Shape2D*>& shapes);
+    glm::vec3 compute_color(Ray& ray, const std::vector<Shape2D*>& shapes);
 };
 
 
