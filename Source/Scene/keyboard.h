@@ -1,10 +1,10 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 #include "SDL.h"
-#include "../Light/ray.h"
+#include "../Light/lightsource.h"
 
 class Keyboard {
-public:
+public: 
 
     bool LCTRL = false;
     bool LSHIFT = false;
@@ -12,7 +12,7 @@ public:
 
     }
 
-    void translateLight(SDL_KeyboardEvent key, Ray& lightSource){
+    void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
         switch( key.keysym.sym ){
             case SDLK_w:
                 lightSource.position += vec4(0,0,0.2,0);
@@ -30,7 +30,7 @@ public:
     }
 
 
-    void ProcessKeyDown(SDL_KeyboardEvent key, Ray& lightSource, Camera& camera, int& runProgram){
+    void ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& camera, int& runProgram){
         if(key.keysym.sym == SDLK_LCTRL){
             LCTRL = true;
             runProgram = 0;

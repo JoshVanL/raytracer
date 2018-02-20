@@ -48,13 +48,13 @@ public:
         if (0 <= t && 0 <= u && 0 <= v && u + v <= 1) { 
             intersectionpoint = toworldcoordinates(vec4(t,u,v,1));
             return true;
-        }
+        } 
         return false;
     }
-    virtual glm::vec3 getcolor(Intersection& intersection, Ray& primary_ray, const std::vector<Shape2D*>& shapes) override{
+    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes) override{
         vec3 t_color;
         if(material){
-            t_color = material->material_color(intersection, primary_ray, shapes);
+            t_color = material->material_color(intersection, primary_ray, shapes) * gloss;
             return t_color;
         }
         else{

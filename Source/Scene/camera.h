@@ -33,7 +33,7 @@ public:
     Ray primary_ray;
 
     Camera(vec4 pos, float foc, const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
-    :   position(pos), focal_length(foc), rotation(rot), primary_ray(pos, vec4(0,0,1,1), vec3(0,0,0), 0)
+    :   position(pos), focal_length(foc), rotation(rot), primary_ray(pos, rot*vec4(0,0,1,0))
     {
     }
     
@@ -42,16 +42,17 @@ public:
         rotation           = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1));
         position           = vec4(0, 0, 0, 1);
         focal_length       = SCREEN_WIDTH/2;
-        primary_ray.color = vec3(1,1,1);
         primary_ray.position = position;
-        primary_ray.power = 0;
+        primary_ray.direction = vec4(0,0,0,1);
+        primary_ray.bounces = 0;
     }
 
-    vec4 getDirection(int i, int j){
-        return glm::normalize(rotation * vec4(  i - SCREEN_WIDTH/2 - position.x,
+    vec4 setDirection(int i, int j){
+        primary_ray.direction =  glm::normalize(rotation * vec4(  i - SCREEN_WIDTH/2 - position.x,
                                                 j - SCREEN_HEIGHT/2 - position.y,
                                                 focal_length - position.z,
                                                 1));
+        return primary_ray.direction;
     }
 
     void translateCameraVert(SDL_KeyboardEvent key){
@@ -121,7 +122,7 @@ public:
                         (j - SCREEN_HEIGHT/ 2) - position.y, 
                         focal_length - position.z, 1);
 
-        return Ray(position, dir, vec3(1,1,1), 1);
+        return Ray(position, dir, 0);
     }
 
 };

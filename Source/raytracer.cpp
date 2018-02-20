@@ -53,20 +53,22 @@ void PrintProgress(double percentage) {
 
 int scount = 0;
 
-void Draw(screen* screen, Camera& camera, Ray& lightSource, const vector<Shape2D*>& shapes) {
+void Draw(screen* screen, Camera& camera, LightSource& lightSource, const vector<Shape2D*>& shapes) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
 
     #pragma omp parallel for
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
 
-            vec4 dir = camera.getDirection(i, j);
+            camera.setDirection(i, j);
 
             Intersection intersection;
-            if(camera.primary_ray.ClosestIntersection(dir, shapes, intersection)){
+            if(camera.primary_ray.ClosestIntersection(shapes, intersection)){
                 Ray ray = camera.createNewRay(i,j);
                 vec3 color = intersection.compute_color(ray, shapes);
-                // PutPixelSDL(screen, i, j, color);
+                vec3 light = lightSource.light_at_position(intersection, shapes);
+                vec3 final_color = color * light;
+                PutPixelSDL(screen, i, j, final_color);
             }
         }
         PrintProgress(i+1);
@@ -76,7 +78,7 @@ void Draw(screen* screen, Camera& camera, Ray& lightSource, const vector<Shape2D
     fflush(stdout);
 }
 
-void Update(screen* screen, SDL_Event& event, Camera& camera, Ray& lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram){
+void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource& lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram){
     switch(event.type ){
         case SDL_KEYDOWN:
             keyboard.ProcessKeyDown(event.key, lightSource, camera, runProgram);
@@ -96,7 +98,7 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, Ray& lightSource, 
 int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
-    Ray lightSource;
+    LightSource lightSource;
     Camera camera(vec4(0, 0, -2.25, 1), SCREEN_WIDTH/2);
     Keyboard keyboard;
     vector<Shape2D*> shapes;

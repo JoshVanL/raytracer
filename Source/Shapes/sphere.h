@@ -1,6 +1,5 @@
 #ifndef SPHERE_H
 #define SPHERE_H
-#include "SDL.h"
 #include "shape2D.h"
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
@@ -67,10 +66,11 @@ public:
         intersection = vec4(temp.x, temp.y, temp.z, 1);
         return true;
     }
-    virtual glm::vec3 getcolor(Intersection& intersection, Ray& ray, const std::vector<Shape2D*>& shapes)  override {
+    
+    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes)  override {
         vec3 t_color;
         if(material)
-            return material->material_color(intersection, ray, shapes);
+            return material->material_color(intersection, ray, shapes) * gloss;
         else 
             return color;
     }
