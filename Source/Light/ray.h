@@ -17,7 +17,7 @@ class Ray {
 public:
     glm::vec4 position;
     glm::vec4 direction;
-    const int max_bounces = 3;
+    const int max_depth = 3;
     int bounces = 0;
     Ray(glm::vec4 pos, glm::vec4 dir, const int bounces = 0) : 
      position(pos), direction(dir), bounces(bounces){

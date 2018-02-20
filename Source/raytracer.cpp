@@ -20,7 +20,8 @@
 #include "Shapes/cuboid.h"
 #include "Shapes/triangle.h"
 #include "Shapes/sphere.h"
-
+#include "Light/pointlight.h"
+#include "Light/spotlight.h"
 using namespace std; 
 
 using glm::vec3;
@@ -53,7 +54,7 @@ void PrintProgress(double percentage) {
 
 int scount = 0;
 
-void Draw(screen* screen, const Camera& camera, LightSource& lightSource, const vector<Shape2D*>& shapes) {
+void Draw(screen* screen, const Camera& camera, LightSource* lightSource, const vector<Shape2D*>& shapes) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
 
     #pragma omp parallel for
@@ -65,7 +66,7 @@ void Draw(screen* screen, const Camera& camera, LightSource& lightSource, const 
             if(ray.ClosestIntersection(shapes, intersection)){
                
                 vec3 flat_color = intersection.compute_color(ray, shapes);
-                vec3 light = lightSource.light_at_position(intersection, shapes);
+                vec3 light = lightSource->lightAtPosition(intersection, shapes);
                 vec3 final_color = flat_color * (light * intersection.shape2D->gloss);
                 PutPixelSDL(screen, i, j, final_color);
             }
@@ -77,7 +78,7 @@ void Draw(screen* screen, const Camera& camera, LightSource& lightSource, const 
     fflush(stdout);
 }
 
-void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource& lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram){
+void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram){
     switch(event.type ){
         case SDL_KEYDOWN:
             keyboard.ProcessKeyDown(event.key, lightSource, camera, runProgram);
@@ -97,7 +98,7 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource& light
 int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
-    LightSource lightSource;
+    LightSource* spotLight = new SpotLight();
     Camera camera(vec4(0, 0, -2.25, 1), SCREEN_WIDTH/2);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
@@ -106,12 +107,12 @@ int main( int argc, char* argv[] ) {
     SDL_Event event;
     int runProgram = 0;
 
-    Draw(screen, camera, lightSource, shapes);
+    Draw(screen, camera, spotLight, shapes);
     SDL_Renderframe(screen);
 
     while(runProgram != -1){
         while( SDL_PollEvent( &event ) ){
-            Update(screen, event, camera, lightSource, keyboard, shapes, runProgram);
+            Update(screen, event, camera, spotLight, keyboard, shapes, runProgram);
         }
     }
     SDL_SaveImage( screen, "screenshot.bmp" );

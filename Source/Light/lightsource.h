@@ -27,58 +27,14 @@ public:
     }
     
 
-    vec3 light_at_position(Intersection& point, const std::vector<Shape2D*>& shapes){
-        vec3 directlight    = GetDirectLight(point, shapes);
-        vec3 indirectlight  = GetIndirectLight(); 
-        return (directlight + indirectlight);
-    }
+    virtual vec3 lightAtPosition(Intersection& point, const std::vector<Shape2D*>& shapes) = 0;
 
-    vec3 GetDirectLight(Intersection& point, const std::vector<Shape2D*>& shapes) {
+    virtual vec3 getDirectLight(Intersection& point, const std::vector<Shape2D*>& shapes) = 0;
 
-        float dist = glm::distance(position, point.position);
+    virtual vec3 getIndirectLight() = 0;
 
-        vec3 surfaceNormal =  point.shape2D->getnormal(point.position, point.direction);
-        vec3 lightToPoint =   glm::normalize((vec3) point.position - (vec3) position);
+    virtual bool isOccluded(Intersection& point, const std::vector<Shape2D*>& shapes, float& transparency) = 0;
 
-        float dotProduct = glm::dot(surfaceNormal, lightToPoint);
-        float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
-
-
-        float transparency = 1.f;
-        if (IsOccluded(point, shapes, transparency)) {
-            if(transparency == 0.f)
-                return vec3(0.0001, 0.0001, 0.0001);
-            else 
-                return color * powPerSurface * (0.8f/(transparency));
-        }
-
-        return color * powPerSurface;
-    }
-
-
-    bool IsOccluded(Intersection& point, const std::vector<Shape2D*>& shapes, float& transparency){
-        Intersection intersect; 
-        // vec4 shadow_dir = position - point.position;
-        // Ray shadow_ray(position, shadow_dir);
-        vec4 shadow_dir = point.position - position;
-        Ray shadow_ray(position + shadow_dir*0.01f, shadow_dir);
-        if(shadow_ray.ClosestIntersection(shapes, intersect, point.shape2D)){
-            float distA = glm::distance(point.position, position);
-            float distB = glm::distance(intersect.position, position);
-            if(distB < distA){
-                if(intersect.shape2D->material != nullptr)
-                    transparency = intersect.shape2D->material->transparency;
-                else 
-                    transparency = 0.f;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    vec3 GetIndirectLight(){
-        return vec3(0.3,0.2,0.18);
-    }
 };
 
 #endif

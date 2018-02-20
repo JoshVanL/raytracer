@@ -55,7 +55,7 @@ public:
                  Translucent& callerObj) {
 
         int currentdepth = primary_ray.bounces;
-        if(currentdepth >= primary_ray.max_bounces)
+        if(currentdepth >= primary_ray.max_depth)
             return vec3(0,0,0);
 
         vec4 new_dir = (callerObj.*direction_function)(intersection.position, primary_ray.direction,t_shape);

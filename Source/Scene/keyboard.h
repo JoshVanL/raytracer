@@ -12,25 +12,25 @@ public:
 
     }
 
-    void translateLight(SDL_KeyboardEvent key, LightSource& lightSource){
+    void translateLight(SDL_KeyboardEvent key, LightSource* lightSource){
         switch( key.keysym.sym ){
             case SDLK_w:
-                lightSource.position += vec4(0,0,0.2,0);
+                lightSource->position += vec4(0,0,0.2,0);
                 break;
             case SDLK_a :
-                lightSource.position += vec4(-0.2,0,0,0);
+                lightSource->position += vec4(-0.2,0,0,0);
                 break;
             case SDLK_s:
-                lightSource.position += vec4(0,0,-0.2,0);
+                lightSource->position += vec4(0,0,-0.2,0);
                 break;
             case SDLK_d:
-                lightSource.position += vec4(0.2,0,0,0);
+                lightSource->position += vec4(0.2,0,0,0);
                 break;
         }
     }
 
 
-    void ProcessKeyDown(SDL_KeyboardEvent key, LightSource& lightSource, Camera& camera, int& runProgram){
+    void ProcessKeyDown(SDL_KeyboardEvent key, LightSource* lightSource, Camera& camera, int& runProgram){
         if(key.keysym.sym == SDLK_LCTRL){
             LCTRL = true;
             runProgram = 0;
