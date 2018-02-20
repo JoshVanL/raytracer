@@ -12,7 +12,7 @@ class Material {
 public:
 
     Material(){};
-    virtual glm::vec3 material_color(const Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes) = 0;
+    virtual glm::vec3 material_color(const Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes) = 0;
 };
 
 

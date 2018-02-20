@@ -18,10 +18,10 @@ public:
 
     }
  
-    virtual vec3 material_color(const Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes)  override {
+    virtual vec3 material_color(const Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes)  override {
         Shape2D* shape2D = intersection.shape2D;   
 
-        glm::vec3 normal = glm::normalize(shape2D->getnormal(ray.position, intersection.direction));
+        glm::vec3 normal = glm::normalize(shape2D->getnormal(primary_ray.position, intersection.direction));
         glm::vec3 ray_dir = (vec3) glm::normalize(intersection.direction); 
        
         float cosi = glm::dot(normal, ray_dir);
@@ -41,7 +41,7 @@ public:
             float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
             kr = (Rs * Rs + Rp * Rp) / 2;
         }
-        vec3 refraction = refract(ray, intersection.position, intersection.direction, intersection.shape2D, shapes, 0);
+        vec3 refraction = refract(primary_ray, intersection.position, intersection.direction, intersection.shape2D, shapes, 0);
         return refraction;
        
        /* vec3 reflection = reflect(ray, intersection.position, intersection.direction, intersection.shape2D, shapes, 0);
@@ -49,25 +49,50 @@ public:
         return glm::mix(refraction, reflection, kr);
     */}
 
-    vec3 reflect(const Ray& originalRay, vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape, const std::vector<Shape2D*>& shapes, int depth){
-        Intersection reflected_intersection; 
-        vec4 reflected_dir = reflect_direction(ray_orig, ray_dir, t_shape);
-        Ray reflected_ray(ray_orig, vec3(1,1,1), 0);
-        count+=depth;
-        if(reflected_ray.ClosestIntersection(reflected_dir, shapes, reflected_intersection, t_shape)){
-                Ray outgoing_ray(reflected_intersection.position + reflected_dir*0.02f, originalRay.color, originalRay.power);
-                return reflected_intersection.compute_color(outgoing_ray, shapes);
-        } else {
-            return vec3(0,0,0);
+    vec3 color(vec4 position, const Primitive &prim, const Ray &incoming, const Scene &scene, const Light &light) const {
+        if (!incoming.can_bounce()) {
+            return vec3(0, 0, 0);
         }
+
+        vec4 outgoing_dir = this->outgoing_ray_dir(position, prim, incoming);
+        // The number of bounces is reduced due to this interaction.
+        Ray outgoing_ray = Ray(position, outgoing_dir, incoming.bounces_remaining - 1);
+
+        unique_ptr<Intersection> i = scene.closest_intersection(outgoing_ray, &prim);
+        if (i == nullptr) {
+            return vec3(0, 0, 0);
+        }
+
+        return i->primitive.shader->shadowed_color(i->pos, i->primitive, outgoing_ray, scene, light);
     }
 
-    vec3 refract(const Ray& originalRay, vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape, const std::vector<Shape2D*>& shapes, int depth){
-        Intersection refracted_intersection; 
-        vec4 refracted_dir = refract_direction(ray_orig, ray_dir, t_shape, shapes);
-        Ray refracted_ray(ray_orig + refracted_dir * 0.001f, vec3(1,1,1), 0);
-        count+=depth;
-        if(refracted_ray.ClosestIntersection(refracted_dir, shapes, refracted_intersection)){
+
+
+    // vec3 reflect(const Ray& originalRay, vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape, const std::vector<Shape2D*>& shapes, int depth){
+    //     Intersection reflected_intersection; 
+    //     vec4 reflected_dir = reflect_direction(ray_orig, ray_dir, t_shape);
+    //     Ray reflected_ray(ray_orig, vec3(1,1,1), 0);
+    //     count+=depth;
+    //     if(reflected_ray.ClosestIntersection(reflected_dir, shapes, reflected_intersection, t_shape)){
+    //             Ray outgoing_ray(reflected_intersection.position + reflected_dir*0.02f, originalRay.color, originalRay.power);
+    //             return reflected_intersection.compute_color(outgoing_ray, shapes);
+    //     } else {
+    //         return vec3(0,0,0);
+    //     }
+    // }
+
+    vec3 refract(const Ray& primary_ray, Shape2D* t_shape, const std::vector<Shape2D*>& shapes){
+
+     
+ 
+        Intersection refracted_intersection;
+        if(primary_ray.ClosestIntersection(shapes, refracted_intersection)){
+
+            vec4 refracted_dir = refract_direction(primary_ray.position, primary_ray.direction, 
+                                                t_shape);
+            Ray refracted_ray(refracted_intersection.position, refracted_dir, vec3(1,1,1), 0);
+
+            
             if(*(refracted_intersection.shape2D) == (*t_shape) && depth < 1){
                 return refract(originalRay, refracted_intersection.position + refracted_dir*0.02f, ray_dir, t_shape, shapes, depth + 1);
             }
@@ -75,20 +100,23 @@ public:
                 Ray outgoing_ray(refracted_intersection.position + ray_dir*0.02f, originalRay.color, originalRay.power);
                 return refracted_intersection.compute_color(outgoing_ray, shapes);
             }
+
+
+
         }
         else {
             return vec3(0,0,0);
         }
     } 
  
-    vec4 reflect_direction(vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
-        vec4 incident_ray = -ray_dir;
-        vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
-        vec4 normal(temp.x, temp.y, temp.z, 1);
-        return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
-    }
+    // vec4 reflect_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
+    //     vec4 incident_ray = -ray_dir;
+    //     vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
+    //     vec4 normal(temp.x, temp.y, temp.z, 1);
+    //     return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
+    // }
 
-    vec4 refract_direction(vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape, const std::vector<Shape2D*>& shapes){
+    vec4 refract_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
 
         vec3 normal_3d = normalize(t_shape->getnormal(ray_orig, ray_dir));
         vec3 incoming_3d = normalize(vec3(ray_dir));

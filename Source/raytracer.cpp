@@ -64,8 +64,9 @@ void Draw(screen* screen, Camera& camera, Ray& lightSource, const vector<Shape2D
 
             Intersection intersection;
             if(camera.primary_ray.ClosestIntersection(dir, shapes, intersection)){
-                vec3 color = intersection.compute_color(lightSource, shapes);
-                PutPixelSDL(screen, i, j, color);
+                Ray ray = camera.createNewRay(i,j);
+                vec3 color = intersection.compute_color(ray, shapes);
+                // PutPixelSDL(screen, i, j, color);
             }
         }
         PrintProgress(i+1);
