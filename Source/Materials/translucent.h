@@ -6,125 +6,97 @@
 #include "../Shapes/sphere.h"
 #include "../Light/ray.h"
 #include <typeinfo>
+#include <math.h>
+#include <stdio.h>
 using glm::dot;
 using glm::vec3;
 
 class Translucent : public Material{
 public:
-    float transparency, refractive_index;
+    const float refractive_index;
+    const float air_refractive_index;
     int count = 0;
-    Translucent(float transparency, float refractive_index): 
-        transparency(transparency), refractive_index(refractive_index){
 
+    Translucent(const float& transparency = 1.f, const float& refractive_index = 0.6f) : 
+        Material(transparency), refractive_index(refractive_index), air_refractive_index(1.f){
     }
  
     virtual vec3 material_color(const Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes)  override {
-        Shape2D* shape2D = intersection.shape2D;   
-        glm::vec3 normal = glm::normalize(shape2D->getnormal(primary_ray.position, intersection.direction));
-        glm::vec3 ray_dir = (vec3) glm::normalize(intersection.direction); 
+        Shape2D* shape2D            = intersection.shape2D;   
+        glm::vec3 normal            = glm::normalize(shape2D->getnormal(primary_ray.position, primary_ray.direction));
+        glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction); 
        
-        float cosi = glm::dot(normal, ray_dir);
-        float etai = 1, etat = 1.3; //ior. TODO: Change this value for different materials?
-        if (cosi > 0) { std::swap(etai, etat); }
+        float cosi                  = glm::dot(normal, ray_dir);
 
-        float sint = etai / etat * sqrtf(std::max(0.f, 1 - cosi * cosi));
+        float incoming = air_refractive_index;
+        float outgoing = refractive_index;
+
+        if (cosi > 0) { std::swap(incoming, outgoing); }
+        float cos2 = sqrtf(std::max(0.f, 1 - std::pow(cosi, 2.f)));
+        float sint = (incoming / refractive_index) * cos2;
         
-        float kr; 
-        if (sint >= 1) { 
-            kr = 1;
-        }
-        else {
+        float kr = 1;
+
+        if(sint < 1){
             float cost = sqrtf(std::max(0.f, 1 - sint * sint));
             cosi = fabsf(cosi);
-            float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost));
-            float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
+            float Rs = ((outgoing * cosi) - (incoming * cost)) / ((outgoing * cosi) + (incoming * cost));
+            float Rp = ((incoming * cosi) - (outgoing * cost)) / ((incoming * cosi) + (outgoing * cost));
             kr = (Rs * Rs + Rp * Rp) / 2;
         }
-        vec3 refraction = refract(primary_ray, intersection, intersection.shape2D, shapes);
-        return refraction;
-       
-        /*vec3 reflection = reflect(ray, intersection.position, intersection.direction, intersection.shape2D, shapes, 0);
-        
-        return glm::mix(refraction, reflection, kr);
-        */
+        vec3 refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, &Translucent::refract_direction, *(this));
+        vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, &Translucent::reflect_direction, *(this));
+        return glm::mix(refraction, reflection, kr) * transparency;
     }
 
-    // vec3 reflect(const Ray& originalRay, vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape, const std::vector<Shape2D*>& shapes, int depth){
-    //     Intersection reflected_intersection; 
-    //     vec4 reflected_dir = reflect_direction(ray_orig, ray_dir, t_shape);
-    //     Ray reflected_ray(ray_orig, vec3(1,1,1), 0);
-    //     count+=depth;
-    //     if(reflected_ray.ClosestIntersection(reflected_dir, shapes, reflected_intersection, t_shape)){
-    //             Ray outgoing_ray(reflected_intersection.position + reflected_dir*0.02f, originalRay.color, originalRay.power);
-    //             return reflected_intersection.compute_color(outgoing_ray, shapes);
-    //     } else {
-    //         return vec3(0,0,0);
-    //     }
-    // }
-
-    vec3 refract(const Ray& primary_ray, const Intersection intersection, 
-                Shape2D* t_shape, const std::vector<Shape2D*>& shapes) {
+    vec3 recurse_ray(const Ray& primary_ray, const Intersection intersection, 
+                 Shape2D* t_shape, const std::vector<Shape2D*>& shapes, 
+                 vec4 (Translucent::*direction_function)(const vec4, const vec4, Shape2D*),
+                 Translucent& callerObj) {
 
         int currentdepth = primary_ray.bounces;
         if(currentdepth >= primary_ray.max_bounces)
             return vec3(0,0,0);
 
-        vec4 refracted_dir = refract_direction(intersection.position, primary_ray.direction, 
-                t_shape);
-        Ray refracted_ray(intersection.position, refracted_dir, currentdepth + 1);
+        vec4 new_dir = (callerObj.*direction_function)(intersection.position, primary_ray.direction,t_shape);
+        Ray new_ray(intersection.position, new_dir, currentdepth + 1);
 
-        Intersection refracted_intersection;
-        if(refracted_ray.ClosestIntersection(shapes, refracted_intersection, t_shape)){
-            return refracted_intersection.compute_color(refracted_ray, shapes);
+        Intersection new_intersection;
+        if(new_ray.ClosestIntersection(shapes, new_intersection, t_shape)){
+            return new_intersection.compute_color(new_ray, shapes);
         }
         else {
             return vec3(0,0,0);
         }
     } 
  
-    // vec4 reflect_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
-    //     vec4 incident_ray = -ray_dir;
-    //     vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
-    //     vec4 normal(temp.x, temp.y, temp.z, 1);
-    //     return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
-    // }
+    vec4 reflect_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
+        vec4 incident_ray = -ray_dir;
+        vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
+        vec4 normal(temp.x, temp.y, temp.z, 1);
+        return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
+    }
 
     vec4 refract_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
 
         vec3 normal_3d = normalize(t_shape->getnormal(ray_orig, ray_dir));
         vec3 incoming_3d = normalize(vec3(ray_dir));
   
-        // cos(theta_1) = -(N . i)
         float a = -dot(normal_3d, incoming_3d); 
 
-        // According to Wikipedia, if dot product is negative, flip normal and recalculate.
-        // This captures when the light is going out of the glass (when angle
-        // between normal and refracted ray is larger than 90).
         if (a < 0) {
             normal_3d = -normal_3d;
             a = -dot(normal_3d, incoming_3d);
         }
-
-        // 1 - cos(Θ)^2
         float b = 1 - a * a;
-        // r^2 * (1 - cos(Θ)^2)
         float c = refractive_index * refractive_index * b;
-        // sqrt(1 - r^2 * (1 - cos(Θ)^2))
         float d = sqrt(1 - c);
-        // r * cos(Θ)
         float e = refractive_index * a;
-        // N * ((r * cos(Θ)) - (sqrt(1 - r^2 * (1 - cos(Θ)^2))))
         vec3 f = (e - d) * normal_3d;
-        // rI + N * ((r * cos(Θ)) - (sqrt(1 - r^2 * (1 - cos(Θ)^2))))
         vec3 g = refractive_index * incoming_3d + f;
     
         return vec4(g.x,g.y,g.z,1);
     }
-    
-    //this->s1->color(intersection.position, , incoming, scene, light);
-
-   //this->s2->color(intersection.position, prim, incoming, scene, light);
-
 
 };
 

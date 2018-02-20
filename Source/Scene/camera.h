@@ -60,7 +60,7 @@ public:
                 break;
             case SDLK_UP:
                 primary_ray.position += rotation*vec4(0,-0.3f,0,0);
-                position += rotation*vec4(0,0,-0.3f,0);
+                position += rotation*vec4(0,-0.3f,0,0);
                 break;
             case SDLK_RIGHT :
                 primary_ray.position += rotation*vec4(0.5f,0,0,0);

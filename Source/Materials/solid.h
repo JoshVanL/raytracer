@@ -6,7 +6,7 @@
 
 class Solid : public Material{
 public:
-    Solid(){
+    Solid(): Material(0.f){
 
     };
 

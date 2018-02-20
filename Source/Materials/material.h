@@ -10,8 +10,10 @@ using glm::vec3;
 
 class Material {
 public:
+    const float transparency;
+    Material(const float& trans = 0.f) : transparency(trans){
 
-    Material(){};
+    };
     virtual glm::vec3 material_color(const Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes) = 0;
 };
 

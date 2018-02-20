@@ -87,24 +87,24 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     H = vec4( 82,165,225,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,red, someGloss, new Translucent(0.8, 0.6)) );
-    shapes.push_back( new Triangle(E,F,B,red, someGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(E,B,A,red, someGloss, new Translucent() ));
+    shapes.push_back( new Triangle(E,F,B,red, someGloss, new Translucent() ));
 
     // Front
-    shapes.push_back( new Triangle(F,D,B,red, someGloss, new Translucent(0.8, 0.6)) );
-    shapes.push_back( new Triangle(F,H,D,red, someGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(F,D,B,red, someGloss, new Translucent() ));
+    shapes.push_back( new Triangle(F,H,D,red, someGloss, new Translucent() ));
 
     // BACK
-    shapes.push_back( new Triangle(H,C,D,red, someGloss, new Translucent(0.8, 0.6)) );
-    shapes.push_back( new Triangle(H,G,C,red, someGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(H,C,D,red, someGloss, new Translucent()));
+    shapes.push_back( new Triangle(H,G,C,red, someGloss, new Translucent()));
 
     // LEFT
-    shapes.push_back( new Triangle(G,E,C,red, someGloss, new Translucent(0.8, 0.6)) );
-    shapes.push_back( new Triangle(E,A,C,red, someGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(G,E,C,red, someGloss, new Translucent()));
+    shapes.push_back( new Triangle(E,A,C,red, someGloss, new Translucent()));
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,red, superGloss, new Translucent(0.8, 0.6)) );
-    shapes.push_back( new Triangle(G,H,F,red, superGloss, new Translucent(0.8, 0.6)) );
+    shapes.push_back( new Triangle(G,F,E,red, superGloss, new Translucent()));
+    shapes.push_back( new Triangle(G,H,F,red, superGloss, new Translucent()));
 
     // ---------------------------------------------------------------------------
     // Tall block
@@ -146,7 +146,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // A = vec4(320, 300, 200, 1);
     // vec3 emptyv3 =  vec3(0,0,0);
     // vec3 ggg = vec3(1,1,1);
-    // shapes.push_back( new Sphere( A, radius, blue, ggg, new Translucent(0.8, 0.6)));
+    // shapes.push_back( new Sphere( A, radius, blue, ggg, new Translucent(1, 0.6)));
 
 }
 
