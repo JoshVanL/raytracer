@@ -37,6 +37,7 @@ using glm::mat4;
 #define FULLSCREEN_MODE false
 #define INDIRECT_LIGHT  vec3(0.3,0.2,0.18)
 #define ANG 0.1
+#define NUM_THREADS 16
 
 bool LCTRL = false;
 
@@ -50,6 +51,8 @@ int scount = 0;
 
 void Draw(screen* screen, const Camera& camera, LightSource* lightSource, const vector<Shape2D*>& shapes, KDNode& tree) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
+
+    omp_set_num_threads(NUM_THREADS);
 
     #pragma omp parallel for
     for(int i=0; i<SCREEN_WIDTH; i++) {
