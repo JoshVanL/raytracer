@@ -77,7 +77,12 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* light
         case SDL_KEYDOWN:
             keyboard.ProcessKeyDown(event.key, lightSource, camera, runProgram);
             if(runProgram == 1){
+                auto started = std::chrono::high_resolution_clock::now();
                 Draw(screen, camera, lightSource, shapes, tree);
+                auto done = std::chrono::high_resolution_clock::now();
+                cout << "Render time: ";
+                cout << chrono::duration_cast<chrono::milliseconds>(done-started).count();
+                cout << " ms \n";
                 SDL_Renderframe(screen);
             }
             break;
