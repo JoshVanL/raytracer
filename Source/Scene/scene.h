@@ -41,16 +41,16 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     // Room
 
-    float L = 555;			// Length of Cornell Box side.
+    float L = 1000;			// Length of Cornell Box side.
 
-    vec4 A(L,0,0,1);
+    vec4 A(2.f*L,0,0,1);
     vec4 B(0,0,0,1);
-    vec4 C(L,0,L,1);
+    vec4 C(2.f*L,0,L,1);
     vec4 D(0,0,L,1);
 
-    vec4 E(L,L,0,1);
+    vec4 E(2.f*L,L,0,1);
     vec4 F(0,L,0,1);
-    vec4 G(L,L,L,1);
+    vec4 G(2.f*L,L,L,1);
     vec4 H(0,L,L,1);
 
     // Floor:

@@ -12,6 +12,7 @@ using glm::mat3;
 class Triangle : public Shape2D
 {
 public:
+    Shape3D* shape3D = nullptr; 
     glm::vec4 v0;
     glm::vec4 v1;
     glm::vec4 v2;
@@ -22,7 +23,6 @@ public:
         :   Shape2D(color, gloss, mat), 
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
-         name = "Triangle";
     }
 
     Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, 
@@ -30,7 +30,6 @@ public:
         :   Shape2D(color, gloss), 
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
-         name = "Triangle";
     }
 
     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {

@@ -49,6 +49,7 @@ public:
         return glm::mix(refraction, reflection, kr) * transparency;
     }
 
+    //Returns the color of final ray intersection point
     vec3 recurse_ray(const Ray& primary_ray, const Intersection intersection, 
                  Shape2D* t_shape, const std::vector<Shape2D*>& shapes, 
                  vec4 (Translucent::*direction_function)(const vec4, const vec4, Shape2D*),

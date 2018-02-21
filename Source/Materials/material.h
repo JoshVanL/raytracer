@@ -15,6 +15,7 @@ public:
 
     };
     virtual glm::vec3 material_color(const Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes) = 0;
+    
 };
 
 

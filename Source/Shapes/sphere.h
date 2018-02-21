@@ -26,14 +26,12 @@ public:
         glm::vec3 gloss,
         Material* material) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(col, gloss, material)
     {   
-        name = "Sphere";
     };
 
     Sphere(glm::vec4 &cent, float &r, glm::vec3 col) : 
         center(scalevec4(cent)), radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), 
         Shape2D(col) 
     {
-        name = "Sphere";
     };
 
     virtual bool intersect(Ray &ray, vec3 dir, vec4& intersection) override

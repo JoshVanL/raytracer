@@ -12,25 +12,25 @@ using glm::vec4;
 class Ray;
 class Material;
 class Intersection;
+class Shape3D;
 
 class Shape2D{
 public:
-    const float L = 555;// Length of Cornell Box side.
+    const float L = 1000;// Length of Cornell Box side.
 
     vec3    color;
     vec3    gloss;
     Material* material = nullptr;
-    std::string name;
-
-    Shape2D(vec3 color, vec3 gloss, Material* material): 
+    Shape3D* shape3D = nullptr;
+    Shape2D(vec3 color, vec3 gloss, Material* material, Shape3D* shape3D = nullptr): 
         color(color), gloss(gloss), material(material){
     };
 
-    Shape2D(vec3 color) : color(color), gloss(vec3(1,1,1)){
+    Shape2D(vec3 color, vec3 gloss, Shape3D* shape3D = nullptr) : color(color), gloss(gloss), shape3D(shape3D) {
 
     };
 
-    Shape2D(vec3 color, vec3 gloss) : color(color), gloss(gloss) {
+    Shape2D(vec3 color, Shape3D* shape3D = nullptr) : color(color), gloss(vec3(1,1,1)), shape3D(shape3D){
 
     };
 

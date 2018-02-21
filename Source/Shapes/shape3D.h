@@ -1,12 +1,12 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
+#include <stdio.h>
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/normal.hpp>
-//////////////////////////////////////// 
-// UNUSED
-////////////////////////////////////////
+#include "shape2D.h"
 
 using glm::vec3;
 using glm::vec4;
@@ -28,20 +28,19 @@ using glm::vec4;
 class Shape3D {
 public:
   
-    glm::vec3 center, surfaceColor, emissionColor;
-    float transparency, reflection; 
+    const std::vector<Shape2D*> faces;
+    const std::string identifier;
+    Shape3D(std::vector<Shape2D*>& faces, std::string id): faces(faces), identifier(id){
 
-    Shape3D(glm::vec3 centre, glm::vec3 surfaceColor, glm::vec3 emissionColor,float transparency,float reflection):
-        center(center), surfaceColor(surfaceColor), emissionColor(emissionColor), transparency(transparency), reflection(reflection) {
     };
 
-    virtual ~Shape3D() = 0;
-    
+
     static float mix(const float &a, const float &b, const float &mix) 
     { 
         return b * mix + a * (1 - mix); 
     };
 
+    virtual ~Shape3D() = 0;
 };
 
 Shape3D::~Shape3D(){}
