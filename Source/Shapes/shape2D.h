@@ -58,6 +58,15 @@ public:
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;
 
+    virtual vec3 minPosition() {
+        return vec3();
+    };
+    virtual vec3 maxPosition() {
+        return vec3();
+    };
+    virtual vec3 midpoint() {
+        return vec3();
+    };
 
     bool operator==(const Shape2D& other) const
     {

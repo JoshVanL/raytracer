@@ -83,6 +83,18 @@ public:
     virtual glm::vec4 toworldcoordinates(vec4 cam_intersect) override{
         return cam_intersect;
     }
+
+    virtual vec3 minPosition() override {
+        return vec3{center.x - radius, center.y - radius, center.z - radius};
+    }
+    virtual vec3 maxPosition() override {
+        return vec3{center.x + radius, center.y + radius, center.z + radius};
+    }
+    virtual vec3 midpoint() override {
+        return vec3{center.x, center.y, center.z};
+    }
+
+
 private:
     virtual bool isEqual(const Shape2D& other) const override {
         Sphere othersphere = static_cast<const Sphere&>(other);
