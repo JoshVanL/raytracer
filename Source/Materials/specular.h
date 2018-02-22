@@ -9,7 +9,10 @@ using glm::vec3;
 
 class Specular : public Material {
 
+public:
+    Specular():Material(0.3f){
 
+    }
     virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) override {
         float transp = transparency;
         if(lightSource.isOccluded(intersection, shapes, transp)){

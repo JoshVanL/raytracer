@@ -11,6 +11,7 @@
 #include "../Materials/solid.h"
 #include "../Materials/translucent.h"
 #include "../Materials/reflective.h"
+#include "../Materials/specular.h"
 // Used to describe a triangular surface:
 
 
@@ -122,7 +123,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     H = vec4(314,330,456,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,blue, highGloss) );
+    shapes.push_back( new Triangle(E,B,A,blue, highGloss, new Specular()) );
     shapes.push_back( new Triangle(E,F,B,blue, highGloss) );
 
     // Front
