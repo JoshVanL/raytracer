@@ -89,24 +89,24 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     H = vec4( 82,165,225,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,red, someGloss ));
-    shapes.push_back( new Triangle(E,F,B,red, someGloss ));
+    shapes.push_back( new Triangle(E,B,A,red, normalGloss ));
+    shapes.push_back( new Triangle(E,F,B,red, normalGloss ));
 
     // Front
     shapes.push_back( new Triangle(F,D,B,red, someGloss ));
     shapes.push_back( new Triangle(F,H,D,red, someGloss ));
 
     // BACK
-    shapes.push_back( new Triangle(H,C,D,red, someGloss));
-    shapes.push_back( new Triangle(H,G,C,red, someGloss));
+    shapes.push_back( new Triangle(H,C,D,red, normalGloss));
+    shapes.push_back( new Triangle(H,G,C,red, normalGloss));
 
     // LEFT
     shapes.push_back( new Triangle(G,E,C,red, someGloss));
     shapes.push_back( new Triangle(E,A,C,red, someGloss));
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,red, superGloss));
-    shapes.push_back( new Triangle(G,H,F,red, superGloss));
+    shapes.push_back( new Triangle(G,F,E,red, normalGloss));
+    shapes.push_back( new Triangle(G,H,F,red, normalGloss));
 
     // ---------------------------------------------------------------------------
     // Tall block
@@ -126,8 +126,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle(E,F,B,blue, highGloss) );
 
     // Front
-    shapes.push_back( new Triangle(F,D,B,blue, highGloss) );
-    shapes.push_back( new Triangle(F,H,D,blue, highGloss) );
+    shapes.push_back( new Triangle(F,D,B,blue, someGloss) );
+    shapes.push_back( new Triangle(F,H,D,blue, someGloss) );
 
     // BACK
     shapes.push_back( new Triangle(H,C,D,blue, highGloss) );
@@ -138,18 +138,17 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle(E,A,C,blue, highGloss) );
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,blue, superGloss) );
-    shapes.push_back( new Triangle(G,H,F,blue, superGloss) );
+    shapes.push_back( new Triangle(G,F,E,blue, normalGloss) );
+    shapes.push_back( new Triangle(G,H,F,blue, normalGloss) );
 
     // ---------------------------------------------------------------------------
     // Sphere
-    // float radius = 100;
-    // float empty = 0;
-    // A = vec4(320, 300, 200, 1);
-    // vec3 emptyv3 =  vec3(0,0,0);
-    // vec3 ggg = vec3(1,1,1);
-    // shapes.push_back( new Sphere( A, radius, blue, ggg, new Translucent(1, 0.6)));
-
+    float radius = 100;
+    float empty = 0;
+    A = vec4(320, 300, 200, 1);
+    vec3 emptyv3 =  vec3(0,0,0);
+    vec3 ggg = vec3(1,1,1);
+    shapes.push_back( new Sphere( A, radius, blue, ggg, new Reflective()));
 }
 void LoadTestModel2( std::vector<Shape2D*>& shapes )
 {

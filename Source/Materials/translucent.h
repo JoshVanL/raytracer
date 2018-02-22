@@ -21,7 +21,7 @@ public:
         Material(transparency), refractive_index(refractive_index), air_refractive_index(1.f){
     }
  
-    virtual vec3 material_color(const Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes)  override {
+    virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource)  override {
         Shape2D* shape2D            = intersection.shape2D;   
         glm::vec3 normal            = glm::normalize(shape2D->getnormal(primary_ray.position, primary_ray.direction));
         glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction); 
@@ -44,14 +44,15 @@ public:
             float Rp = ((incoming * cosi) - (outgoing * cost)) / ((incoming * cosi) + (outgoing * cost));
             kr = (Rs * Rs + Rp * Rp) / 2;
         }
-        vec3 refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, &Translucent::refract_direction, *(this));
-        vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, &Translucent::reflect_direction, *(this));
+        vec3 refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this));
+        vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this));
         return glm::mix(refraction, reflection, kr) * transparency;
     }
 
     //Returns the color of final ray intersection point
-    vec3 recurse_ray(const Ray& primary_ray, const Intersection intersection, 
+    vec3 recurse_ray(const Ray& primary_ray, Intersection intersection, 
                  Shape2D* t_shape, const std::vector<Shape2D*>& shapes, 
+                 LightSource& lightSource,
                  vec4 (Translucent::*direction_function)(const vec4, const vec4, Shape2D*),
                  Translucent& callerObj) {
 
@@ -64,7 +65,7 @@ public:
 
         Intersection new_intersection;
         if(new_ray.ClosestIntersection(shapes, new_intersection, t_shape)){
-            return new_intersection.compute_color(new_ray, shapes);
+            return new_intersection.shape2D->getcolor(new_intersection, new_ray, shapes, lightSource);
         }
         else {
             return vec3(0,0,0);

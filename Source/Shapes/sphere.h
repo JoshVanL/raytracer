@@ -3,6 +3,7 @@
 #include "shape2D.h"
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
+#include "../Materials/solid.h"
 #include <vector>
 
 #define MAX_RAY_DEPTH_ 5
@@ -24,13 +25,13 @@ public:
         glm::vec4 &cent, float r,
         glm::vec3 col,
         glm::vec3 gloss,
-        Material* material) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(col, gloss, material)
+        Material* material = new Solid()) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(col, gloss, material)
     {   
     };
 
     Sphere(glm::vec4 &cent, float &r, glm::vec3 col) : 
         center(scalevec4(cent)), radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), 
-        Shape2D(col) 
+        Shape2D(col, new Solid())
     {
     };
 
@@ -65,12 +66,13 @@ public:
         return true;
     }
     
-    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes)  override {
+    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource)  override {
         vec3 t_color;
         if(material)
-            return material->material_color(intersection, ray, shapes) * gloss;
-        else 
+            return material->material_color(intersection, ray, shapes, lightSource) * gloss;
+        else {
             return color;
+        }
     }
     virtual glm::vec3 getnormal(vec4 start, vec4 dir) override {
         glm::vec4 intersectpoint;

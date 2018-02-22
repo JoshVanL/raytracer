@@ -63,10 +63,8 @@ void Draw(screen* screen, const Camera& camera, LightSource* lightSource, const 
             intersection.distance = std::numeric_limits<float>::max();
 
             if(tree.hit(ray, intersection)) {
-                vec3 flat_color = intersection.compute_color(ray, shapes);
-                vec3 light = lightSource->lightAtPosition(intersection, shapes);
-                vec3 final_color = flat_color * (light * intersection.shape2D->gloss);
-                PutPixelSDL(screen, i, j, final_color);
+                vec3 color = intersection.shape2D->getcolor(intersection, ray, shapes, *lightSource);
+                PutPixelSDL(screen, i, j, color);
             }
         }
     }

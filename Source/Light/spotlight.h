@@ -2,7 +2,7 @@
 #define SPOTLIGHT_H
 
 #include "lightsource.h"
-
+#include "ray.h"
 
 using glm::vec4;
 using glm::vec3;

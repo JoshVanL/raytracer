@@ -13,6 +13,7 @@ class Ray;
 class Material;
 class Intersection;
 class Shape3D;
+class LightSource;
 
 class Shape2D{
 public:
@@ -31,6 +32,9 @@ public:
     };
 
     Shape2D(vec3 color, Shape3D* shape3D = nullptr) : color(color), gloss(vec3(1,1,1)), shape3D(shape3D){
+
+    };
+    Shape2D(vec3 color, Material* material, Shape3D* shape3D = nullptr) : material(material), color(color), gloss(vec3(1,1,1)), shape3D(shape3D){
 
     };
 
@@ -53,7 +57,7 @@ public:
         v *= 2/L;
         return v;
     }
-    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes) = 0;
+    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) = 0;
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;

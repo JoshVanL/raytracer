@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include "shape2D.h"
+#include "../Materials/solid.h"
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
 using glm::vec3;
@@ -27,7 +28,7 @@ public:
 
     Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, 
              glm::vec3 color, glm::vec3 gloss)
-        :   Shape2D(color, gloss), 
+        :   Shape2D(color, gloss, new Solid()), 
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
     }
@@ -50,10 +51,10 @@ public:
         } 
         return false;
     }
-    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes) override{
+    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) override{
         vec3 t_color;
         if(material != nullptr){
-            t_color = material->material_color(intersection, primary_ray, shapes) * gloss;
+            t_color = material->material_color(intersection, primary_ray, shapes, lightSource) * gloss;
             return t_color;
         }
         else{
