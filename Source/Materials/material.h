@@ -15,7 +15,15 @@ public:
 
     };
     virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) = 0;
-    
+ 
+    vec4 reflect_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
+        vec4 incident_ray = -ray_dir;
+        vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
+        vec4 normal(temp.x, temp.y, temp.z, 1);
+        return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
+    }
+
+
 };
 
 

@@ -71,14 +71,7 @@ public:
             return vec3(0,0,0);
         }
     } 
- 
-    vec4 reflect_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
-        vec4 incident_ray = -ray_dir;
-        vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
-        vec4 normal(temp.x, temp.y, temp.z, 1);
-        return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
-    }
-
+  
     vec4 refract_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
 
         vec3 normal_3d = normalize(t_shape->getnormal(ray_orig, ray_dir));
@@ -99,6 +92,8 @@ public:
     
         return vec4(g.x,g.y,g.z,1);
     }
+
+    
 
 };
 
