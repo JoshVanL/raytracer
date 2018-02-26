@@ -1,16 +1,18 @@
-FILE=raytracer
+RAY=raytracer
+RAS=rasterizer
 
 ########
 #   Directories
-S_DIR=Source
-B_DIR=Build
-GLMDIR=../glm/
+S_DIR=source
+B_DIR=build
+GLMDIR=$(S_DIR)/glm
 ########
 #   Output
-EXEC=$(B_DIR)/$(FILE)
+RAYEXEC=$(B_DIR)/$(RAY)
+RASEXEC=$(B_DIR)/$(RAS)
 
 # default build settings
-CC_OPTS=-c -fopenmp -std=c++11 -pipe -Wno-switch -ggdb -g3 
+CC_OPTS=-fopenmp -std=c++11 -c -pipe -Wno-switch -ggdb -g3
 LN_OPTS=
 CC=g++
 
@@ -20,28 +22,26 @@ SDL_CFLAGS := $(shell sdl2-config --cflags)
 GLM_CFLAGS := -I$(GLMDIR)
 SDL_LDFLAGS := $(shell sdl2-config --libs)
 
-########
-#   This is the default action
-all:Build
+RAYOBJ = $(B_DIR)/$(RAY).o
+RASOBJ = $(B_DIR)/$(RAS).o
 
+help:
+	# all       - build raytracer and rasterizer
+	# build_ray - build raytracer
+	# build_ras - build rasterizer
+	# clean     - clean build
 
-########
-#   Object list
-#
-OBJ = $(B_DIR)/$(FILE).o
+all: build_ray build_ras
 
+build: all
 
-########
-#   Objects
-$(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp   $(S_DIR)/Light/intersection.cpp $(S_DIR)/Scene/SDLauxiliary.h $(S_DIR)/Scene/scene.h
-	$(CC) $(CC_OPTS) -o $(B_DIR)/$(FILE).o $(S_DIR)/$(FILE).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
+build_ray:
+	$(CC) $(CC_OPTS) -o $(B_DIR)/$(RAY).o $(S_DIR)/$(RAY).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
+	$(CC) $(LN_OPTS) -fopenmp -o $(RAYEXEC) $(RAYOBJ) $(SDL_LDFLAGS)
 
-
-########
-#   Main build rule
-Build : $(OBJ) Makefile
-	$(CC) -fopenmp -fopenmp -std=c++11 -o $(EXEC) $(OBJ) $(LN_OPTS) $(S_DIR)/Light/intersection.cpp  `sdl2-config --cflags --libs`
-
+build_ras:
+	$(CC) $(CC_OPTS) -o $(B_DIR)/$(RAS).o $(S_DIR)/$(RAS).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
+	$(CC) $(LN_OPTS) -fopenmp -o $(RASEXEC) $(RASOBJ) $(SDL_LDFLAGS)
 
 clean:
 	rm -f $(B_DIR)/*

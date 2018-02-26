@@ -1,2 +1,0 @@
-g++ -c -fopenmp -std=c++0x -pipe -Wno-switch -ggdb -g3 Source/raytracer.cpp Source/camera.cpp Source/ray.h Source/SDLauxiliary.h Source/shape.h `sdl2-config --cflags --libs`
-g++ -fopenmp -std=c++0x -pipe -Wno-switch -ggdb -g3 -o raytracer raytracer.o `sdl2-config --cflags --libs`
