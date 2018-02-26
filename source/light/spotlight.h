@@ -89,7 +89,7 @@ public:
     }
 
     virtual vec3 getIndirectLight() override {
-        return vec3(0.3,0.2,0.18);
+        return vec3(0.4,0.3,0.28);
     }
 
 };

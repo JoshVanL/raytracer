@@ -26,10 +26,10 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
 
     // Defines colors:
     vec3 red(    0.75f, 0.15f, 0.15f );
-    vec3 yellow( 0.75f, 0.75f, 0.15f );
+    vec3 yellow( 1, 1, 0.15f );
     vec3 green(  0.15f, 0.75f, 0.15f );
     vec3 cyan(   0.15f, 0.75f, 0.75f );
-    vec3 blue(   0.15f, 0.15f, 0.75f );
+    vec3 blue(   0.10f, 0.10f, 0.70f );
     vec3 purple( 0.75f, 0.15f, 0.75f );
     vec3 white(  0.75f, 0.75f, 0.75f );
 
@@ -46,14 +46,14 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
 
     float L = 1000;			// Length of Cornell Box side.
 
-    vec4 A(2.f*L,0,0,1);
+    vec4 A(L,0,0,1);
     vec4 B(0,0,0,1);
-    vec4 C(2.f*L,0,L,1);
+    vec4 C(L,0,L,1);
     vec4 D(0,0,L,1);
 
-    vec4 E(2.f*L,L,0,1);
+    vec4 E(L,L,0,1);
     vec4 F(0,L,0,1);
-    vec4 G(2.f*L,L,L,1);
+    vec4 G(L,L,L,1);
     vec4 H(0,L,L,1);
 
     // Floor:
@@ -65,8 +65,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( C, E, G, purple, highGloss ) );
 
     // Right wall
-    shapes.push_back( new Triangle( F, B, D, yellow, lowGloss ) );
-    shapes.push_back( new Triangle( H, F, D, yellow, lowGloss ) );
+    shapes.push_back( new Triangle( F, B, D, yellow, someGloss ) );
+    shapes.push_back( new Triangle( H, F, D, yellow, someGloss ) );
 
     // Ceiling
     shapes.push_back( new Triangle( E, F, G, cyan , normalGloss) );
@@ -149,7 +149,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     A = vec4(320, 300, 200, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     vec3 ggg = vec3(1,1,1);
-    shapes.push_back( new Sphere( A, radius, blue, ggg, new Reflective()));
+    //shapes.push_back( new Sphere( A, radius, blue, ggg, new Reflective()));
 }
 void LoadTestModel2( std::vector<Shape2D*>& shapes )
 {
@@ -176,22 +176,22 @@ void LoadTestModel2( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     // Room
 
-    float L = 1000;			// Length of Cornell Box side.
+    float L = 500;			// Length of Cornell Box side.
 
-    vec4 A(2.f*L,0,0,1);
+    vec4 A(L,0,0,1);
     vec4 B(0,0,0,1);
-    vec4 C(2.f*L,0,L,1);
+    vec4 C(L,0,L,1);
     vec4 D(0,0,L,1);
 
-    vec4 E(2.f*L,L,0,1);
+    vec4 E(L,L,0,1);
     vec4 F(0,L,0,1);
-    vec4 G(2.f*L,L,L,1);
+    vec4 G(L,L,L,1);
     vec4 H(0,L,L,1);
 
-    vec4 I(L/3,L/2,L/2,1);
-    vec4 J(L/3,0,L/2,1);
-    vec4 K(L/4,L/2,L/2,1);
-    vec4 M(L/4,0,L/2,1);
+    vec4 I(L,L,L,1);
+    vec4 J(L,0,L,1);
+    vec4 K(L,L,L,1);
+    vec4 M(L,0,L,1);
 
     // // Floor:
     shapes.push_back( new Triangle( C, B, A, green , highGloss ) );
@@ -245,8 +245,8 @@ void LoadTestModel2( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle(E,A,C,red, someGloss));
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,red, superGloss));
-    shapes.push_back( new Triangle(G,H,F,red, superGloss));
+    shapes.push_back( new Triangle(G,F,E,red, someGloss));
+    shapes.push_back( new Triangle(G,H,F,red, someGloss));
 
     // ---------------------------------------------------------------------------
     // Tall block
@@ -262,24 +262,24 @@ void LoadTestModel2( std::vector<Shape2D*>& shapes )
     H = vec4(314,330,456,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,blue, highGloss) );
-    shapes.push_back( new Triangle(E,F,B,blue, highGloss) );
+    shapes.push_back( new Triangle(E,B,A,blue, someGloss) );
+    shapes.push_back( new Triangle(E,F,B,blue, someGloss) );
 
     // Front
-    shapes.push_back( new Triangle(F,D,B,blue, highGloss) );
-    shapes.push_back( new Triangle(F,H,D,blue, highGloss) );
+    shapes.push_back( new Triangle(F,D,B,blue, someGloss) );
+    shapes.push_back( new Triangle(F,H,D,blue, someGloss) );
 
     // BACK
-    shapes.push_back( new Triangle(H,C,D,blue, highGloss) );
-    shapes.push_back( new Triangle(H,G,C,blue, highGloss) );
+    shapes.push_back( new Triangle(H,C,D,blue, someGloss) );
+    shapes.push_back( new Triangle(H,G,C,blue, someGloss) );
 
     // LEFT
-    shapes.push_back( new Triangle(G,E,C,blue, highGloss) );
-    shapes.push_back( new Triangle(E,A,C,blue, highGloss) );
+    shapes.push_back( new Triangle(G,E,C,blue, someGloss) );
+    shapes.push_back( new Triangle(E,A,C,blue, someGloss) );
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,blue, superGloss) );
-    shapes.push_back( new Triangle(G,H,F,blue, superGloss) );
+    shapes.push_back( new Triangle(G,F,E,blue, someGloss) );
+    shapes.push_back( new Triangle(G,H,F,blue, someGloss) );
 
     // ---------------------------------------------------------------------------
     // Sphere

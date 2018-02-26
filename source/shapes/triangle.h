@@ -103,6 +103,14 @@ public:
         return point;
     }
 
+    vector<vec4> verticies() override {
+        vector<vec4> verts(3);
+        verts[0] = v0;
+        verts[1] = v1;
+        verts[2] = v2;
+
+        return verts;
+    }
 
 private:
     virtual bool isEqual(const Shape2D& other) const override {

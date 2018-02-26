@@ -33,8 +33,8 @@ using glm::mat3;
 using glm::vec4;
 using glm::mat4;
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 256
+#define SCREEN_WIDTH 600
+#define SCREEN_HEIGHT 600
 #define FULLSCREEN_MODE false
 #define INDIRECT_LIGHT  vec3(0.3,0.2,0.18)
 #define ANG 0.1

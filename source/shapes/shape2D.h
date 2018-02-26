@@ -73,6 +73,10 @@ public:
         return vec3();
     };
 
+    virtual std::vector<vec4> verticies() {
+        return std::vector<vec4>();
+    }
+
     bool operator==(const Shape2D& other) const
     {
         // If the derived types are the same then compare them
