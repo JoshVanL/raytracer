@@ -11,6 +11,7 @@
 #include "../Materials/solid.h"
 #include "../Materials/translucent.h"
 #include "../Materials/reflective.h"
+#include "../Materials/diffuse.h"
 // Used to describe a triangular surface:
 
 
@@ -56,8 +57,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 H(0,L,L,1);
 
     // Floor:
-    shapes.push_back( new Triangle( C, B, A, green , moreGloss) );
-    shapes.push_back( new Triangle( C, D, B, green , moreGloss) );
+    shapes.push_back( new Triangle( C, B, A, green , moreGloss));
+    shapes.push_back( new Triangle( C, D, B, green , moreGloss ));
 
     // Left wall
     shapes.push_back( new Triangle( A, E, C, purple, highGloss ) );
@@ -148,7 +149,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     A = vec4(700, 300, 200, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     vec3 ggg = vec3(1,1,1);
-    shapes.push_back( new Sphere( A, radius, blue, ggg, new Translucent()));
+    shapes.push_back( new Sphere( A, radius, blue, ggg));
 }
 void LoadTestModel2( std::vector<Shape2D*>& shapes )
 {
