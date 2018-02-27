@@ -11,7 +11,11 @@
 #include "../Materials/solid.h"
 #include "../Materials/translucent.h"
 #include "../Materials/reflective.h"
+<<<<<<< HEAD
 #include "../Materials/specular.h"
+=======
+#include "../Materials/diffuse.h"
+>>>>>>> raytracer
 // Used to describe a triangular surface:
 
 
@@ -57,8 +61,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 H(0,L,L,1);
 
     // Floor:
-    shapes.push_back( new Triangle( C, B, A, green , moreGloss) );
-    shapes.push_back( new Triangle( C, D, B, green , moreGloss) );
+    shapes.push_back( new Triangle( C, B, A, green , moreGloss));
+    shapes.push_back( new Triangle( C, D, B, green , moreGloss ));
 
     // Left wall
     shapes.push_back( new Triangle( A, E, C, purple, highGloss ) );
@@ -123,33 +127,33 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     H = vec4(314,330,456,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,blue, highGloss, new Specular()) );
-    shapes.push_back( new Triangle(E,F,B,blue, highGloss) );
+    shapes.push_back( new Triangle(E,B,A,blue, highGloss, new Translucent()) );
+    shapes.push_back( new Triangle(E,F,B,blue, highGloss, new Translucent()) );
 
     // Front
-    shapes.push_back( new Triangle(F,D,B,blue, someGloss) );
-    shapes.push_back( new Triangle(F,H,D,blue, someGloss) );
+    shapes.push_back( new Triangle(F,D,B,blue, someGloss, new Translucent()) );
+    shapes.push_back( new Triangle(F,H,D,blue, someGloss, new Translucent()) );
 
     // BACK
-    shapes.push_back( new Triangle(H,C,D,blue, highGloss) );
-    shapes.push_back( new Triangle(H,G,C,blue, highGloss) );
+    shapes.push_back( new Triangle(H,C,D,blue, highGloss, new Translucent()) );
+    shapes.push_back( new Triangle(H,G,C,blue, highGloss, new Translucent()) );
 
     // LEFT
-    shapes.push_back( new Triangle(G,E,C,blue, highGloss) );
-    shapes.push_back( new Triangle(E,A,C,blue, highGloss) );
+    shapes.push_back( new Triangle(G,E,C,blue, highGloss, new Translucent()) );
+    shapes.push_back( new Triangle(E,A,C,blue, highGloss, new Translucent()) );
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,blue, normalGloss) );
-    shapes.push_back( new Triangle(G,H,F,blue, normalGloss) );
+    shapes.push_back( new Triangle(G,F,E,blue, normalGloss, new Translucent()) );
+    shapes.push_back( new Triangle(G,H,F,blue, normalGloss, new Translucent()) );
 
     // ---------------------------------------------------------------------------
     // Sphere
     float radius = 100;
     float empty = 0;
-    A = vec4(320, 300, 200, 1);
+    A = vec4(700, 300, 200, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     vec3 ggg = vec3(1,1,1);
-    shapes.push_back( new Sphere( A, radius, blue, ggg, new Reflective()));
+    shapes.push_back( new Sphere( A, radius, blue, ggg));
 }
 void LoadTestModel2( std::vector<Shape2D*>& shapes )
 {

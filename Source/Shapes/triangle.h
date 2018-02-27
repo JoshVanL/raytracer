@@ -54,7 +54,7 @@ public:
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) override{
         vec3 t_color;
         if(material != nullptr){
-            t_color = material->material_color(intersection, primary_ray, shapes, lightSource) * gloss;
+            t_color = material->material_color(intersection, primary_ray, shapes, lightSource);
             return t_color;
         }
         else{
@@ -68,8 +68,8 @@ public:
         return v0 + u * e1 + v * e2;
     }
 
-    virtual vec3 getnormal(vec4 start, vec4 dir){
-        return  glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
+    virtual vec3 getnormal(vec4 point){
+        return  (vec3) glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
     }
 
     virtual vec3 minPosition() override {

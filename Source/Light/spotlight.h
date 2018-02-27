@@ -46,7 +46,7 @@ public:
 
         float dist = glm::distance(position, point.position);
 
-        vec3 surfaceNormal =  point.shape2D->getnormal(point.position, point.direction);
+        vec3 surfaceNormal = (vec3) point.shape2D->getnormal(point.position);
         vec3 lightToPoint =   glm::normalize((vec3) point.position - (vec3) position);
 
         float dotProduct = glm::dot(surfaceNormal, lightToPoint);
@@ -89,7 +89,7 @@ public:
     }
 
     virtual vec3 getIndirectLight() override {
-        return vec3(0.3,0.2,0.18);
+        return vec3(0.2,0.1,0.09);
     }
 
 };

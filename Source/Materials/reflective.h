@@ -16,21 +16,20 @@ public:
     };
 
     virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) override {
-        return recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Reflective::reflect_direction, *(this));
+        return recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource);
     }
 
     //Returns the color of final ray intersection point
     vec3 recurse_ray(const Ray& primary_ray, Intersection intersection, 
                  Shape2D* t_shape, const std::vector<Shape2D*>& shapes, 
-                 LightSource& lightSource,
-                 vec4 (Reflective::*direction_function)(const vec4, const vec4, Shape2D*),
-                 Reflective& callerObj) {
+                 LightSource& lightSource) {
 
         int currentdepth = primary_ray.bounces;
         if(currentdepth >= primary_ray.max_depth)
             return vec3(0,0,0);
 
-        vec4 new_dir = (callerObj.*direction_function)(intersection.position, primary_ray.direction,t_shape);
+        vec3 new_dir3d = t_shape->getnormal(intersection.position);
+        vec4 new_dir = vec4(new_dir3d.x,new_dir3d.y,new_dir3d.z,1);
         Ray new_ray(intersection.position, new_dir, currentdepth + 1);
 
         Intersection new_intersection;
@@ -41,12 +40,6 @@ public:
             return vec3(0,0,0);
         }
     } 
-    vec4 reflect_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
-        vec4 incident_ray = -ray_dir;
-        vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
-        vec4 normal(temp.x, temp.y, temp.z, 1);
-        return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
-    }
 };
 
 #endif
