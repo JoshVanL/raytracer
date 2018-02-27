@@ -30,7 +30,8 @@ public:
         if(currentdepth >= primary_ray.max_depth)
             return vec3(0,0,0);
 
-        vec4 new_dir = (callerObj.*direction_function)(intersection.position, primary_ray.direction,t_shape);
+        vec3 new_dir3d = t_shape->getnormal(intersection.position);
+        vec4 new_dir = vec4(new_dir3d.x,new_dir3d.y,new_dir3d.z,1);
         Ray new_ray(intersection.position, new_dir, currentdepth + 1);
 
         Intersection new_intersection;
@@ -38,14 +39,14 @@ public:
             return new_intersection.shape2D->getcolor(new_intersection, new_ray, shapes, lightSource);
         }
         else {
-            return vec3(0,0,0);
+            return vec3(1,1,1);
         }
     } 
-    vec4 reflect_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
-        vec4 incident_ray = -ray_dir;
-        vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
-        vec4 normal(temp.x, temp.y, temp.z, 1);
-        return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
+    vec4 reflect_direction(const vec4 point, const vec4 ray_dir, Shape2D* t_shape){
+        
+        vec3 normal3d = (vec3) t_shape->getnormal(point); //
+        vec4 normal = vec4(normal3d.x, normal3d.y,normal3d.z, 1); 
+        return 2.0f * dot(ray_dir, normal) * normal - ray_dir ;
     }
 };
 

@@ -95,7 +95,7 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* light
 int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
-    LightSource* spotLight = new SpotLight();
+    LightSource* spotLight = new PointLight();
     Camera camera(vec4(0, 0, -2.25, 1), SCREEN_WIDTH/2);
     Keyboard keyboard;
     vector<Shape2D*> shapes;

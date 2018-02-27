@@ -68,8 +68,8 @@ public:
         return v0 + u * e1 + v * e2;
     }
 
-    virtual vec3 getnormal(vec4 start, vec4 dir){
-        return  glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
+    virtual vec3 getnormal(vec4 point){
+        return  (vec3) glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
     }
 
     virtual vec3 minPosition() override {

@@ -23,7 +23,7 @@ public:
  
     virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource)  override {
         Shape2D* shape2D            = intersection.shape2D;   
-        glm::vec3 normal            = glm::normalize(shape2D->getnormal(primary_ray.position, primary_ray.direction));
+        glm::vec3 normal            = (vec3) glm::normalize(shape2D->getnormal(intersection.position));
         glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction); 
        
         float cosi                  = glm::dot(normal, ray_dir);
@@ -72,16 +72,16 @@ public:
         }
     } 
  
-    vec4 reflect_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
+    vec4 reflect_direction(const vec4 point, const vec4 ray_dir, Shape2D* t_shape){
         vec4 incident_ray = -ray_dir;
-        vec3 temp = t_shape->getnormal(ray_orig, ray_dir);
+        vec3 temp = (vec3) t_shape->getnormal(point);
         vec4 normal(temp.x, temp.y, temp.z, 1);
         return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
     }
 
-    vec4 refract_direction(const vec4 ray_orig, const vec4 ray_dir, Shape2D* t_shape){
+    vec4 refract_direction(const vec4 point, const vec4 ray_dir, Shape2D* t_shape){
 
-        vec3 normal_3d = normalize(t_shape->getnormal(ray_orig, ray_dir));
+        vec3 normal_3d = (vec3) normalize(t_shape->getnormal(point));
         vec3 incoming_3d = normalize(vec3(ray_dir));
   
         float a = -dot(normal_3d, incoming_3d); 

@@ -37,8 +37,8 @@ public:
 
     virtual bool intersect(Ray &ray, vec3 dir, vec4& intersection) override
     {
-        vec3 rayorig = vec3(ray.position);
-        dir = normalize(vec3(dir));
+        vec3 rayorig = (vec3) ray.position;
+        dir = normalize(vec3(ray.direction));
 
         vec3 L = (vec3) center - rayorig;
         float tca = dot(L, dir);
@@ -74,13 +74,8 @@ public:
             return color;
         }
     }
-    virtual glm::vec3 getnormal(vec4 start, vec4 dir) override {
-        glm::vec4 intersectpoint;
-        if(intersect(start, dir, intersectpoint)){
-            vec3 intersectDir = (vec3) intersectpoint - (vec3) start;
-            vec3 intersectNormal = intersectDir - (vec3) center; 
-            return glm::normalize(intersectNormal);
-        }
+    virtual glm::vec3 getnormal(vec4 point)  {
+        return (vec3) normalize(point - center);
     }
     virtual glm::vec4 toworldcoordinates(vec4 cam_intersect) override{
         return cam_intersect;
