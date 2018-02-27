@@ -10,7 +10,7 @@ GLMDIR=../glm/
 EXEC=$(B_DIR)/$(FILE)
 
 # default build settings
-CC_OPTS=-c -fopenmp -Ofast -std=c++11 -pipe -Wno-switch -ggdb -g3 
+CC_OPTS=-c -fopenmp  -Ofast -std=c++11 -pipe -Wno-switch -ggdb -g3 
 LN_OPTS=
 CC=g++
 

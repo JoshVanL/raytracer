@@ -54,7 +54,7 @@ void Draw(screen* screen, const Camera& camera, LightSource* lightSource, const 
 
     omp_set_num_threads(NUM_THREADS);
 
-    #pragma omp parallel for
+    #pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
 
