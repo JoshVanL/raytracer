@@ -148,7 +148,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     A = vec4(700, 300, 200, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     vec3 ggg = vec3(1,1,1);
-    // shapes.push_back( new Sphere( A, radius, blue, ggg, new Translucent()));
+    shapes.push_back( new Sphere( A, radius, blue, ggg, new Translucent()));
 }
 void LoadTestModel2( std::vector<Shape2D*>& shapes )
 {

@@ -44,9 +44,12 @@ public:
             float Rp = ((incoming * cosi) - (outgoing * cost)) / ((incoming * cosi) + (outgoing * cost));
             kr = (Rs * Rs + Rp * Rp) / 2;
         }
+
+        kr *= 0.5;
+
         vec3 refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this));
-        // vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this));
-        return refraction; //glm::mix(refraction, reflection, kr) * transparency;
+        vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this));
+        return glm::mix(refraction, reflection, kr) * transparency;
     }
 
     //Returns the color of final ray intersection point
@@ -73,10 +76,9 @@ public:
     } 
  
     vec4 reflect_direction( vec4 intersectPoint,  vec4 ray_dir, Shape2D* t_shape){
-        vec4 incident_ray = -ray_dir;
-        vec3 temp = t_shape->getnormal(intersectPoint);
-        vec4 normal(temp.x, temp.y, temp.z, 1);
-        return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
+        vec3 new_dir3d = t_shape->getnormal(intersectPoint);
+        vec4 new_dir = vec4(new_dir3d.x,new_dir3d.y,new_dir3d.z,1);
+        return new_dir;
     }
 
     vec4 refract_direction( vec4 intersectPoint,  vec4 ray_dir, Shape2D* t_shape){
