@@ -54,7 +54,7 @@ public:
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) override{
         vec3 t_color;
         if(material != nullptr){
-            t_color = material->material_color(intersection, primary_ray, shapes, lightSource) * gloss;
+            t_color = material->material_color(intersection, primary_ray, shapes, lightSource);
             return t_color;
         }
         else{

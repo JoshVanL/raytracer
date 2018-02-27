@@ -23,7 +23,7 @@ public:
  
     virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource)  override {
         Shape2D* shape2D            = intersection.shape2D;   
-        glm::vec3 normal            = (vec3) glm::normalize(shape2D->getnormal(intersection.position));
+        glm::vec3 normal            = glm::normalize((vec3) intersection.position);
         glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction); 
        
         float cosi                  = glm::dot(normal, ray_dir);
@@ -45,15 +45,15 @@ public:
             kr = (Rs * Rs + Rp * Rp) / 2;
         }
         vec3 refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this));
-        vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this));
-        return glm::mix(refraction, reflection, kr) * transparency;
+        // vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this));
+        return refraction; //glm::mix(refraction, reflection, kr) * transparency;
     }
 
     //Returns the color of final ray intersection point
     vec3 recurse_ray(const Ray& primary_ray, Intersection intersection, 
                  Shape2D* t_shape, const std::vector<Shape2D*>& shapes, 
                  LightSource& lightSource,
-                 vec4 (Translucent::*direction_function)(const vec4, const vec4, Shape2D*),
+                 vec4 (Translucent::*direction_function)( vec4,  vec4, Shape2D*),
                  Translucent& callerObj) {
 
         int currentdepth = primary_ray.bounces;
@@ -72,16 +72,16 @@ public:
         }
     } 
  
-    vec4 reflect_direction(const vec4 point, const vec4 ray_dir, Shape2D* t_shape){
+    vec4 reflect_direction( vec4 intersectPoint,  vec4 ray_dir, Shape2D* t_shape){
         vec4 incident_ray = -ray_dir;
-        vec3 temp = (vec3) t_shape->getnormal(point);
+        vec3 temp = t_shape->getnormal(intersectPoint);
         vec4 normal(temp.x, temp.y, temp.z, 1);
         return 2.0f * dot( incident_ray, normal) * normal - incident_ray;
     }
 
-    vec4 refract_direction(const vec4 point, const vec4 ray_dir, Shape2D* t_shape){
+    vec4 refract_direction( vec4 intersectPoint,  vec4 ray_dir, Shape2D* t_shape){
 
-        vec3 normal_3d = (vec3) normalize(t_shape->getnormal(point));
+        vec3 normal_3d = normalize(t_shape->getnormal(intersectPoint));
         vec3 incoming_3d = normalize(vec3(ray_dir));
   
         float a = -dot(normal_3d, incoming_3d); 
