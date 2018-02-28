@@ -73,7 +73,7 @@ public:
     virtual vec3 getnormal(Intersection& intersection){
         vec3 a =  (vec3) glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
         vec3 b = -a;
-        if(glm::dot(a, (vec3) intersection.direction) <= 0)
+        if(glm::dot(a, (vec3) glm::normalize(intersection.direction)) <= 0)
             return a;
         else
             return b;

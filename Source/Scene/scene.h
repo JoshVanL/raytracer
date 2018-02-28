@@ -10,7 +10,6 @@
 #include "../Materials/material.h"
 #include "../Materials/solid.h"
 #include "../Materials/translucent.h"
-#include "../Materials/reflective.h"
 #include "../Materials/specular.h"
 #include "../Materials/diffuse.h"
 // Used to describe a triangular surface:
@@ -80,35 +79,35 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     // Short block
 
-    A = vec4(590,0,114,1);
-    B = vec4(430,0, 65,1);
-    C = vec4(540,0,272,1);
-    D = vec4(382,0,225,1);
+    A = vec4(690,0,164,1);
+    B = vec4(530,0,115,1);
+    C = vec4(640,0,322,1);
+    D = vec4(482,0,275,1);
 
-    E = vec4(590,165,114,1);
-    F = vec4(430,165, 65,1);
-    G = vec4(540,165,272,1);
-    H = vec4(382,165,225,1);
-
-    // Front
-    shapes.push_back( new Triangle(E,B,A,red, highGloss, new Reflective() ));
-    shapes.push_back( new Triangle(E,F,B,red, highGloss, new Reflective() ));
+    E = vec4(690,165,164,1);
+    F = vec4(530,165,115,1);
+    G = vec4(640,165,322,1);
+    H = vec4(482,165,275,1);
 
     // Front
-    shapes.push_back( new Triangle(F,D,B,red, highGloss, new Reflective() ));
-    shapes.push_back( new Triangle(F,H,D,red, highGloss, new Reflective() ));
+    shapes.push_back( new Triangle(E,B,A,red, highGloss, new Translucent() ));
+    shapes.push_back( new Triangle(E,F,B,red, highGloss, new Translucent() ));
+
+    // Front
+    shapes.push_back( new Triangle(F,D,B,red, highGloss, new Translucent() ));
+    shapes.push_back( new Triangle(F,H,D,red, highGloss, new Translucent() ));
 
     // BACK
-    shapes.push_back( new Triangle(H,C,D,red, highGloss, new Reflective()));
-    shapes.push_back( new Triangle(H,G,C,red, highGloss, new Reflective()));
+    shapes.push_back( new Triangle(H,C,D,red, highGloss, new Translucent()));
+    shapes.push_back( new Triangle(H,G,C,red, highGloss, new Translucent()));
 
     // LEFT
-    shapes.push_back( new Triangle(G,E,C,red, highGloss, new Reflective()));
-    shapes.push_back( new Triangle(E,A,C,red, highGloss, new Reflective()));
+    shapes.push_back( new Triangle(G,E,C,red, highGloss, new Translucent()));
+    shapes.push_back( new Triangle(E,A,C,red, highGloss, new Translucent()));
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,red, highGloss, new Reflective()));
-    shapes.push_back( new Triangle(G,H,F,red, highGloss, new Reflective()));
+    shapes.push_back( new Triangle(G,F,E,red, highGloss, new Translucent()));
+    shapes.push_back( new Triangle(G,H,F,red, highGloss, new Translucent()));
 
     // ---------------------------------------------------------------------------
     // Tall block
@@ -214,8 +213,8 @@ void LoadTestModel2( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( G, D, C, white, someGloss ) );
     shapes.push_back( new Triangle( G, H, D, white, someGloss ) );
     // Back wall
-    shapes.push_back( new Triangle( J, M, K, white, someGloss , new Reflective()) );
-    shapes.push_back( new Triangle( M, K, I, white, someGloss , new Reflective()) );
+    shapes.push_back( new Triangle( J, M, K, white, someGloss , new Translucent()) );
+    shapes.push_back( new Triangle( M, K, I, white, someGloss , new Translucent()) );
     // ---------------------------------------------------------------------------
     // Short block
 
