@@ -22,7 +22,7 @@ public:
     virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource){
          //Calculate reflection ray direction
         vec3 l = (vec3) (lightSource->position - intersection.position);
-        vec3 surface_normal = normalize(intersection.shape2D->getnormal(intersection.position - intersection.direction));
+        vec3 surface_normal = normalize(intersection.shape2D->getnormal(intersection));
 
         vec3 reflected_dir = normalize(2.0f * dot(l, surface_normal) * surface_normal - l);
 

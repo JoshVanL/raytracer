@@ -14,7 +14,7 @@ public:
 
     virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override {
         vec3 l = (vec3) intersection.direction;
-        vec3 norm = intersection.shape2D->getnormal(intersection.position - intersection.direction);
+        vec3 norm = intersection.shape2D->getnormal(intersection);
         float prop = dot(normalize(norm), -l);
         float projection_factor = std::max(prop, 0.0f);
 

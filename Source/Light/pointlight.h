@@ -24,7 +24,7 @@ public:
     virtual vec3 getDirectLight(Intersection& point, const std::vector<Shape2D*>& shapes) override {
         float dist = glm::distance(position, point.position);
 
-        vec3 surfaceNormal =  point.shape2D->getnormal(point.position - (point.position - position));
+        vec3 surfaceNormal =  point.shape2D->getnormal(point);
         vec3 pointToLight =   glm::normalize((vec3) position - (vec3) point.position);
 
         float dotProduct = glm::dot(surfaceNormal, pointToLight);

@@ -46,7 +46,7 @@ public:
 
         float dist = glm::distance(position, point.position);
 
-        vec3 surfaceNormal = (vec3) point.shape2D->getnormal(point.position - (point.position - position));
+        vec3 surfaceNormal = (vec3) point.shape2D->getnormal(point);
         vec3 pointToLight =   glm::normalize( (vec3) position - (vec3) point.position);
 
         float dotProduct = glm::dot(surfaceNormal, pointToLight);

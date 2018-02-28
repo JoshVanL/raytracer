@@ -76,8 +76,8 @@ public:
             return color;
         }
     }
-    virtual glm::vec3 getnormal(vec4 point)  {
-        return (vec3) normalize(point - center);
+    virtual glm::vec3 getnormal(Intersection& intersection)   {
+        return (vec3) normalize(intersection.position - center);
     }
     virtual glm::vec4 toworldcoordinates(vec4 cam_intersect) override{
         return cam_intersect;

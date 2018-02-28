@@ -28,7 +28,7 @@ public:
         if(currentdepth >= primary_ray.max_depth)
             return vec3(0,0,0);
 
-        vec3 new_dir3d = t_shape->getnormal(intersection.position - primary_ray.direction);
+        vec3 new_dir3d = t_shape->getnormal(intersection);
         vec4 new_dir = vec4(new_dir3d.x,new_dir3d.y,new_dir3d.z,1);
         Ray new_ray(intersection.position, new_dir, currentdepth + 1);
 

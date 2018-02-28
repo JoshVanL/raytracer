@@ -60,7 +60,7 @@ public:
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) = 0;
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
-    virtual glm::vec3 getnormal(glm::vec4 point) = 0;
+    virtual glm::vec3 getnormal(Intersection& intersection) = 0;
 
     virtual vec3 minPosition() {
         return vec3();
