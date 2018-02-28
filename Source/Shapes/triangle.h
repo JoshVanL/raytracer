@@ -71,7 +71,12 @@ public:
     }
 
     virtual vec3 getnormal(vec4 point){
-        return  (vec3) glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
+        vec3 a =  (vec3) glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
+        vec3 b = -a;
+        if(glm::dot(a, (vec3)point - midpoint()) >= 0)
+            return a;
+        else
+            return b;
     }
 
     virtual vec3 minPosition() override {

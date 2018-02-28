@@ -11,6 +11,7 @@
 #include "../Materials/solid.h"
 #include "../Materials/translucent.h"
 #include "../Materials/reflective.h"
+#include "../Materials/specular.h"
 #include "../Materials/diffuse.h"
 // Used to describe a triangular surface:
 
@@ -57,57 +58,57 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 H(0,L,L,1);
 
     // Floor:
-    shapes.push_back( new Triangle( C, B, A, green , moreGloss));
-    shapes.push_back( new Triangle( C, D, B, green , moreGloss ));
+    shapes.push_back( new Triangle( C, B, A, green , moreGloss, new Specular()));
+    shapes.push_back( new Triangle( C, D, B, green , moreGloss, new Specular() ));
 
     // Left wall
-    shapes.push_back( new Triangle( A, E, C, purple, highGloss ) );
-    shapes.push_back( new Triangle( C, E, G, purple, highGloss ) );
+    shapes.push_back( new Triangle( A, E, C, purple, highGloss, new Specular() ) );
+    shapes.push_back( new Triangle( C, E, G, purple, highGloss, new Specular() ) );
 
     // Right wall
-    shapes.push_back( new Triangle( F, B, D, yellow, lowGloss ) );
-    shapes.push_back( new Triangle( H, F, D, yellow, lowGloss ) );
+    shapes.push_back( new Triangle( F, B, D, yellow, highGloss, new Specular() ) );
+    shapes.push_back( new Triangle( H, F, D, yellow, highGloss, new Specular() ) );
 
     // Ceiling
-    shapes.push_back( new Triangle( E, F, G, cyan , normalGloss) );
-    shapes.push_back( new Triangle( F, H, G, cyan , normalGloss) );
+    shapes.push_back( new Triangle( E, F, G, cyan , highGloss, new Specular()) );
+    shapes.push_back( new Triangle( F, H, G, cyan , highGloss, new Specular()) );
 
     // Back wall
-    shapes.push_back( new Triangle( G, D, C, white, someGloss ) );
-    shapes.push_back( new Triangle( G, H, D, white, someGloss ) );
+    shapes.push_back( new Triangle( G, D, C, white, highGloss, new Specular()) );
+    shapes.push_back( new Triangle( G, H, D, white, highGloss, new Specular() ) );
 
     // ---------------------------------------------------------------------------
     // Short block
 
-    A = vec4(290,0,114,1);
-    B = vec4(130,0, 65,1);
-    C = vec4(240,0,272,1);
-    D = vec4( 82,0,225,1);
+    A = vec4(590,0,114,1);
+    B = vec4(430,0, 65,1);
+    C = vec4(540,0,272,1);
+    D = vec4(382,0,225,1);
 
-    E = vec4(290,165,114,1);
-    F = vec4(130,165, 65,1);
-    G = vec4(240,165,272,1);
-    H = vec4( 82,165,225,1);
-
-    // Front
-    shapes.push_back( new Triangle(E,B,A,red, normalGloss ));
-    shapes.push_back( new Triangle(E,F,B,red, normalGloss ));
+    E = vec4(590,165,114,1);
+    F = vec4(430,165, 65,1);
+    G = vec4(540,165,272,1);
+    H = vec4(382,165,225,1);
 
     // Front
-    shapes.push_back( new Triangle(F,D,B,red, someGloss ));
-    shapes.push_back( new Triangle(F,H,D,red, someGloss ));
+    shapes.push_back( new Triangle(E,B,A,red, highGloss, new Reflective() ));
+    shapes.push_back( new Triangle(E,F,B,red, highGloss, new Reflective() ));
+
+    // Front
+    shapes.push_back( new Triangle(F,D,B,red, highGloss, new Reflective() ));
+    shapes.push_back( new Triangle(F,H,D,red, highGloss, new Reflective() ));
 
     // BACK
-    shapes.push_back( new Triangle(H,C,D,red, normalGloss));
-    shapes.push_back( new Triangle(H,G,C,red, normalGloss));
+    shapes.push_back( new Triangle(H,C,D,red, highGloss, new Reflective()));
+    shapes.push_back( new Triangle(H,G,C,red, highGloss, new Reflective()));
 
     // LEFT
-    shapes.push_back( new Triangle(G,E,C,red, someGloss));
-    shapes.push_back( new Triangle(E,A,C,red, someGloss));
+    shapes.push_back( new Triangle(G,E,C,red, highGloss, new Reflective()));
+    shapes.push_back( new Triangle(E,A,C,red, highGloss, new Reflective()));
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,red, normalGloss));
-    shapes.push_back( new Triangle(G,H,F,red, normalGloss));
+    shapes.push_back( new Triangle(G,F,E,red, highGloss, new Reflective()));
+    shapes.push_back( new Triangle(G,H,F,red, highGloss, new Reflective()));
 
     // ---------------------------------------------------------------------------
     // Tall block
@@ -149,7 +150,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     A = vec4(700, 300, 200, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     vec3 ggg = vec3(1,1,1);
-    shapes.push_back( new Sphere( A, radius, blue, ggg));
+    shapes.push_back( new Sphere( A, radius, blue, ggg, new Translucent()));
 }
 void LoadTestModel2( std::vector<Shape2D*>& shapes )
 {

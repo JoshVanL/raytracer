@@ -17,13 +17,13 @@ public:
     const float air_refractive_index;
     int count = 0;
 
-    Translucent(const float& transparency = 1.f, const float& refractive_index = 0.6f) : 
+    Translucent(const float& transparency = 1.f, const float& refractive_index = 0.7f) : 
         Material(transparency), refractive_index(refractive_index), air_refractive_index(1.f){
     }
  
     virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes,  LightSource* lightSource)  override {
         Shape2D* shape2D            = intersection.shape2D;   
-        glm::vec3 normal            = glm::normalize((vec3) intersection.position);
+        glm::vec3 normal            = glm::normalize((vec3) shape2D->getnormal(intersection.position - primary_ray.direction));
         glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction); 
        
         float cosi                  = glm::dot(normal, ray_dir);
@@ -47,9 +47,9 @@ public:
 
         kr *= 0.5;
 
-        vec3 refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this));
-        vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this));
-        return glm::mix(refraction, reflection, kr) * transparency;
+        return  recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this));
+        // vec3 reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this));
+        // return glm::mix(refraction, reflection, kr) * transparency;
     }
 
     //Returns the color of final ray intersection point
@@ -76,14 +76,14 @@ public:
     } 
  
     vec4 reflect_direction( vec4 intersectPoint,  vec4 ray_dir, Shape2D* t_shape){
-        vec3 new_dir3d = t_shape->getnormal(intersectPoint);
+        vec3 new_dir3d = t_shape->getnormal(intersectPoint - ray_dir);
         vec4 new_dir = vec4(new_dir3d.x,new_dir3d.y,new_dir3d.z,1);
         return new_dir;
     }
 
     vec4 refract_direction( vec4 intersectPoint,  vec4 ray_dir, Shape2D* t_shape){
 
-        vec3 normal_3d = normalize(t_shape->getnormal(intersectPoint));
+        vec3 normal_3d = normalize(t_shape->getnormal(intersectPoint - ray_dir));
         vec3 incoming_3d = normalize(vec3(ray_dir));
   
         float a = -dot(normal_3d, incoming_3d); 

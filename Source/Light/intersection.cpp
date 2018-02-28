@@ -9,3 +9,4 @@ glm::vec3 Intersection::compute_color(const Ray& primary_ray, const std::vector<
 
 
 
+ 

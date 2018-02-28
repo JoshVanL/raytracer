@@ -49,7 +49,7 @@ void Draw(screen* screen);
 
 int scount = 0;
 
-void Draw(screen* screen, const Camera& camera, LightSource* lightSource, const vector<Shape2D*>& shapes, KDNode& tree) {
+void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, const vector<Shape2D*>& shapes, KDNode& tree) {
     memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
 
     omp_set_num_threads(NUM_THREADS);
@@ -63,20 +63,23 @@ void Draw(screen* screen, const Camera& camera, LightSource* lightSource, const 
             intersection.distance = std::numeric_limits<float>::max();
 
             if(tree.hit(ray, intersection)) {
-                vec3 color = intersection.shape2D->getcolor(intersection, ray, shapes, lightSource);
+                vec3 color(0,0,0);
+                for(int k = 0; k < lights.size(); k++){
+                    color += intersection.shape2D->getcolor(intersection, ray, shapes, lights[k]);
+                }
                 PutPixelSDL(screen, i, j, color);
             }
         }
     }
 }
 
-void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram, KDNode& tree){
+void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource*> lights, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram, KDNode& tree){
     switch(event.type ){
         case SDL_KEYDOWN:
-            keyboard.ProcessKeyDown(event.key, lightSource, camera, runProgram);
+            keyboard.ProcessKeyDown(event.key, lights[0], camera, runProgram);
             if(runProgram == 1){
                 auto started = std::chrono::high_resolution_clock::now();
-                Draw(screen, camera, lightSource, shapes, tree);
+                Draw(screen, camera, lights, shapes, tree);
                 auto done = std::chrono::high_resolution_clock::now();
                 cout << "Render time: ";
                 cout << chrono::duration_cast<chrono::milliseconds>(done-started).count();
@@ -94,8 +97,11 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* light
 
 int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
-
-    LightSource* spotLight = new PointLight();
+    vector<LightSource*> lights;
+    LightSource* lightA = new PointLight();
+    LightSource* lightB = new SpotLight();
+    lights.push_back(lightB);
+    lights.push_back(lightA);
     Camera camera(vec4(0, 0, -2.25, 1), SCREEN_WIDTH/2);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
@@ -109,7 +115,7 @@ int main( int argc, char* argv[] ) {
 
     auto started = std::chrono::high_resolution_clock::now();
 
-    Draw(screen, camera, spotLight, shapes, tree);
+    Draw(screen, camera, lights, shapes, tree);
 
     auto done = std::chrono::high_resolution_clock::now();
     cout << "Render time: ";
@@ -120,7 +126,7 @@ int main( int argc, char* argv[] ) {
 
     while(runProgram != -1){
         while( SDL_PollEvent( &event ) ){
-            Update(screen, event, camera, spotLight, keyboard, shapes, runProgram, tree);
+            Update(screen, event, camera, lights, keyboard, shapes, runProgram, tree);
         }
     }
     SDL_SaveImage( screen, "screenshot.bmp" );

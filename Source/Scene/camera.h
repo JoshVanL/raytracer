@@ -18,7 +18,7 @@ public:
     const int SCREEN_HEIGHT = 256;
     const bool FULLSCREEN_MODE = false;
     const vec3 INDIRECT_LIGHT  = vec3(0.3,0.2,0.18);
-    const float ANG = 0.1;
+    const float ANG = 0.05;
     const mat4 ROTATE_LEFT =   mat4(vec4(cos(-ANG*2), 0, -sin(-ANG*2), 0),  vec4(0, 1, 0, 0),               vec4(sin(-ANG*2), 0, cos(-ANG*2), 0),    vec4(0,0,0,1));
     const mat4 ROTATE_RIGHT  =   mat4(vec4(cos(ANG*2), 0, -sin(ANG*2), 0),    vec4(0, 1, 0, 0),               vec4(sin(ANG*2), 0,  cos(ANG*2), 0),      vec4(0,0,0,1));
     const mat4 ROTATE_UP    =   mat4(vec4(1, 0, 0, 0),                   vec4(0, cos(ANG), sin(ANG), 0),     vec4(0, -sin(ANG), cos(ANG), 0),     vec4(0,0,0,1));
@@ -51,20 +51,20 @@ public:
     void translateCameraVert(SDL_KeyboardEvent key){
         switch( key.keysym.sym ){
             case SDLK_DOWN:
-                primary_ray.position += rotation*vec4(0,0.3f,0,0);
-                position += rotation*vec4(0,0.3f,0,0);
+                primary_ray.position += rotation*vec4(0,0.1f,0,0);
+                position += rotation*vec4(0,0.1f,0,0);
                 break;
             case SDLK_LEFT:
                 primary_ray.position += rotation*vec4(-0.5,0,0,0);
-                position += rotation*vec4(-0.5f,0,0,0);
+                position += rotation*vec4(-0.1f,0,0,0);
                 break;
             case SDLK_UP:
-                primary_ray.position += rotation*vec4(0,-0.3f,0,0);
-                position += rotation*vec4(0,-0.3f,0,0);
+                primary_ray.position += rotation*vec4(0,-0.1f,0,0);
+                position += rotation*vec4(0,-0.1f,0,0);
                 break;
             case SDLK_RIGHT :
-                primary_ray.position += rotation*vec4(0.5f,0,0,0);
-                position += rotation*(vec4(0.5f,0,0,0));
+                primary_ray.position += rotation*vec4(0.1f,0,0,0);
+                position += rotation*(vec4(0.1f,0,0,0));
                 break;
         }
     }
@@ -72,19 +72,19 @@ public:
     void translateCamera(SDL_KeyboardEvent key){
         switch( key.keysym.sym ){
             case SDLK_UP:
-                primary_ray.position += rotation*vec4(0,0,0.3f,0);
-                position += rotation*vec4(0,0,0.3f,0);
+                primary_ray.position += rotation*vec4(0,0,0.1f,0);
+                position += rotation*vec4(0,0,0.1f,0);
                 break;
             case SDLK_LEFT:
-                primary_ray.position += rotation*vec4(-0.5f,0,0,0);
-                position += rotation*vec4(-0.5f,0,0,0);
+                primary_ray.position += rotation*vec4(-0.1f,0,0,0);
+                position += rotation*vec4(-0.1f,0,0,0);
                 break;
             case SDLK_DOWN:
-                primary_ray.position += rotation*vec4(0,0,-0.3f,0);
-                position += rotation*vec4(0,0,-0.3f,0);
+                primary_ray.position += rotation*vec4(0,0,-0.1f,0);
+                position += rotation*vec4(0,0,-0.1f,0);
                 break;
             case SDLK_RIGHT :
-                primary_ray.position += rotation*vec4(0.5f,0,0,0);
+                primary_ray.position += rotation*vec4(0.1f,0,0,0);
                 position += rotation*(vec4(0.5f,0,0,0));
                 break;
         }

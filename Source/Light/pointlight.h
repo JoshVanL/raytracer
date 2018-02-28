@@ -24,13 +24,10 @@ public:
     virtual vec3 getDirectLight(Intersection& point, const std::vector<Shape2D*>& shapes) override {
         float dist = glm::distance(position, point.position);
 
-        vec3 surfaceNormal =  point.shape2D->getnormal(point.position);
-        vec3 lightToPoint =   glm::normalize((vec3) point.position - (vec3) position);
+        vec3 surfaceNormal =  point.shape2D->getnormal(point.position - (point.position - position));
+        vec3 pointToLight =   glm::normalize((vec3) position - (vec3) point.position);
 
-        float dotProduct = glm::dot(surfaceNormal, lightToPoint);
-        if(point.shape2D->name == "Sphere"){
-            dotProduct = glm::dot(-surfaceNormal, lightToPoint);
-        }   
+        float dotProduct = glm::dot(surfaceNormal, pointToLight);
         float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
 
         float transparency = 1.f;
@@ -61,7 +58,7 @@ public:
     }
 
     virtual vec3 getIndirectLight() override {
-        return vec3(0.2,0.1,0.09);
+        return vec3(0.3,0.2,0.18);
     }
 
 };
