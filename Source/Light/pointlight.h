@@ -47,10 +47,6 @@ public:
             float distA = glm::distance(point.position, position);
             float distB = glm::distance(intersect.position, position);
             if(distB < distA){
-                if(intersect.shape2D->material != nullptr)
-                    transparency = intersect.shape2D->material->transparency;
-                else 
-                    transparency = 0.f;
                 return true;
             }
         }

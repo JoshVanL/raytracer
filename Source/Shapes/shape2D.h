@@ -5,7 +5,7 @@
 #include <string>
 using glm::vec3;
 using glm::vec4;
-
+using namespace std;
 #ifndef SHAPE2D_H
 #define SHAPE2D_H
 
@@ -21,23 +21,15 @@ public:
     std::string name;
     vec3    color;
     vec3    gloss;
-    Material* material = nullptr;
+    vector<Material*> materials;
     Shape3D* shape3D = nullptr;
-    Shape2D(vec3 color, vec3 gloss, Material* material, Shape3D* shape3D = nullptr): 
-        color(color), gloss(gloss), material(material){
+    Shape2D(vec3 color, 
+            vec3 gloss, 
+            vector<Material*> materials, 
+            Shape3D* shape3D = nullptr): 
+            color(color), gloss(gloss), materials(materials){
     };
-
-    Shape2D(vec3 color, vec3 gloss, Shape3D* shape3D = nullptr) : color(color), gloss(gloss), shape3D(shape3D) {
-
-    };
-
-    Shape2D(vec3 color, Shape3D* shape3D = nullptr) : color(color), gloss(vec3(1,1,1)), shape3D(shape3D){
-
-    };
-    Shape2D(vec3 color, Material* material, Shape3D* shape3D = nullptr) : material(material), color(color), gloss(vec3(1,1,1)), shape3D(shape3D){
-
-    };
-
+    
     vec4 scalevec4(vec4 v) {
         v *= 2/L;
         v -= vec4(1,1,1,1);

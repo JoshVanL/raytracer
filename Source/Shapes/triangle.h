@@ -6,6 +6,8 @@
 #include "../Materials/solid.h"
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
+#include <initializer_list>
+
 using glm::vec3;
 using glm::vec4;
 using glm::mat3;
@@ -19,17 +21,13 @@ public:
     glm::vec4 v2;
     glm::vec4 normal;
 
-    Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, 
-             glm::vec3 color, glm::vec3 gloss, Material* mat)
-        :   Shape2D(color, gloss, mat), 
-            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
-    {
-        name = "Triangle";
-    }
-
-    Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, 
-             glm::vec3 color, glm::vec3 gloss)
-        :   Shape2D(color, gloss, new Solid()), 
+    Triangle(glm::vec4 v0, 
+             glm::vec4 v1, 
+             glm::vec4 v2, 
+             glm::vec3 color, 
+             glm::vec3 gloss, 
+             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>({new Solid()}))
+        :   Shape2D(color, gloss, materials), 
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
         name = "Triangle";
@@ -54,14 +52,20 @@ public:
         return false;
     }
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override{
-        vec3 t_color;
-        if(material != nullptr){
-            t_color = material->material_color(intersection, primary_ray, shapes, lightSource);
-            return t_color;
+        vector<vec3> colors;
+        for(int a = 0; a < materials.size(); a++){
+            colors.push_back(materials[a]->material_color(intersection, primary_ray, shapes, lightSource));
         }
-        else{
-            return color;
+        if(colors.size() == 0)
+            return vec3(0,0,0);
+        if(colors.size() == 1)
+            return colors[0];
+
+        vec3 t_color = glm::mix(colors[0], colors[1], 0.5f);    
+        for(int a = 2; a < colors.size(); a++){
+            t_color = glm::mix(t_color, colors[a], 0.5f);
         }
+        return t_color;
     }
     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {
         float u = cam_intersect[1], v = cam_intersect[2];
