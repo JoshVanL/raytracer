@@ -4,7 +4,6 @@
 #include "shape2D.h"
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
-#include "../Materials/solid.h"
 #include "../Materials/gloss.h"
 #include <vector>
 #include <initializer_list>
@@ -24,12 +23,11 @@ public:
     float radius, radius2;                     
 
     Sphere(
-        glm::vec4 &cent, 
-        float r,
-        glm::vec3 col,
-        vec3 gloss=vec3(1,1,1),
-        const std::initializer_list<Material*>& materials = std::initializer_list<Material*>()
-        ) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(col, gloss, materials)
+            glm::vec4 &cent, 
+            float r,
+            glm::vec3 col,
+            const std::initializer_list<Material*>& materials = std::initializer_list<Material*>()
+        ) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(col, materials)
     {   
         name = "Sphere";
     };
@@ -65,8 +63,9 @@ public:
         return true;
     }
     
-    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)  override {
-        
+    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)  override 
+    {   
+
         vector<vec3> colors;
         for(int a = 0; a < materials.size(); a++){
             colors.push_back(materials[a]->material_color(intersection, ray, shapes, lightSource));

@@ -3,11 +3,10 @@
 
 #include <glm/glm.hpp>
 #include "shape2D.h"
-#include "../Materials/solid.h"
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
 #include <initializer_list>
-
+#include "../Materials/diffuse.h"
 using glm::vec3;
 using glm::vec4;
 using glm::mat3;
@@ -25,9 +24,8 @@ public:
              glm::vec4 v1, 
              glm::vec4 v2, 
              glm::vec3 color, 
-             glm::vec3 gloss, 
-             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>({new Solid()}))
-        :   Shape2D(color, gloss, materials), 
+             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>({new Diffuse()})  )
+        :   Shape2D(color, materials), 
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
         name = "Triangle";

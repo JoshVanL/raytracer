@@ -3,7 +3,6 @@
 #include "material.h"
 #include <glm/gtx/normal.hpp>
 #include "../Shapes/shape2D.h"
-#include "../Shapes/sphere.h"
 #include "../Light/ray.h"
 #include <typeinfo>
 #include <math.h>
@@ -23,7 +22,7 @@ public:
                 const bool isRefractive = true,
                 const float& transparency = 1.f, 
                 const float& refractive_index = 0.7f) : 
-                Material(transparency), refractive_index(refractive_index), air_refractive_index(1.f),
+                Material("Translucent", NORMALGLOSS, transparency), refractive_index(refractive_index), air_refractive_index(1.f),
                 isReflective(isReflective), isRefractive(isRefractive) {
     }
  

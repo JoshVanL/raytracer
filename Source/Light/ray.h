@@ -19,13 +19,18 @@ public:
     glm::vec4 direction;
     const int max_depth = 3;
     int bounces = 0;
-    Ray(glm::vec4 pos, glm::vec4 dir, const int bounces = 0) : 
+
+    Ray(    glm::vec4 pos, 
+            glm::vec4 dir, 
+            const int bounces = 0) : 
      position(pos), direction(dir), bounces(bounces){
 
     };
+
     Ray(){  position      = glm::vec4(0, -0.5, -1.4, 1.0);
             direction     = glm::vec4(0,0,1,1);
     };
+    
     bool ClosestIntersection(const std::vector<Shape2D*>& shapes, Intersection &closestIntersection,
                              const Shape2D* exclusion = nullptr) {
         closestIntersection.distance = std::numeric_limits<float>::max();

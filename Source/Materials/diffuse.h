@@ -2,13 +2,15 @@
 #define DIFFUSE_H
 #include "../Light/lightsource.h"
 #include "material.h"
+
 using glm::vec3;
 using glm::vec4;
 
 class Diffuse : public Material {
 
 public:
-    Diffuse(): Material(){
+
+    Diffuse(): Material("Diffuse"){
 
     }
 
@@ -17,9 +19,13 @@ public:
         vec3 norm = intersection.shape2D->getnormal(intersection);
         float prop = dot(normalize(norm), -l);
         float projection_factor = std::max(prop, 0.0f);
+        vector<Material*> mats = intersection.shape2D->materials;
 
-        return intersection.shape2D->color * (projection_factor * lightSource->lightAtPosition(intersection, shapes) *  intersection.shape2D->gloss);
+        return intersection.shape2D->color * projection_factor * lightSource->lightAtPosition(intersection, shapes) * gloss->gloss;
+
     }
+
+    
 
     float modulo(const float &f){
         float fp = f - std::floor(f); 

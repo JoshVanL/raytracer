@@ -14,8 +14,14 @@ public:
     glm::vec4 direction;
     float distance;
     int triangleIndex;
+    glm::vec3 lightAtIntersection;
     Shape2D* shape2D;
-    Intersection(glm::vec4 pos, glm::vec4 dir, float dis, Shape2D* shape2D): position(pos), direction(dir), distance(dis), shape2D(shape2D){
+
+    Intersection(   glm::vec4 pos, 
+                    glm::vec4 dir, 
+                    float dis, 
+                    Shape2D* shape2D): 
+                    position(pos), direction(dir), distance(dis), shape2D(shape2D){
 
     };
     Intersection(){

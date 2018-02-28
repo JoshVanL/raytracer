@@ -20,16 +20,14 @@ public:
     const float L = 1000;// Length of Cornell Box side.
     std::string name;
     vec3    color;
-    vec3    gloss;
     vector<Material*> materials;
     Shape3D* shape3D = nullptr;
-    Shape2D(vec3 color, 
-            vec3 gloss, 
+    Shape2D(vec3 color,
             vector<Material*> materials, 
             Shape3D* shape3D = nullptr): 
-            color(color), gloss(gloss), materials(materials){
+            color(color), materials(materials){
     };
-    
+
     vec4 scalevec4(vec4 v) {
         v *= 2/L;
         v -= vec4(1,1,1,1);

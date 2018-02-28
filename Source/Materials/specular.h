@@ -15,7 +15,7 @@ public:
     float Kd = 0.8; // diffuse weight 
     float Ks = 0.3; // specular weight 
 
-    Specular(): diffuse_shader(new Diffuse()), Material(){
+    Specular(): diffuse_shader(new Diffuse()), Material("Specular"){
 
     };
 

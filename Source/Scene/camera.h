@@ -32,8 +32,10 @@ public:
     float focal_length;
     Ray primary_ray;
 
-    Camera(vec4 pos, float foc, const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
-    :   position(pos), focal_length(foc), rotation(rot), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2))
+    Camera(     vec4 pos, 
+                float foc, 
+                const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
+                : position(pos), focal_length(foc), rotation(rot), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2))
     {
     }
     
