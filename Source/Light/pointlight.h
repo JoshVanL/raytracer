@@ -28,6 +28,9 @@ public:
         vec3 lightToPoint =   glm::normalize((vec3) point.position - (vec3) position);
 
         float dotProduct = glm::dot(surfaceNormal, lightToPoint);
+        if(point.shape2D->name == "Sphere"){
+            dotProduct = glm::dot(-surfaceNormal, lightToPoint);
+        }   
         float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
 
         float transparency = 1.f;

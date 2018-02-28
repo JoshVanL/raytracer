@@ -21,7 +21,7 @@ public:
         Material(transparency), refractive_index(refractive_index), air_refractive_index(1.f){
     }
  
-    virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource)  override {
+    virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes,  LightSource* lightSource)  override {
         Shape2D* shape2D            = intersection.shape2D;   
         glm::vec3 normal            = glm::normalize((vec3) intersection.position);
         glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction); 
@@ -55,7 +55,7 @@ public:
     //Returns the color of final ray intersection point
     vec3 recurse_ray(const Ray& primary_ray, Intersection intersection, 
                  Shape2D* t_shape, const std::vector<Shape2D*>& shapes, 
-                 LightSource& lightSource,
+                 LightSource* lightSource,
                  vec4 (Translucent::*direction_function)( vec4,  vec4, Shape2D*),
                  Translucent& callerObj) {
 

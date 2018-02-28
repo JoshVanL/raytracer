@@ -15,14 +15,14 @@ public:
 
     };
 
-    virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) override {
+    virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes,  LightSource* lightSource) override {
         return recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource);
     }
 
     //Returns the color of final ray intersection point
     vec3 recurse_ray(const Ray& primary_ray, Intersection intersection, 
                  Shape2D* t_shape, const std::vector<Shape2D*>& shapes, 
-                 LightSource& lightSource) {
+                 LightSource* lightSource) {
 
         int currentdepth = primary_ray.bounces;
         if(currentdepth >= primary_ray.max_depth)

@@ -27,12 +27,14 @@ public:
         glm::vec3 gloss,
         Material* material = new Solid()) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(col, gloss, material)
     {   
+        name = "Sphere";
     };
 
     Sphere(glm::vec4 &cent, float &r, glm::vec3 col) : 
         center(scalevec4(cent)), radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), 
         Shape2D(col, new Solid())
     {
+        name = "Sphere";
     };
 
     virtual bool intersect(Ray &ray, vec3 dir, vec4& intersection) override
@@ -66,7 +68,7 @@ public:
         return true;
     }
     
-    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource)  override {
+    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)  override {
         vec3 t_color;
         if(material)
             return material->material_color(intersection, ray, shapes, lightSource);
