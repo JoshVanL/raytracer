@@ -54,7 +54,7 @@ void Interpolate( ivec2 a, ivec2 b, vector<ivec2>& result);
 void DrawLineSDL(screen* screen, ivec2 a, ivec2 b, vec3 color);
 
 void VertexShader( const vec4& v, ivec2& p) {
-    vec4 camPos(0, 0, -3.001, 1);
+    vec4 camPos(0, 0, -2.3, 1);
     const float focal_length = SCREEN_WIDTH / 2;
 
     vec4 v_prime = v - camPos;
