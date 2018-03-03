@@ -50,6 +50,8 @@ bool LCTRL = false;
 /* FUNCTIONS                                                                   */
 void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram);
 void Draw(screen* screen, const Camera& camera, LightSource* lightSource, const vector<Shape2D*>& shapes);
+void Interpolate( ivec2 a, ivec2 b, vector<ivec2>& result);
+void DrawLineSDL(screen* screen, ivec2 a, ivec2 b, vec3 color);
 
 void VertexShader( const vec4& v, ivec2& p) {
     vec4 camPos(0, 0, -3.001, 1);
@@ -63,7 +65,7 @@ void VertexShader( const vec4& v, ivec2& p) {
     //fprintf(stderr, "%f\n", v.y);
     //fprintf(stderr, "%f\n", v.z);
     //fprintf(stderr, "%d\n", p.x);
-    fprintf(stderr, "%d\n", p.y);
+    //fprintf(stderr, "%d\n", p.y);
 
     //vec4 P_prime = v - camPos;
 }
@@ -73,23 +75,43 @@ void Draw(screen* screen, const Camera& camera, LightSource* lightSource, const 
 
     //omp_set_num_threads(NUM_THREADS);
 
-    for ( uint32_t i = 0; i < shapes.size(); ++i) {
+    for ( uint32_t i = 0; i < shapes.size(); i++) {
         vector<vec4> verticies = shapes[i]->verticies();
 
         //verticies[0] = shapes[i]->v0;
         //verticies[1] = shapes[i]->v1;
         //verticies[2] = shapes[i]->v2;
 
-        for (int v = 0; v < 3; ++v) {
-            ivec2 projPos;
-            VertexShader(verticies[v], projPos);
-            vec3 color(1, 1, 1);
-            PutPixelSDL(screen, projPos.x, projPos.y, color);
+        for ( int v = 0; v  < verticies.size(); v++) {
+            ivec2 projA;
+            ivec2 projB;
+            VertexShader(verticies[v], projA);
+            VertexShader(verticies[(v + 1) % verticies.size()], projB);
+            DrawLineSDL(screen, projA, projB, vec3(1, 1, 1));
         }
+
+        //for (int v = 0; v < 3; ++v) {
+        //    ivec2 projPos;
+        //    VertexShader(verticies[v], projPos);
+        //    vec3 color(1, 1, 1);
+        //    PutPixelSDL(screen, projPos.x, projPos.y, color);
+        //}
     }
 
     //#pragma omp parallel for
     //}
+}
+
+void DrawLineSDL(screen* screen, ivec2 a, ivec2 b, vec3 color) {
+    ivec2 delta = abs(a - b);
+    int pixels = max(delta.x, delta.y) + 1;
+
+    vector<ivec2> line(pixels);
+    Interpolate(a, b, line);
+
+    for (int i = 0; i < line.size(); i++) {
+        PutPixelSDL(screen, line[i].x, line[i].y, color);
+    }
 }
 
 void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram){
@@ -111,6 +133,16 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* light
             break;
         default:
             break;
+    }
+}
+
+void Interpolate( ivec2 a, ivec2 b, vector<ivec2>& result) {
+    int N = result.size();
+    vec2 step = vec2(b - a) / float(max(N - 1, 1));
+    vec2 current(a);
+    for (int i = 0; i < N; ++i) {
+        result[i] = current;
+        current += step;
     }
 }
 
