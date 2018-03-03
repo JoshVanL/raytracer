@@ -36,10 +36,12 @@ all: build_ray build_ras
 build: all
 
 build_ray:
+	mkdir -p build
 	$(CC) $(CC_OPTS) -o $(B_DIR)/$(RAY).o $(S_DIR)/$(RAY).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
 	$(CC) $(LN_OPTS) -fopenmp -o $(RAYEXEC) $(RAYOBJ) $(SDL_LDFLAGS)
 
 build_ras:
+	mkdir -p build
 	$(CC) $(CC_OPTS) -o $(B_DIR)/$(RAS).o $(S_DIR)/$(RAS).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
 	$(CC) $(LN_OPTS) -fopenmp -o $(RASEXEC) $(RASOBJ) $(SDL_LDFLAGS)
 
