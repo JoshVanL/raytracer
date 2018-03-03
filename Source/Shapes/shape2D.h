@@ -22,6 +22,7 @@ public:
     vec3    color;
     vector<Material*> materials;
     Shape3D* shape3D = nullptr;
+    
     Shape2D(vec3 color,
             vector<Material*> materials, 
             Shape3D* shape3D = nullptr): 

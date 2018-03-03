@@ -6,31 +6,33 @@
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
 #include <initializer_list>
-#include "../Materials/diffuse.h"
+#include "../Materials/MaterialProperties/gloss.h"
+#include "../Materials/material.h"
 using glm::vec3;
 using glm::vec4;
-using glm::mat3;
+using glm::mat3; 
 
 class Triangle : public Shape2D
 {
 public:
-    Shape3D* shape3D = nullptr; 
+    Shape3D* shape3D = nullptr;
+    
     glm::vec4 v0;
     glm::vec4 v1;
     glm::vec4 v2;
     glm::vec4 normal;
-
+    std::vector<std::vector<vec3>> v;
     Triangle(glm::vec4 v0, 
              glm::vec4 v1, 
              glm::vec4 v2, 
              glm::vec3 color, 
-             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>({new Diffuse()})  )
+             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>() )
         :   Shape2D(color, materials), 
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
-        name = "Triangle";
+      
     }
-
+    
     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
 
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
@@ -110,7 +112,6 @@ public:
         point.z = (v0.z + v1.z + v2.z) / 3.0;
         return point;
     }
-
 
 private:
     virtual bool isEqual(const Shape2D& other) const override {

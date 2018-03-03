@@ -4,7 +4,8 @@
 #include "shape2D.h"
 #include "../Light/intersection.h"
 #include "../Light/ray.h"
-#include "../Materials/gloss.h"
+#include "../Materials/MaterialProperties/gloss.h"
+#include "../Materials/material.h"
 #include <vector>
 #include <initializer_list>
 #define MAX_RAY_DEPTH_ 5
@@ -20,7 +21,7 @@ using namespace std;
 class Sphere : public Shape2D {
 public:
     glm::vec4 center;                         
-    float radius, radius2;                     
+    float radius, radius2;                      
 
     Sphere(
             glm::vec4 &cent, 

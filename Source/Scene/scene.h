@@ -11,7 +11,7 @@
 #include "../Materials/translucent.h"
 #include "../Materials/specular.h"
 #include "../Materials/diffuse.h"
-#include "../Materials/gloss.h"
+#include "../Materials/MaterialProperties/gloss.h"
 // Used to describe a triangular surface:
 
 
@@ -21,7 +21,7 @@
 // -1 <= z <= +1
 void LoadTestModel( std::vector<Shape2D*>& shapes )
 {
-    using glm::vec3;
+    using glm::vec3; 
     using glm::vec4;
 
     // Defines colors:

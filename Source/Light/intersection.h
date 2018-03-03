@@ -4,7 +4,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "../Shapes/shape2D.h"
-#include "../Materials/material.h"
+#include "../Materials/MaterialProperties/gloss.h"
 
 
 
