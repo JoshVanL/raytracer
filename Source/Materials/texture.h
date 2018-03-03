@@ -3,7 +3,7 @@
 
 #include "material.h"
 #include "SDL.h"
-
+using glm::vec2;
 using glm::vec3;
 using glm::vec4;
 
@@ -22,16 +22,20 @@ public:
         shape = shape2D;
         zero_zero = shape->minPosition();
         max_max = shape->maxPosition();
+
     }
 
     virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override {
         Shape2D* t_shape = intersection.shape2D;
         if(shape != t_shape)
             setup_shape(t_shape);
+        vec2 uv = shape->getUV((vec3) intersection.position)
         vec3 pos = (vec3) intersection.position;
         
     };
- 
+
+   
+
 };
 
 #endif

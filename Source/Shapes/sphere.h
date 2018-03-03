@@ -88,7 +88,9 @@ public:
     virtual glm::vec4 toworldcoordinates(vec4 cam_intersect) override{
         return cam_intersect;
     }
-
+    virtual glm::vec2 getUV(Intersection& intersect){
+    }
+    
     virtual vec3 minPosition() override {
         return vec3{center.x - radius, center.y - radius, center.z - radius};
     }

@@ -36,6 +36,7 @@
         "complex": "cpp",
         "chrono": "cpp",
         "ratio": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "string": "cpp"
     }
 }

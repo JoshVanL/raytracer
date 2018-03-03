@@ -8,6 +8,7 @@
 #include <initializer_list>
 #include "../Materials/MaterialProperties/gloss.h"
 #include "../Materials/material.h"
+using glm::vec2;
 using glm::vec3;
 using glm::vec4;
 using glm::mat3; 
@@ -16,10 +17,11 @@ class Triangle : public Shape2D
 {
 public:
     Shape3D* shape3D = nullptr;
-    
+    float area;
     glm::vec4 v0;
     glm::vec4 v1;
     glm::vec4 v2;
+    
     glm::vec4 normal;
     std::vector<std::vector<vec3>> v;
     Triangle(glm::vec4 v0, 
@@ -30,9 +32,20 @@ public:
         :   Shape2D(color, materials), 
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
-      
+ 
     }
-    
+    virtual vec2 getUV(Intersection& intersectpoint) {
+        // if (!hasTextures) return false;
+
+        //Use the same code as for getNormalAt to get the barycentric points
+        vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
+        vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
+        vec3 b = vec3(intersectpoint.position.x - v0.x, intersectpoint.position.y - v0.y, intersectpoint.position.z - v0.z);
+        mat3 A( -(vec3)intersectpoint.direction, e1, e2 );
+        vec3 x = glm::inverse( A ) * b;
+
+        return vec2(x.y,x.z);
+    }
     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
 
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);

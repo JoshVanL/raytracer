@@ -19,68 +19,29 @@
 //     vec4 bottom_right;
 //     vec4 top_left;
 //     vec4 top_right;
-    
+//     Triangle* tri_A;
+//     Triangle* tri_B;
 //     Rectangle(  vec4 t_bottom_left, 
 //                 vec4 t_bottom_right, 
 //                 vec4 t_top_left, 
 //                 vec4 t_top_right, 
 //                 vec3 color, const std::initializer_list<Material*>& materials = std::initializer_list<Material*>()) 
-//     : Shape2D(color, materials), bottom_left(toworld(t_bottom_left, false)), bottom_right(toworld((t_bottom_right, false)), top_left(toworld((t_top_left, true)), top_right(toworld(t_top_right, true)) {
+//     : Shape2D(color, materials), 
+//         tri_A(new Triangle( t_top_right, t_bottom_left, t_top_left, color ,  materials)), 
+//         tri_B(new Triangle( t_top_right, t_bottom_right, t_bottom_left, color ,  materials )) {
 
 //     };
 
-//     void thing(){
-//         vec4 A(2.f*L,0,0,1);
-//         vec4 B(0,0,0,1);
-//         vec4 C(2.f*L,0,L,1);
-//         vec4 D(0,0,L,1);
-//     }
-//     vec4 toworld(glm::vec4 cam_intersect, bool isBottomrect) {
-//         if(isBottomrect){
-//             float u = cam_intersect[1], v = cam_intersect[2];
-//             vec4 e1 = bottom_right - bottom_left;
-//             vec4 e2 = top_left - bottom_left;
-//             return bottom_left + u * e1 + v * e2;
-//         }
-//         else{
-//             float u = cam_intersect[1], v = cam_intersect[2];
-//             vec4 e2 = bottom_right - top_right;
-//             vec4 e3 = top_left - top_right;
-//             return top_right + u * e2 + v * e3;
-//         }
-//     }
+
+
 //     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
-
-//         vec3 e1 = vec3(bottom_right.x - bottom_left.x, bottom_right.y - bottom_left.y, bottom_right.z - bottom_left.z);
-//         vec3 e2 = vec3(top_left.x - bottom_left.x, top_left.y - bottom_left.y, top_left.z - bottom_left.z);
-//         vec3 e3 = vec3(top_right.x - top_left.x, top_right.y - top_left.y, top_right.z - top_left.z);
-//         vec3 b1 = vec3(ray.position.x - bottom_left.x, ray.position.y - bottom_left.y, ray.position.z - bottom_left.z);
-//         vec3 b2 = vec3(ray.position.x - top_right.x, ray.position.y - top_right.y, ray.position.z - top_right.z);
-//         glm::mat3 A1( -dir, e1, e2 );
-//         glm::mat3 A2( -dir, e2, e3 );
-//         vec3 x1 = glm::inverse( A1 ) * b1;
-//         vec3 x2 = glm::inverse( A2 ) * b2;
-//         float t1 = x1.x;
-//         float u1 = x1.y;
-//         float vv1 = x1.z; 
-//         float t2 = x2.x;
-//         float u2 = x2.y;
-//         float vv2 = x2.z;
-
-//         if (0 <= t1 && 0 <= u1 && 0 <= vv1 && u1 + vv1 <= 1) { 
-//             intersectionpoint = toworld(vec4(t1,u1,vv1,1), false);
-//             return true;
-//         } 
-//         else if  (0 <= t2 && 0 <= u2 && 0 <= vv2 && u2 + vv2 <= 1){
-//             intersectionpoint = toworld(vec4(t2,u2,vv2,1), true);
-//             return true;
-//         }
-//         return false;
+//         return (tri_A->intersect(ray, dir, intersectionpoint) || tri_B->intersect(ray, dir, intersectionpoint));
 //     }
-//     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect){
-
-//     };
+   
 //     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override{
+//         if(intersection.shape2D == tri_A)
+            
+//         vec4 point = intersection.position;
 //         vector<vec3> colors;
 //         for(int a = 0; a < materials.size(); a++){
 //             colors.push_back(materials[a]->material_color(intersection, primary_ray, shapes, lightSource));
