@@ -107,7 +107,6 @@ int main( int argc, char* argv[] ) {
     vector<Shape2D*> shapes;
     LoadTestModel(shapes);
 
-
     SDL_Event event;
     int runProgram = 0;
 

@@ -32,10 +32,11 @@ public:
         :   Shape2D(color, materials), 
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
- 
+        
     }
-    virtual vec2 getUV(Intersection& intersectpoint) {
+    virtual vec2 getUV(Intersection& intersectpoint) override {
         // if (!hasTextures) return false;
+
 
         //Use the same code as for getNormalAt to get the barycentric points
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
@@ -43,11 +44,11 @@ public:
         vec3 b = vec3(intersectpoint.position.x - v0.x, intersectpoint.position.y - v0.y, intersectpoint.position.z - v0.z);
         mat3 A( -(vec3)intersectpoint.direction, e1, e2 );
         vec3 x = glm::inverse( A ) * b;
-
+        
+    
         return vec2(x.y,x.z);
     }
     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
-
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
         vec3 b = vec3(ray.position.x - v0.x, ray.position.y - v0.y, ray.position.z - v0.z);
@@ -57,27 +58,28 @@ public:
         float t = x.x;
         float u = x.y;
         float v = x.z; 
-
         if (0 <= t && 0 <= u && 0 <= v && u + v <= 1) { 
             intersectionpoint = toworldcoordinates(vec4(t,u,v,1));
             return true;
         } 
         return false;
     }
+
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override{
+        
         vector<vec3> colors;
         for(int a = 0; a < materials.size(); a++){
             colors.push_back(materials[a]->material_color(intersection, primary_ray, shapes, lightSource));
         }
-        if(colors.size() == 0)
-            return vec3(0,0,0);
-        if(colors.size() == 1)
-            return colors[0];
-
-        vec3 t_color = glm::mix(colors[0], colors[1], 0.5f);    
-        for(int a = 2; a < colors.size(); a++){
-            t_color = glm::mix(t_color, colors[a], 0.5f);
+        vec3 t_color = vec3(0,0,0);
+        for(int a = 0; a < colors.size(); a++){
+            if(a == 0){
+               t_color = colors[0];
+            }
+            else
+               t_color = glm::mix(t_color, colors[a], 0.5f);
         }
+
         return t_color;
     }
     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {

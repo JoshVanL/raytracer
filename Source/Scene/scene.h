@@ -11,6 +11,7 @@
 #include "../Materials/translucent.h"
 #include "../Materials/specular.h"
 #include "../Materials/diffuse.h"
+#include "../Materials/texture.h"
 #include "../Materials/MaterialProperties/gloss.h"
 // Used to describe a triangular surface:
 
@@ -65,7 +66,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( F, H, G, cyan ,  {new Specular()}) );
 
     // Back wall
-    shapes.push_back( new Triangle( G, D, C, white,  {new Specular()}) );
+    const char* image_path = "Source/Images/tiger.bmp";
+    shapes.push_back( new Triangle( G, D, C, white,  {new Texture("Source/Images/tiger.bmp")}) );
     shapes.push_back( new Triangle( G, H, D, white,  {new Specular()} ) );
 
     // ---------------------------------------------------------------------------

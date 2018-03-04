@@ -53,7 +53,7 @@ public:
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(Intersection& intersection) = 0;
-    virtual vec2 getUV(Intersection& intersectpoint) =0;
+    virtual vec2 getUV(Intersection& intersectpoint) = 0;
     virtual vec3 minPosition() {
         return vec3();
     };
