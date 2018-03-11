@@ -31,7 +31,6 @@ public:
         case 1:
             return *p;
             break;
-
         case 2:
             return *(Uint16 *)p;
             break;

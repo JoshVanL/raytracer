@@ -1,6 +1,6 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
-
+#include <cmath>
 #include <glm/glm.hpp>
 #include "shape2D.h"
 #include "../Light/intersection.h"
@@ -28,11 +28,21 @@ public:
              glm::vec4 v1, 
              glm::vec4 v2, 
              glm::vec3 color, 
-             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>() )
+             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>())
         :   Shape2D(color, materials), 
-            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
+            v0((scalevec4(v0))), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
-        
+    }
+    Triangle(glm::vec4 v0, 
+             glm::vec4 v1, 
+             glm::vec4 v2, 
+             glm::vec3 color, 
+             bool scale,
+             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>()
+             )
+        :   Shape2D(color, materials), 
+            v0(v0), v1(v1), v2(v2), normal(ComputeNormal())
+    {
     }
     virtual vec2 getUV(Intersection& intersectpoint) override {
         // if (!hasTextures) return false;
@@ -90,12 +100,15 @@ public:
     }
 
     virtual vec3 getnormal(Intersection& intersection){
+
         vec3 a =  (vec3) glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
         vec3 b = -a;
-        if(glm::dot(a, (vec3) glm::normalize(intersection.direction)) <= 0)
+        if(glm::dot(a, (vec3) glm::normalize(intersection.direction)) <= 0){
             return a;
-        else
+        }
+        else{
             return b;
+        }
     }
 
     virtual vec3 minPosition() override {
@@ -152,6 +165,7 @@ private:
         norm.y = normal3.y;
         norm.z = normal3.z;
         norm.w = 1.0;
+
         return norm;
     }
 };

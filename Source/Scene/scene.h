@@ -2,7 +2,7 @@
 #define SCENE_H
 
 // Defines a simple test model: The Cornel Box
-
+#include <fstream>
 #include <glm/glm.hpp>
 #include <vector>
 #include "../Shapes/triangle.h"
@@ -13,6 +13,7 @@
 #include "../Materials/diffuse.h"
 #include "../Materials/texture.h"
 #include "../Materials/MaterialProperties/gloss.h"
+#include <sstream>
 // Used to describe a triangular surface:
 
 
@@ -20,19 +21,55 @@
 // -1 <= x <= +1
 // -1 <= y <= +1
 // -1 <= z <= +1
+  using glm::vec3;
+vec3 red(    0.75f, 0.15f, 0.15f );
+vec3 yellow( 0.75f, 0.75f, 0.15f );
+vec3 green(  0.15f, 0.75f, 0.15f );
+vec3 cyan(   0.15f, 0.75f, 0.75f );
+vec3 blue(   0.15f, 0.15f, 0.75f );
+vec3 purple( 0.75f, 0.15f, 0.75f );
+vec3 white(  0.75f, 0.75f, 0.75f );
+
+void readMeshData(std::string filepath, std::vector<Shape2D*>& shapes){
+    std::ifstream infile(filepath);
+    std::string line;
+    if(!infile){
+        printf("nope\n");
+    }
+    int counter = 0;
+    vec4 v0, v1, v2;
+    while(std::getline(infile, line)){
+        float a, b, c;
+        std::istringstream iss(line);
+        if(!(iss >> a >> b >> c)){
+            break;
+        }
+        if(counter == 0){
+            v0 = vec4(a, b, c,1);
+            counter++;
+        }
+        else if(counter == 1){
+            v1 = vec4(a, b, c,1);
+            counter++;
+        }
+        else if(counter == 2){
+            v2 = vec4(a, b, c,1);
+            shapes.push_back( new Triangle( v0, v1, v2, green ,true,  {new Specular()}));
+            counter = 0;
+        }
+    }
+    
+}
+
+
 void LoadTestModel( std::vector<Shape2D*>& shapes )
 {
+   
     using glm::vec3; 
     using glm::vec4;
 
     // Defines colors:
-    vec3 red(    0.75f, 0.15f, 0.15f );
-    vec3 yellow( 0.75f, 0.75f, 0.15f );
-    vec3 green(  0.15f, 0.75f, 0.15f );
-    vec3 cyan(   0.15f, 0.75f, 0.75f );
-    vec3 blue(   0.15f, 0.15f, 0.75f );
-    vec3 purple( 0.75f, 0.15f, 0.75f );
-    vec3 white(  0.75f, 0.75f, 0.75f );
+    
 
     // ---------------------------------------------------------------------------
     // Room
@@ -66,8 +103,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( F, H, G, cyan ,  {new Specular()}) );
 
     // Back wall
-    const char* image_path = "Source/Images/tiger.bmp";
-    shapes.push_back( new Triangle( G, D, C, white,  {new Texture("Source/Images/tiger.bmp")}) );
+    shapes.push_back( new Triangle( G, D, C, white,  {new Specular()}) );
     shapes.push_back( new Triangle( G, H, D, white,  {new Specular()} ) );
 
     // ---------------------------------------------------------------------------
@@ -144,4 +180,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec3 emptyv3 =  vec3(0,0,0);
     shapes.push_back( new Sphere( A, radius, blue, { new Translucent() }) );
 }
+
+
+
 #endif
