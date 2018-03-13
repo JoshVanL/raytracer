@@ -26,7 +26,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
 
     // Defines colors:
     vec3 red(    0.75f, 0.15f, 0.15f );
-    vec3 yellow( 1, 1, 0.15f );
+    vec3 yellow( 0.75f, 0.75f, 0.15f );
     vec3 green(  0.15f, 0.75f, 0.15f );
     vec3 cyan(   0.15f, 0.75f, 0.75f );
     vec3 blue(   0.10f, 0.10f, 0.70f );
@@ -44,7 +44,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     // Room
 
-    float L = 1000;			// Length of Cornell Box side.
+    float L = 555;			// Length of Cornell Box side.
 
     vec4 A(L,0,0,1);
     vec4 B(0,0,0,1);
