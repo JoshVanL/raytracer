@@ -23,14 +23,14 @@ public:
     Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2,
              glm::vec3 color, glm::vec3 gloss, Material* mat)
         :   Shape2D(color, gloss, mat),
-            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
+            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(vec4())
     {
     }
 
     Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2,
              glm::vec3 color, glm::vec3 gloss)
         :   Shape2D(color, gloss, new Solid()),
-            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
+            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(vec4())
     {
     }
 
@@ -112,6 +112,17 @@ public:
         return verts;
     }
 
+    vec3 ComputeNormal() {
+        vec3 norm;
+        glm::vec3 e1 = glm::vec3(v1.x-v0.x,v1.y-v0.y,v1.z-v0.z);
+        glm::vec3 e2 = glm::vec3(v2.x-v0.x,v2.y-v0.y,v2.z-v0.z);
+        glm::vec3 normal3 = glm::normalize( glm::cross( e2, e1 ) );
+        norm.x = normal3.x;
+        norm.y = normal3.y;
+        norm.z = normal3.z;
+        return norm;
+    }
+
 private:
     virtual bool isEqual(const Shape2D& other) const override {
         Triangle tri = static_cast<const Triangle&>(other);
@@ -126,17 +137,5 @@ private:
         return false;
     }
 
-    vec4 ComputeNormal()
-    {
-        vec4 norm;
-        glm::vec3 e1 = glm::vec3(v1.x-v0.x,v1.y-v0.y,v1.z-v0.z);
-        glm::vec3 e2 = glm::vec3(v2.x-v0.x,v2.y-v0.y,v2.z-v0.z);
-        glm::vec3 normal3 = glm::normalize( glm::cross( e2, e1 ) );
-        norm.x = normal3.x;
-        norm.y = normal3.y;
-        norm.z = normal3.z;
-        norm.w = 1.0;
-        return norm;
-    }
 };
 #endif

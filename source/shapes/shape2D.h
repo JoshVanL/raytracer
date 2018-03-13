@@ -22,6 +22,7 @@ public:
 
     vec3    color;
     vec3    gloss;
+    vec4    normal;
     Material* material = nullptr;
     Shape3D* shape3D = nullptr;
     Shape2D(vec3 color, vec3 gloss, Material* material, Shape3D* shape3D = nullptr): 
@@ -62,6 +63,10 @@ public:
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;
+
+    virtual vec3 ComputeNormal() {
+        return vec3();
+    }
 
     virtual vec3 minPosition() {
         return vec3();
