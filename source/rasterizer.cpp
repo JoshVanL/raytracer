@@ -43,7 +43,7 @@ using glm::vec2;
 #define NUM_THREADS 16
 #define LIGHTPOS vec3(0,-0.5,-0.7)
 #define LIGHTPOWER vec3( 6, 3, 2 )
-#define INDIRECTLIGHTPOWERPERAREA vec3( 0.5f, 0.5f, 0.5f )
+#define INDIRECTLIGHTPOWERPERAREA vec3( 0.3f, 0.3f, 0.3f )
 
 
 bool LCTRL = false;
@@ -98,14 +98,11 @@ void Draw(screen* screen, const Camera& camera, LightSource* lightSource, vector
 }
 
 void DrawPolygon( screen *screen, const Camera& camera, const vector<vec4>& vertices, const vec3 color, Shape2D* shape) {
-    //fprintf(stderr, "%f\n", shape->color);
     int V = vertices.size();
     vector<Pixel> vertexPixels( V );
     for( int i=0; i<V; i++ ) {
         VertexShader( vertices[i], vertexPixels[i], shape);
     }
-    //fprintf(stderr, "HERE\n");
-    //fprintf(stderr, "%f\n", shape->color);
 
 
     vector<Pixel> leftPixels;
@@ -238,9 +235,9 @@ void Interpolate(const Camera& camera, const Pixel& a, const Pixel& b, vector<Pi
         result[i].zinv = a.zinv + sz * i;
         result[i].shape = a.shape;
 
-        result[i].pos3d[1] = (result[i].y - SCREEN_HEIGHT / 2) / focal_length * (result[i].pos3d[2] - camera.position[2]) + camera.position[1];
-        result[i].pos3d[0] = (result[i].x - SCREEN_WIDTH / 2) / focal_length * (result[i].pos3d[2] - camera.position[2]) + camera.position[0];
-        result[i].pos3d[2] = 1 / result[i].zinv + camera.position[2];
+        result[i].pos3d.x = (result[i].x - SCREEN_WIDTH / 2) / focal_length * (result[i].pos3d.z - camera.position.z) + camera.position.x;
+        result[i].pos3d.y = (result[i].y - SCREEN_HEIGHT / 2) / focal_length * (result[i].pos3d.z - camera.position.z) + camera.position.y;
+        result[i].pos3d.z = 1 / result[i].zinv + camera.position.z;
     }
 }
 
