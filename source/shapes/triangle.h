@@ -3,14 +3,11 @@
 
 #include <glm/glm.hpp>
 #include "shape2D.h"
-#include "../materials/solid.h"
-#include "../light/intersection.h"
-#include "../light/ray.h"
-
+#include <vector>
 using glm::vec3;
 using glm::vec4;
 using glm::mat3;
-
+using namespace std;
 class Triangle : public Shape2D
 {
 public:
@@ -21,46 +18,14 @@ public:
     glm::vec4 normal;
 
     Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2,
-             glm::vec3 color, glm::vec3 gloss, Material* mat)
-        :   Shape2D(color, gloss, mat),
+             glm::vec3 color)
+        :   Shape2D(color),
             v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(vec4())
     {
     }
 
-    Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2,
-             glm::vec3 color, glm::vec3 gloss)
-        :   Shape2D(color, gloss, new Solid()),
-            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(vec4())
-    {
-    }
-
-    virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
-
-        vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
-        vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
-        vec3 b = vec3(ray.position.x - v0.x, ray.position.y - v0.y, ray.position.z - v0.z);
-        mat3 A( -dir, e1, e2 );
-        vec3 x = glm::inverse( A ) * b;
-
-        float t = x.x;
-        float u = x.y;
-        float v = x.z;
-
-        if (0 <= t && 0 <= u && 0 <= v && u + v <= 1) {
-            intersectionpoint = toworldcoordinates(vec4(t,u,v,1));
-            return true;
-        }
-        return false;
-    }
-    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource& lightSource) override{
-        vec3 t_color;
-        if(material != nullptr){
-            t_color = material->material_color(intersection, primary_ray, shapes, lightSource) * gloss;
-            return t_color;
-        }
-        else{
-            return color;
-        }
+    virtual glm::vec3 getcolor() override{
+        return color;
     }
     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {
         float u = cam_intersect[1], v = cam_intersect[2];

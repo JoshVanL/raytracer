@@ -1,4 +1,4 @@
-#ifndef POINTLIGHT_H
+/*#ifndef POINTLIGHT_H
 #define POINTLIGHT_H
 
 #include "lightsource.h"
@@ -71,3 +71,4 @@ public:
 };
 
 #endif
+*/

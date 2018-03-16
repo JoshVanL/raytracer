@@ -1,4 +1,4 @@
-#ifndef KD_TREE_H
+/*#ifndef KD_TREE_H
 #define KD_TREE_H
 
 #include "SDL2/SDL.h"
@@ -187,3 +187,4 @@ class KDNode {
 };
 
 #endif
+*/

@@ -5,8 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
 
-#include "../light/ray.h"
-
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
@@ -32,14 +30,13 @@ public:
     mat4 rotation;
     float yaw;
     float focal_length;
-    Ray primary_ray;
 
     Camera(vec4 pos, float foc, const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
-    :   position(pos), focal_length(foc), rotation(rot), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2))
+    :   position(pos), focal_length(foc), rotation(rot)
     {
     }
 
-    Camera() : position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1))), focal_length(SCREEN_WIDTH/2), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2))
+    Camera() : position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1))), focal_length(SCREEN_WIDTH/2)
     {
     }
 
@@ -53,19 +50,15 @@ public:
     void translateCameraVert(SDL_KeyboardEvent key){
         switch( key.keysym.sym ){
             case SDLK_DOWN:
-                primary_ray.position += rotation*vec4(0,0.3f,0,0);
                 position += rotation*vec4(0,0.3f,0,0);
                 break;
             case SDLK_LEFT:
-                primary_ray.position += rotation*vec4(-0.5,0,0,0);
                 position += rotation*vec4(-0.5f,0,0,0);
                 break;
             case SDLK_UP:
-                primary_ray.position += rotation*vec4(0,-0.3f,0,0);
                 position += rotation*vec4(0,-0.3f,0,0);
                 break;
             case SDLK_RIGHT :
-                primary_ray.position += rotation*vec4(0.5f,0,0,0);
                 position += rotation*(vec4(0.5f,0,0,0));
                 break;
         }
@@ -74,19 +67,15 @@ public:
     void translateCamera(SDL_KeyboardEvent key){
         switch( key.keysym.sym ){
             case SDLK_UP:
-                primary_ray.position += rotation*vec4(0,0,0.3f,0);
                 position += rotation*vec4(0,0,0.3f,0);
                 break;
             case SDLK_LEFT:
-                primary_ray.position += rotation*vec4(-0.5f,0,0,0);
                 position += rotation*vec4(-0.5f,0,0,0);
                 break;
             case SDLK_DOWN:
-                primary_ray.position += rotation*vec4(0,0,-0.3f,0);
                 position += rotation*vec4(0,0,-0.3f,0);
                 break;
             case SDLK_RIGHT :
-                primary_ray.position += rotation*vec4(0.5f,0,0,0);
                 position += rotation*(vec4(0.5f,0,0,0));
                 break;
         }
@@ -107,15 +96,6 @@ public:
                 rotation = rotation*ROTATE_RIGHT;
                 break;
         }
-    }
-
-    Ray createNewRay(int i, int j) const {
-
-        vec4 dir = glm::normalize(  rotation * vec4(i - SCREEN_WIDTH / 2 - position.x,
-                                    j - SCREEN_HEIGHT/ 2 - position.y,
-                                    focal_length - position.z, 1));
-
-        return Ray(position, dir, 0);
     }
 
 };

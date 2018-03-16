@@ -5,8 +5,6 @@
 #include <vector>
 
 #include <glm/glm.hpp>
-#include "ray.h"
-#include "intersection.h"
 
 #define PI           3.14159265358979323846
 
@@ -29,14 +27,7 @@ public:
     }
 
 
-    virtual vec3 lightAtPosition(Intersection& point, const std::vector<Shape2D*>& shapes) = 0;
-
-    virtual vec3 getDirectLight(Intersection& point, const std::vector<Shape2D*>& shapes) = 0;
-
-    virtual vec3 getIndirectLight() = 0;
-
-    virtual bool isOccluded(Intersection& point, const std::vector<Shape2D*>& shapes, float& transparency) = 0;
-
+  
 };
 
 #endif
