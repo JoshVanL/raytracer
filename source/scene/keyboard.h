@@ -10,7 +10,8 @@ public:
 
     bool LCTRL = false;
     bool LSHIFT = false;
-    Keyboard(){
+    Camera& camera;
+    Keyboard(Camera& camera) : camera(camera){
 
     }
 
@@ -32,7 +33,7 @@ public:
     }
 
 
-    void ProcessKeyDown(SDL_KeyboardEvent key, LightSource* lightSource, Camera& camera, int& runProgram){
+    void ProcessKeyDown(SDL_KeyboardEvent key, LightSource* lightSource, int& runProgram){
         if(key.keysym.sym == SDLK_LCTRL){
             LCTRL = true;
             runProgram = 0;

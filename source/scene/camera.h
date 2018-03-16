@@ -36,7 +36,7 @@ public:
     {
     }
 
-    Camera() : position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1))), focal_length(SCREEN_WIDTH/2)
+    Camera() : position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1))), focal_length(SCREEN_WIDTH)
     {
     }
 
