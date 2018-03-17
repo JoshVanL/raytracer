@@ -12,14 +12,18 @@ class Pixel {
 public:
     int x, y;
     float zinv;
-    vec3 pos3d;
+    glm::vec3 light = vec3(2.f, 3.f, 4.f);
+    glm::vec3 pos3d;
     Shape2D* shape;
+
     const static int SCREEN_WIDTH = 1000;
     const static int SCREEN_HEIGHT = 1000;
     constexpr static float focal_length = 1000.0f;
+
     Pixel(){
 
     }
+    
     Pixel(int x, int y, float zinv, vec3 pos3D, Shape2D* shape2D): x(x), y(y), zinv(zinv), pos3d(pos3D), shape(shape2D){
 
     }
@@ -43,6 +47,7 @@ public:
             pixels[i].pos3d.z = 1 / pixels[i].zinv + origin.z;
         }
     }
+
 
     // @: Takes 4D position of a vertex v, computes 2D image position, stores it inside 2D pixel vector p = (x,y) and assigns corresponding 2d shape
     static void VertexShader(const vec4& v, const vec3& origin, Pixel& p, Shape2D* shape) {
