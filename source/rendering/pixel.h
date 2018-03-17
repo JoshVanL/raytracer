@@ -56,13 +56,7 @@ public:
         p.pos3d = vec3(v);
         p.shape = shape;
     }
-    // static Pixel transformScreens(Pixel lightPixel, const vec4& cameraOrigin, Shape2D* shape){
-    //     Pixel cameraPixel;
-    //     vec4 point4d(lightPixel.pos3d, 1);
-    //     // VertexShader(point4d, cameraOrigin, cameraPixel, shape);
-    //     return cameraPixel;
-    // }
-    // @: Computes 2 vectors 'leftPixels' & 'rightPixels' storing the min & max x-value respectively, for each horizontal row the shape occupies
+     // @: Computes 2 vectors 'leftPixels' & 'rightPixels' storing the min & max x-value respectively, for each horizontal row the shape occupies
     static void ComputePolygonRows(const vec3& origin, const vector<Pixel>& vertexPixels, vector<Pixel>& leftPixels, vector<Pixel>& rightPixels) {
         int minY = vertexPixels[0].y;
         int maxY = vertexPixels[0].y;
@@ -107,7 +101,7 @@ public:
 
             // Use linear interpolation to find the x-coordinate for each row it occupies.
             vector<Pixel>line = vector<Pixel> (pixels);
-            Interpolate(origin, vertexPixels[i], vertexPixels[(i + 1) % vertexPixels.size()], line);
+            Pixel::Interpolate(origin, vertexPixels[i], vertexPixels[(i + 1) % vertexPixels.size()], line);
             
             //Update the corresponding values in rightPixels and leftPixels.
             for (int r = 0; r < rows; r++) {
@@ -130,6 +124,13 @@ public:
             }
         }
     }
+    // static Pixel transformScreens(Pixel lightPixel, const vec4& cameraOrigin, Shape2D* shape){
+    //     Pixel cameraPixel;
+    //     vec4 point4d(lightPixel.pos3d, 1);
+    //     // VertexShader(point4d, cameraOrigin, cameraPixel, shape);
+    //     return cameraPixel;
+    // }
+    
 
 };
 

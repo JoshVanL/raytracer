@@ -14,7 +14,6 @@ class Ray;
 class Material;
 class Intersection;
 class Shape3D;
-class LightSource;
 
 class Shape2D{
 public:
