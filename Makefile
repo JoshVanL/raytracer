@@ -1,5 +1,4 @@
-RAY=raytracer
-RAS=rasterizer
+RAS=main
 
 ########
 #   Directories

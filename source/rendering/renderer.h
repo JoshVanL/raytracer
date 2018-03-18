@@ -21,17 +21,17 @@ using namespace std;
 
 Pixel depthBuffer[SCREEN_HEIGHT][SCREEN_WIDTH];
 glm::vec3 frameBuffer[SCREEN_HEIGHT][SCREEN_WIDTH];
-float geometryBuffer[SCREEN_HEIGHT][SCREEN_WIDTH];
 const float focal_length = SCREEN_WIDTH;
 class Renderer {
 
 public:
+    
 
     Renderer(){
 
     }
 
-    static void Draw(screen* screen, const vec3& origin, LightSource* lightSource, vector<Shape2D*>& shapes) {
+    static void Draw(screen* screen, const vec3& origin, LightSource* lightSource, vector<Shape2D*>& shapes, bool draw = true) {
         memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
 
         omp_set_num_threads(NUM_THREADS);
@@ -44,7 +44,24 @@ public:
         }
         RenderColor();
         RenderLight(lightSource);
-        RenderFrameBuffer(screen);
+        if(draw){
+            RenderFrameBuffer(screen);
+        };
+    }
+
+    static void ProcessPolygons( screen *screen, LightSource* lightSource, const vec3& origin, const vector<vec4>& vertices, vector<Shape2D*>& shapes) {
+        int V = vertices.size();
+        vector<Pixel> vertexPixels( V );
+        for( int i=0; i<V; i++ ) {
+            Pixel::VertexShader(vertices[i], origin, vertexPixels[i], shapes[i]);
+        }
+
+        vector<Pixel> leftPixels;
+        vector<Pixel> rightPixels;
+        Pixel::ComputePolygonRows(origin, vertexPixels, leftPixels, rightPixels );
+        for (int i = 0; i < leftPixels.size(); i++) {
+            RenderLine(screen, lightSource, origin, leftPixels[i], rightPixels[i], shapes[i]->color);
+        }
     }
 
     static void RenderPolygon( screen *screen, LightSource* lightSource, const vec3& origin, const vector<vec4>& vertices, const vec3 color, Shape2D* shape) {
@@ -83,10 +100,11 @@ public:
         memset(&frameBuffer, 0, sizeof(frameBuffer));
         for(int i = 0; i < SCREEN_HEIGHT; i++){
             for(int j = 0; j < SCREEN_WIDTH; j++){
-                for(int c = max(i-1, 0); c < min(i+1,SCREEN_HEIGHT); c++){
+                frameBuffer[i][j] = vec3(0,0,0);
+                for(int c = max(i-1, 0); c < min(i+2,SCREEN_HEIGHT); c++){
                     for(int d = max(j-1, 0); d < min(j+1,SCREEN_WIDTH); d++){
                         if(depthBuffer[c][d].shape != nullptr)
-                            frameBuffer[i][j] += depthBuffer[i][j].shape->color;
+                            frameBuffer[i][j] += depthBuffer[c][d].shape->color;
                     }
                 }
                 frameBuffer[i][j] /= 8.f;
@@ -108,7 +126,7 @@ public:
 
                     float result =  dis.x *  depthBuffer[i][j].shape->ComputeNormal().x + 
                                     dis.y *  depthBuffer[i][j].shape->ComputeNormal().y + 
-                                    dis.y *  depthBuffer[i][j].shape->ComputeNormal().z;
+                                    dis.z *  depthBuffer[i][j].shape->ComputeNormal().z;
 
                     vec3 light_area = result / r * LIGHTPOWER;
                     light_area = (INDIRECTLIGHTPOWERPERAREA + light_area);
@@ -121,7 +139,7 @@ public:
     static void RenderFrameBuffer(screen* screen){
         for(int i = 0; i < SCREEN_HEIGHT; i++){
             for(int j = 0; j < SCREEN_WIDTH; j++){
-                PutPixelSDL(screen, depthBuffer[i][j].x, depthBuffer[i][j].y, frameBuffer[i][j]);
+                PutPixelSDL(screen, i, j, frameBuffer[i][j]);
             }
         }
     }

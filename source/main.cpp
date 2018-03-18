@@ -43,7 +43,7 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* light
             keyboard.ProcessKeyDown(event.key, lightSource, runProgram);
             if(runProgram == 1){
                 auto started = std::chrono::high_resolution_clock::now();
-                Renderer::Draw(screen, (vec3) camera.position, lightSource, shapes);
+                Renderer::Draw(screen, (vec3) camera.position, lightSource, shapes, true);
                 auto done = std::chrono::high_resolution_clock::now();
                 cout << "Render time: ";
                 cout << chrono::duration_cast<chrono::milliseconds>(done-started).count();
@@ -72,7 +72,7 @@ int main( int argc, char* argv[] ) {
     int runProgram = 0;
     
     auto started = std::chrono::high_resolution_clock::now();
-    Renderer::Draw(screen, (vec3) camera.position, spotLight, shapes);
+    Renderer::Draw(screen, (vec3) camera.position, spotLight, shapes, true);
 
     auto done = std::chrono::high_resolution_clock::now();
     cout << "Render time: ";
