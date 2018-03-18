@@ -108,16 +108,16 @@ public:
                     }
                 }
                 frameBuffer[i][j] /= 8.f;
-            } 
+            }
         }
     }
 
-    static void RenderLight(LightSource* lightSource){
+    static void RenderLight(LightSource* lightSource, bool saveColorToShape = false){
         for(int i = 0; i < SCREEN_HEIGHT; i++){
             for(int j = 0; j < SCREEN_WIDTH; j++){
                 vec3 color = frameBuffer[i][j];
                 if(depthBuffer[i][j].shape == nullptr) {
-                    frameBuffer[i][j] = color + INDIRECTLIGHTPOWERPERAREA;
+                    frameBuffer[i][j] = color;
                 }
                 else {
                     vec3 dis = (vec3)(lightSource->position) - depthBuffer[i][j].pos3d;

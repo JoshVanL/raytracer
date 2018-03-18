@@ -1,77 +1,59 @@
 #ifndef RASTERISER_H
 #define RASTERISER_H
-
 #include <glm/glm.hpp>
-#include <SDL2/SDL.h>
-#include "../scene/SDLauxiliary.h"
-#include "../scene/camera.h"
-#include "renderer.h"
+#include <glm/gtx/normal.hpp>
 #include "../light/lightsource.h"
+#include <math.h>
 using glm::vec3;
-
-class Rasteriser 
-{
+using glm::vec4;
+class Rasteriser {
 public:
-    glm::mat4 projection;
-    glm::mat4 modelView;
-    glm::mat4 viewPort;
-    screen* screen;
-    Camera camera;
-    LightSource lightSource;
 
-    float depth;
+    Rasteriser(){};
 
-    Rasteriser(SDL_Surface *screen, Camera &camera,LightSource &lightSource)
-        : screen(screen), camera(camera), lightSource(LightSource)
-    {
+    static glm::mat4 ViewMatrix(vec3 eye, vec3 center, vec3 up) {
+        vec3 zaxis = glm::normalize(eye - center);
+        vec3 xaxis = glm::normalize(glm::cross(up, zaxis));
+        vec3 yaxis = glm::cross(zaxis, xaxis);
 
-    };
-    void Projection(float ind) {
-        projection = glm::mat4(1);
-        projection[3][2] = ind;
-    }
-    void LookAt(vec3 eye, vec3 center, vec3 up)
-    {
-        vec3 z = normalize(eye - center);
-        vec3 x = normalize(cross(up,z));
-        vec3 y = normalize(cross(z,x));
+        glm::mat4 orientation(  vec4( xaxis.x, yaxis.x, zaxis.x, 0 ),
+                                vec4( xaxis.y, yaxis.y, zaxis.y, 0 ),
+                                vec4( xaxis.z, yaxis.z, zaxis.z, 0 ),
+                                vec4(   0,       0,       0,     1 ));
 
-        modelView = glm::mat4(1);
-        for (int i=0; i<3; i++) {
-            modelView[0][i] = x[i];
-            modelView[1][i] = y[i];
-            modelView[2][i] = z[i];
-            modelView[i][3] = -center[i];
-        }
-    }
-    void ViewPort(int x, int y, int w, int h){
-        viewPort = glm::mat4(1);
-        viewPort[0][3] = x+w/2.f;
-        viewPort[1][3] = y+h/2.f;
-        viewPort[2][3] = depth/2.f;
-
-        viewPort[0][0] = w/2.f;
-        viewPort[1][1] = h/2.f;
-        viewPort[2][2] = depth/2.f;
+        glm::mat4 translation(
+                                vec4(   1,      0,      0,   0 ),
+                                vec4(   0,      1,      0,   0 ), 
+                                vec4(   0,      0,      1,   0 ),
+                                vec4(-eye.x, -eye.y, -eye.z, 1 )
+                        );            
+        return ( orientation * translation );          
     }
 
-    void Rasterise(){
-        ViewPort(0, 0, SCREEN_WIDTH-1, SCREEN_HEIGHT-1);
-        vec3 centerO(0,0,0);
-        vec3 up(0,1,0);
-        vec3 center;
 
-        light_pos = lightSource.position;
-        camera_pos = camera.position;
-	    vec3 dir = camera.direction;
-        Projection(-1.0f);
 
-        vec3 d(0,0,-1);
+    static glm::mat4 ViewPortMatrix(int x, int y, int w, int h) {
 
-        LookAt(light_pos , d+light_pos , vec3(0,1,0) );
-    }
+        glm::mat4 viewport(  vec4( w/2.f,     0,       0,     (y + ( y + h))/2.f ),
+                             vec4(   0,       w/2.f,   0.5,   (x + ( x + w))/2.f ),
+                             vec4(   0,       0,       0.5,   0.5f ),
+                             vec4(   0,       0,       0,     1    ));
+      
+        return viewport;          
+    }   
+
+    static glm::mat4 PerspectiveProjectionMatrix(float fov, int y, int w, int h) {
+        float s = 1.f/(tan(fov/2.f) * (PI/180.f));
+
+        glm::mat4 projection(  vec4(   s,       0,       0,      0 ),
+                               vec4(   0,       s,       0,      0 ),
+                               vec4(   0,       0,       -1.f,  -1 ),
+                               vec4(   0,       0,       0,      0 ));
+      
+        return projection;          
+    }  
 
 };
 
 
-#endif
+#endif 
