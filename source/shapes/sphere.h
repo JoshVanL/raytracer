@@ -35,6 +35,7 @@ public:
         //     vec3 intersectNormal = intersectDir - (vec3) center;
         //     return glm::normalize(intersectNormal);
         // }
+        return vec3(0,0,0);
     }
     virtual glm::vec4 toworldcoordinates(vec4 cam_intersect) override{
         return cam_intersect;

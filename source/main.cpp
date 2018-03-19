@@ -23,6 +23,7 @@
 #include "shapes/sphere.h"
 #include "light/lightsource.h"
 #include "rendering/renderer.h"
+#include "rendering/rasteriser.h"
 using namespace std;
 
 using glm::vec3;
@@ -37,13 +38,13 @@ bool LCTRL = false;
 /* ----------------------------------------------------------------------------*/
 /* FUNCTIONS                                                                   */
 
-void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram){
+void Update(Rasteriser* rast, screen* screen, SDL_Event& event, Camera& camera, LightSource* lightSource, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram){
     switch(event.type ){
         case SDL_KEYDOWN:
             keyboard.ProcessKeyDown(event.key, lightSource, runProgram);
             if(runProgram == 1){
                 auto started = std::chrono::high_resolution_clock::now();
-                Renderer::Draw(screen, (vec3) camera.position, lightSource, shapes, true);
+                rast->Draw(screen, lightSource, camera , shapes);
                 auto done = std::chrono::high_resolution_clock::now();
                 cout << "Render time: ";
                 cout << chrono::duration_cast<chrono::milliseconds>(done-started).count();
@@ -61,29 +62,28 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, LightSource* light
 
 int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
-
     LightSource* spotLight = new LightSource();
-    Camera camera(vec4(0.45, 0.5, -2.0, 1), focal_length);
+    Camera camera(vec4(0.45, 0.5, -2.0, 1));
     Keyboard keyboard(camera);
     vector<Shape2D*> shapes;
     LoadTestModel(shapes);
 
     SDL_Event event;
     int runProgram = 0;
-    
+    Rasteriser* rast = new Rasteriser(1);
     auto started = std::chrono::high_resolution_clock::now();
-    Renderer::Draw(screen, (vec3) camera.position, spotLight, shapes, true);
+    rast->Draw(screen, spotLight, camera , shapes);
 
-    auto done = std::chrono::high_resolution_clock::now();
-    cout << "Render time: ";
-    cout << chrono::duration_cast<chrono::milliseconds>(done-started).count();
-    cout << " ms \n";
+    // auto done = std::chrono::high_resolution_clock::now();
+    // cout << "Render time: ";
+    // cout << chrono::duration_cast<chrono::milliseconds>(done-started).count();
+    // cout << " ms \n";
 
     SDL_Renderframe(screen);
 
     while(runProgram != -1){
         while( SDL_PollEvent( &event ) ){
-            Update(screen, event, camera, spotLight, keyboard, shapes, runProgram);
+            Update(rast, screen, event, camera, spotLight, keyboard, shapes, runProgram);
         }
     }
     SDL_SaveImage( screen, "screenshot.bmp" );

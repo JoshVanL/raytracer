@@ -4,9 +4,7 @@
 #include <typeinfo>
 #include <vector>
 #include <glm/glm.hpp>
-#include "../rendering/pixel.h"
-
-
+// #include "../rendering/rasteriser.h"
 #define PI           3.14159265358979323846
 using glm::vec3;
 
@@ -15,22 +13,23 @@ public:
     ////////////////////////
     glm::vec3 indirect_light = vec3(0.3f,0.3f,0.3f);
     glm::vec3 indirect_light_powperarea = vec3( 0.3f, 0.3f, 0.3f );
-    int SCREEN_WIDTH =1000;
-    int SCREEN_HEIGHT =1000;
+
     ////////////////////////
 
     glm::vec4 position;
+    glm::vec4 direction;
     glm::vec3 color;
-    Pixel shadowBuffer[1000][1000];
+    // Pixel shadowBuffer[1000][1000];
     
     glm::vec3 power;
 
-    LightSource(glm::vec4 pos, glm::vec3 col, vec3 pow) :
-        position(pos),color(col), power(pow) {
+    LightSource(glm::vec4 pos, glm::vec4 direction, glm::vec3 col, vec3 pow) :
+        position(pos),color(col), power(pow), direction(direction) {
 
     };
     LightSource(){
         position    = glm::vec4(0, 0.5, -0.7, 1.0);
+        direction   = glm::vec4(0, 0, 1, 1);
         color       = glm::vec3(1,1,1);
         power       = vec3( 6, 3, 2 );
     }
@@ -48,16 +47,16 @@ public:
     // }
 
     // void LightDrawPolygon(const vector<vec4>& vertices, const vec3 color, Shape2D* shape) {
-    //     int V = vertices.size();
-    //     vector<Pixel> vertexPixels( V );
-    //     for( int i=0; i<V; i++ ) {
-    //         Pixel::VertexShader(vertices[i], (vec3) position, vertexPixels[i], shape);
-    //     }
+    //     // int V = vertices.size();
+    //     // vector<Pixel> vertexPixels( V );
+    //     // for( int i=0; i<V; i++ ) {
+    //     //     Rasteriser::VertexShader(vertices[i], (vec3) position, vertexPixels[i], shape);
+    //     // }
 
-    //     vector<Pixel> leftPixels;
-    //     vector<Pixel> rightPixels;
-    //     Pixel::ComputePolygonRows((vec3) position, vertexPixels, leftPixels, rightPixels );
-    //     LightDrawRows(leftPixels, rightPixels, color );
+    //     // vector<Pixel> leftPixels;
+    //     // vector<Pixel> rightPixels;
+    //     // Renderer::ProcessPolygonRows((vec3) position, vertexPixels, leftPixels, rightPixels );
+    //     // LightDrawRows(leftPixels, rightPixels, color );
     // }
 
     // void LightDrawLineSDL(const Pixel& a, const Pixel& b, vec3 color) {

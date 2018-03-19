@@ -34,6 +34,7 @@
         "typeinfo": "cpp",
         "utility": "cpp",
         "complex": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "ratio": "cpp"
     }
 }
