@@ -10,7 +10,7 @@ public:
 
     PointLight( const vec4& pos         = vec4(1, 0.5, -1.4, 1.0), 
                 const glm::vec3& col    = vec3(1, 1, 1), 
-                const float& pow        = 10.f) 
+                const float& pow        = 30.f) 
     : LightSource(pos, col, pow){
 
     };
@@ -54,7 +54,7 @@ public:
     }
 
     virtual vec3 getIndirectLight() override {
-        return vec3(0.3,0.2,0.18);
+        return vec3(0.55,0.3,0.23);
     }
 
 };

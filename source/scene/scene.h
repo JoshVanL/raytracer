@@ -99,24 +99,24 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 H(0,L,L,1);
 
     // Floor:
-    shapes.push_back( new Triangle( C, B, A, white ,  {new Texture("source/materials/textures/242.bmp")}));
-    shapes.push_back( new Triangle( C, D, B, white ,  {new Texture("source/materials/textures/242.bmp")} ));
+    shapes.push_back( new Triangle( C, B, A, white ,  {new Texture("source/materials/textures/carpet.bmp")}));
+    shapes.push_back( new Triangle( C, D, B, white ,  {new Texture("source/materials/textures/carpet.bmp")} ));
 
     // Left wall
-    shapes.push_back( new Triangle( A, E, C, purple,  {new Specular()} ) );
-    shapes.push_back( new Triangle( C, E, G, purple,  {new Specular()} ) );
+    shapes.push_back( new Triangle( A, E, C, white,  {new Texture("source/materials/textures/wall2.bmp") }) );
+    shapes.push_back( new Triangle( C, E, G, white,  {new Texture("source/materials/textures/wall2.bmp") } ) );
 
     // Right wall
-    shapes.push_back( new Triangle( F, B, D, yellow,  {new Specular()} ) );
-    shapes.push_back( new Triangle( H, F, D, yellow,  {new Specular()} ) );
+    shapes.push_back( new Triangle( F, B, D, yellow,  {new Texture("source/materials/textures/wall1.bmp")} ) );
+    shapes.push_back( new Triangle( H, F, D, yellow,  {new Texture("source/materials/textures/wall1.bmp")} ) );
 
     // Ceiling
-    shapes.push_back( new Triangle( E, F, G, cyan ,  {new Specular()}) );
-    shapes.push_back( new Triangle( F, H, G, cyan ,  {new Specular()}) );
+    shapes.push_back( new Triangle( E, F, G, white ,  {new Texture("source/materials/textures/ceil.bmp")}) );
+    shapes.push_back( new Triangle( F, H, G, white ,  {new Texture("source/materials/textures/ceil.bmp")}) );
 
     // Back wall
-    shapes.push_back( new Triangle( G, D, C, white,  {new Specular()}) );
-    shapes.push_back( new Triangle( G, H, D, white,  {new Specular()} ) );
+    shapes.push_back( new Triangle( G, D, C, white,  {new Texture("source/materials/textures/water.bmp")}) );
+    shapes.push_back( new Triangle( G, H, D, white,  {new Texture("source/materials/textures/water.bmp")}) );
 
     // ---------------------------------------------------------------------------
     // Short block

@@ -1,10 +1,12 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "material.h"
 #include <SDL.h>
 #include <math.h>
+#include <omp.h>
+
 #include "diffuse.h"
+#include "material.h"
 #include "../scene/SDLauxiliary.h"
 
 
@@ -29,6 +31,8 @@ public:
     float Ks = 0.3; // specular weight
 
     Texture(const char* imagePath) : Material("Texture") {
+#pragma omp critical
+        {
         diffuse_shader = new Diffuse();
 
         FILE* f = fopen(imagePath, "rb");
@@ -39,22 +43,17 @@ public:
         width = *(int*)&info[18];
         height = *(int*)&info[22];
 
-        width  = width % 3100;
+        width  = width % 3000;
 
         int size = 3 * width * height;
         pixels = new unsigned char[size]; // allocate 3 bytes per pixel
         fread(pixels, sizeof(unsigned char), size, f); // read the rest of the data at once
         fclose(f);
-
-        for(int i = 0; i < size; i += 3) {
-                unsigned char tmp = pixels[i];
-                pixels[i] = pixels[i+2];
-                pixels[i+2] = tmp;
         }
     };
 
     vec3 get_pixel(const int x, const int y) {
-        return vec3(pixels[3 * (x * width + y)], pixels[3 * (x * width + y) + 1], pixels[3 * (x * width + y) + 2]);
+        return vec3(pixels[3 * (x * width + y) + 2], pixels[3 * (x * width + y) + 1], pixels[3 * (x * width + y)]);
     }
 
     virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override {
@@ -82,18 +81,37 @@ public:
         Shape2D* t_shape = intersection.shape2D;
         vec2 uv = t_shape->getUV(intersection);
 
-        float i = (((intersection.position.x + 1.f) ) * (float) width);
-        float j = (((intersection.position.z + 1.f) ) * (float) height);
+        float j;
+        float i;
+
+        if(intersection.position.x < 1.f && intersection.position.x > -0.1) {
+            i = (((intersection.position.x ) ) * (float) height);
+        } else {
+            i = (((intersection.position.z ) ) * (float) height);
+        }
+
+        if(intersection.position.y < 1.f && intersection.position.y > -0.1) {
+            j = (((intersection.position.y ) ) * (float) width);
+        } else {
+            j = (((intersection.position.z ) ) * (float) width);
+        }
+
+        if (i < 0) {
+            i = -i;
+        }
+        if (j < 0) {
+            j = -j;
+        }
+
+        i = fmod(i, height);
+        j = fmod(j, width);
 
         vec3 pixel = get_pixel(i, j);
 
         pixel /= vec3(255, 255, 255);
-        pixel *= vec3(0.5, 0.5, 0.5);
 
         return (specular_component * Ks +  diffuse_component * Kd) * pixel;
     };
-
- 
 
 };
 
