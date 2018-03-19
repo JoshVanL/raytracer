@@ -116,8 +116,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( F, H, G, white ,  {new Texture("source/materials/textures/ceil.bmp")}) );
 
     // Back wall
-    shapes.push_back( new Triangle( G, D, C, darkcyan,  {new Texture("source/materials/textures/water.bmp")}) );
-    shapes.push_back( new Triangle( G, H, D, darkcyan,  {new Texture("source/materials/textures/water.bmp")}) );
+    shapes.push_back( new Triangle( G, D, C, white,  {new Texture("source/materials/textures/water.bmp")}) );
+    shapes.push_back( new Triangle( G, H, D, white,  {new Texture("source/materials/textures/water.bmp")}) );
 
     // ---------------------------------------------------------------------------
     // Short block

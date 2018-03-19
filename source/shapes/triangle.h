@@ -84,7 +84,7 @@ public:
         for(int a = 0; a < colors.size(); a++){
             if(a == 0){
                //t_color = colors[0];
-               return colors[0] + (color * vec3(0.05, 0.05, 0.05));
+               return colors[0] + (color * vec3(0.02, 0.02, 0.02));
 
             }
             else
