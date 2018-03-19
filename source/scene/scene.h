@@ -74,16 +74,28 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     // Room
 
-    float L = 1000;			// Length of Cornell Box side.
+    //float L = 1000;			// Length of Cornell Box side.
 
-    vec4 A(2.f*L,0,0,1);
+    //vec4 A(2.f*L,0,0,1);
+    //vec4 B(0,0,0,1);
+    //vec4 C(2.f*L,0,L,1);
+    //vec4 D(0,0,L,1);
+
+    //vec4 E(2.f*L,L,0,1);
+    //vec4 F(0,L,0,1);
+    //vec4 G(2.f*L,L,L,1);
+    //vec4 H(0,L,L,1);
+
+    float L = 555;
+
+    vec4 A(L,0,0,1);
     vec4 B(0,0,0,1);
-    vec4 C(2.f*L,0,L,1);
+    vec4 C(L,0,L,1);
     vec4 D(0,0,L,1);
 
-    vec4 E(2.f*L,L,0,1);
+    vec4 E(L,L,0,1);
     vec4 F(0,L,0,1);
-    vec4 G(2.f*L,L,L,1);
+    vec4 G(L,L,L,1);
     vec4 H(0,L,L,1);
 
     // Floor:
@@ -109,15 +121,25 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     // Short block
 
-    A = vec4(690,0,164,1);
-    B = vec4(530,0,115,1);
-    C = vec4(640,0,322,1);
-    D = vec4(482,0,275,1);
+    //A = vec4(690,0,164,1);
+    //B = vec4(530,0,115,1);
+    //C = vec4(640,0,322,1);
+    //D = vec4(482,0,275,1);
 
-    E = vec4(690,165,164,1);
-    F = vec4(530,165,115,1);
-    G = vec4(640,165,322,1);
-    H = vec4(482,165,275,1);
+    //E = vec4(690,165,164,1);
+    //F = vec4(530,165,115,1);
+    //G = vec4(640,165,322,1);
+    //H = vec4(482,165,275,1);
+
+    A = vec4(290,0,114,1);
+    B = vec4(130,0, 65,1);
+    C = vec4(240,0,272,1);
+    D = vec4( 82,0,225,1);
+
+    E = vec4(290,165,114,1);
+    F = vec4(130,165, 65,1);
+    G = vec4(240,165,272,1);
+    H = vec4( 82,165,225,1);
 
     // Front
     shapes.push_back( new Triangle(E,B,A,red,  {new Translucent()} ));
@@ -141,6 +163,16 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
 
     // ---------------------------------------------------------------------------
     // Tall block
+
+    //A = vec4(423,0,247,1);
+    //B = vec4(265,0,296,1);
+    //C = vec4(472,0,406,1);
+    //D = vec4(314,0,456,1);
+
+    //E = vec4(423,330,247,1);
+    //F = vec4(265,330,296,1);
+    //G = vec4(472,330,406,1);
+    //H = vec4(314,330,456,1);
 
     A = vec4(423,0,247,1);
     B = vec4(265,0,296,1);
@@ -176,7 +208,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // Sphere
     float radius = 100;
     float empty = 0;
-    A = vec4(700, 300, 200, 1);
+    A = vec4(200, 300, 200, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     shapes.push_back( new Sphere( A, radius, blue, { new Translucent() }) );
 }

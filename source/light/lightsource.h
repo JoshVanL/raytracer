@@ -22,13 +22,13 @@ public:
                 float pow) :
         position(pos),color(col), power(pow) {
     };
-    
+
     LightSource(){
         position    = glm::vec4(0, -0.5, -1.4, 1.0);
         color       = glm::vec3(1,1,1);
         power       = 5.f;
     }
-    
+
 
     virtual vec3 lightAtPosition(Intersection& point, const std::vector<Shape2D*>& shapes) = 0;
 

@@ -1,4 +1,3 @@
-
 #include <glm/glm.hpp>
 #include <SDL2/SDL.h>
 #include "scene/SDLauxiliary.h"
@@ -32,8 +31,8 @@ using glm::vec4;
 using glm::mat4;
 
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 256
+#define SCREEN_WIDTH 600
+#define SCREEN_HEIGHT 600
 #define FULLSCREEN_MODE false
 #define INDIRECT_LIGHT  vec3(0.3,0.2,0.18)
 #define ANG 0.1
@@ -102,7 +101,7 @@ int main( int argc, char* argv[] ) {
     LightSource* lightB = new SpotLight();
     lights.push_back(lightB);
     lights.push_back(lightA);
-    Camera camera(vec4(0, 0, -2.25, 1), SCREEN_WIDTH/2);
+    Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
     LoadTestModel(shapes);

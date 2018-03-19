@@ -20,6 +20,8 @@ SDL_CFLAGS := $(shell sdl2-config --cflags)
 GLM_CFLAGS := -I$(GLMDIR)
 SDL_LDFLAGS := $(shell sdl2-config --libs)
 
+.PHONY: all build clean
+
 ########
 #   This is the default action
 all:build
@@ -32,15 +34,10 @@ OBJ = $(B_DIR)/$(FILE).o
 
 
 ########
-#   Objects
-$(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp   $(S_DIR)/light/intersection.cpp $(S_DIR)/scene/SDLauxiliary.h $(S_DIR)/scene/scene.h
+#   Main build rule
+build:
 	mkdir -p $(B_DIR)
 	$(CC) $(CC_OPTS) -o $(B_DIR)/$(FILE).o $(S_DIR)/$(FILE).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
-
-
-########
-#   Main build rule
-build : $(OBJ) Makefile
 	$(CC) -fopenmp -fopenmp -std=c++11 -o $(EXEC) $(OBJ) $(LN_OPTS) $(S_DIR)/light/intersection.cpp  `sdl2-config --cflags --libs`
 
 

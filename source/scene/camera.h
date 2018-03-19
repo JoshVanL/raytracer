@@ -14,8 +14,8 @@ class Camera {
 public:
 
     /////////////////////// GLOBAL VARS //////////////////////////////
-    const int SCREEN_WIDTH = 320;
-    const int SCREEN_HEIGHT = 256;
+    const int SCREEN_WIDTH = 600;
+    const int SCREEN_HEIGHT = 600;
     const bool FULLSCREEN_MODE = false;
     const vec3 INDIRECT_LIGHT  = vec3(0.3,0.2,0.18);
     const float ANG = 0.05;
