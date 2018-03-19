@@ -31,8 +31,8 @@ using glm::vec4;
 using glm::mat4;
 
 
-#define SCREEN_WIDTH 600
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 1800
+#define SCREEN_HEIGHT 1800
 #define FULLSCREEN_MODE false
 #define INDIRECT_LIGHT  vec3(0.3,0.2,0.18)
 #define ANG 0.1
@@ -42,8 +42,8 @@ bool LCTRL = false;
 
 /* ----------------------------------------------------------------------------*/
 /* FUNCTIONS                                                                   */
-void Update();
-void Draw(screen* screen);
+void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource*> lights, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram, KDNode& tree);
+void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, const vector<Shape2D*>& shapes, KDNode& tree);
 
 
 int scount = 0;
@@ -53,9 +53,13 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
     omp_set_num_threads(NUM_THREADS);
 
-    #pragma omp parallel for schedule(static)
+    vector<vec3> line(SCREEN_HEIGHT, vec3(0, 0, 0));
+    vector<vector<vec3>> colors(SCREEN_WIDTH, line);
+
+#pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
+
 
             Ray ray     = camera.createNewRay(i,j);
             Intersection intersection;
@@ -66,8 +70,21 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
                 for(int k = 0; k < lights.size(); k++){
                     color += intersection.shape2D->getcolor(intersection, ray, shapes, lights[k]);
                 }
-                PutPixelSDL(screen, i, j, color);
+
+                colors[i][j] = color;
+
             }
+        }
+    }
+
+#pragma omp parallel for schedule(static)
+    for (int i = 1; i < SCREEN_WIDTH - 1; i += 2) {
+        for (int j = 1; j < SCREEN_HEIGHT - 1; j += 2) {
+            vec3 color = (colors[i][j] + colors[i-1][j] + colors[i+1][j]
+                    + colors[i][j-1] + colors[i][j+1]
+                    + colors[i-1][j+1] + colors[i+1][j+1]
+                    + colors[i-1][j-1] + colors[i+1][j-1]) / 9;
+            PutPixelSDL(screen, i/2, j/2, color);
         }
     }
 }
@@ -95,7 +112,7 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource
 }
 
 int main( int argc, char* argv[] ) {
-    screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
+    screen *screen = InitializeSDL( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, FULLSCREEN_MODE );
     vector<LightSource*> lights;
     LightSource* lightA = new PointLight();
     LightSource* lightB = new SpotLight();
