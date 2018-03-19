@@ -99,8 +99,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 H(0,L,L,1);
 
     // Floor:
-    shapes.push_back( new Triangle( C, B, A, green ,  {new Specular()}));
-    shapes.push_back( new Triangle( C, D, B, green ,  {new Specular()} ));
+    shapes.push_back( new Triangle( C, B, A, white ,  {new Texture("source/materials/textures/242.bmp")}));
+    shapes.push_back( new Triangle( C, D, B, white ,  {new Texture("source/materials/textures/242.bmp")} ));
 
     // Left wall
     shapes.push_back( new Triangle( A, E, C, purple,  {new Specular()} ) );
