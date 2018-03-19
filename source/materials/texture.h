@@ -110,7 +110,7 @@ public:
 
         pixel /= vec3(255, 255, 255);
 
-        return (specular_component * Ks +  diffuse_component * Kd) * pixel;
+        return (specular_component * Ks +  diffuse_component * Kd) * pixel * vec3(0.8, 0.8, 0.8);
     };
 
 };

@@ -29,6 +29,7 @@ vec3 cyan(   0.15f, 0.75f, 0.75f );
 vec3 blue(   0.15f, 0.15f, 0.75f );
 vec3 purple( 0.75f, 0.15f, 0.75f );
 vec3 white(  0.75f, 0.75f, 0.75f );
+vec3 darkcyan(   0.075f, 0.375f, 0.375f );
 
 void readMeshData(std::string filepath, std::vector<Shape2D*>& shapes){
     std::ifstream infile(filepath);
@@ -115,8 +116,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( F, H, G, white ,  {new Texture("source/materials/textures/ceil.bmp")}) );
 
     // Back wall
-    shapes.push_back( new Triangle( G, D, C, white,  {new Texture("source/materials/textures/water.bmp")}) );
-    shapes.push_back( new Triangle( G, H, D, white,  {new Texture("source/materials/textures/water.bmp")}) );
+    shapes.push_back( new Triangle( G, D, C, darkcyan,  {new Texture("source/materials/textures/water.bmp")}) );
+    shapes.push_back( new Triangle( G, H, D, darkcyan,  {new Texture("source/materials/textures/water.bmp")}) );
 
     // ---------------------------------------------------------------------------
     // Short block
