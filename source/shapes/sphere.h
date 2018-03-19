@@ -74,7 +74,7 @@ public:
         if(colors.size() == 0)
             return vec3(0,0,0);
         if(colors.size() == 1)
-            return colors[0];
+            return colors[0] + (color * vec3(0.2, 0.2, 0.2));
 
         vec3 t_color = glm::mix(colors[0], colors[1], 0.5f);    
         for(int a = 2; a < colors.size(); a++){

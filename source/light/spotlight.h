@@ -14,7 +14,7 @@ public:
     vec4 direction;
     float angleSpan;
 
-    SpotLight(  const vec4& pos         = vec4(0, -0.5, -1.4, 1.0), 
+    SpotLight(  const vec4& pos         = vec4(1, -0.5, -1.4, 1.0), 
                 const vec4& dir         = vec4(0, -1, 0, 0),
                 const float& angle      = 0.3f,
                 const glm::vec3& col    = vec3(1, 1, 1), 

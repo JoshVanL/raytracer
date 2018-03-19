@@ -208,7 +208,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // Sphere
     float radius = 100;
     float empty = 0;
-    A = vec4(200, 300, 200, 1);
+    A = vec4(250, 300, 200, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     shapes.push_back( new Sphere( A, radius, blue, { new Translucent() }) );
 }

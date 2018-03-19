@@ -31,7 +31,7 @@ public:
             Shape2D* shape2D            = intersection.shape2D;   
             glm::vec3 normal            = glm::normalize((vec3) shape2D->getnormal(intersection));
             glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction); 
-        
+
             float cosi                  = glm::dot(normal, ray_dir);
 
             float incoming = air_refractive_index;
@@ -40,7 +40,7 @@ public:
             if (cosi > 0) { std::swap(incoming, outgoing); }
             float cos2 = sqrtf(std::max(0.f, 1 - std::pow(cosi, 2.f)));
             float sint = (incoming / refractive_index) * cos2;
-            
+
             float kr = 1;
 
             if(sint < 1){

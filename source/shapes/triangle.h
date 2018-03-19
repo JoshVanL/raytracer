@@ -21,7 +21,7 @@ public:
     glm::vec4 v0;
     glm::vec4 v1;
     glm::vec4 v2;
-    
+
     glm::vec4 normal;
     std::vector<std::vector<vec3>> v;
     Triangle(glm::vec4 v0, 
@@ -54,8 +54,7 @@ public:
         vec3 b = vec3(intersectpoint.position.x - v0.x, intersectpoint.position.y - v0.y, intersectpoint.position.z - v0.z);
         mat3 A( -(vec3)intersectpoint.direction, e1, e2 );
         vec3 x = glm::inverse( A ) * b;
-        
-    
+
         return vec2(x.y,x.z);
     }
     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
@@ -76,7 +75,7 @@ public:
     }
 
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override{
-        
+
         vector<vec3> colors;
         for(int a = 0; a < materials.size(); a++){
             colors.push_back(materials[a]->material_color(intersection, primary_ray, shapes, lightSource));
@@ -91,6 +90,7 @@ public:
         }
 
         return t_color;
+
     }
     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {
         float u = cam_intersect[1], v = cam_intersect[2];

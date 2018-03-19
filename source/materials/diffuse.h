@@ -22,13 +22,10 @@ public:
         vector<Material*> mats = intersection.shape2D->materials;
 
         return intersection.shape2D->color * projection_factor * lightSource->lightAtPosition(intersection, shapes) * gloss->gloss;
-
     }
 
-    
-
     float modulo(const float &f){
-        float fp = f - std::floor(f); 
+        float fp = f - std::floor(f);
         return fp;
     }
 };
