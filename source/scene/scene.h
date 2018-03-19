@@ -5,14 +5,14 @@
 #include <fstream>
 #include <glm/glm.hpp>
 #include <vector>
-#include "../Shapes/triangle.h"
-#include "../Shapes/sphere.h"
-#include "../Materials/material.h"
-#include "../Materials/translucent.h"
-#include "../Materials/specular.h"
-#include "../Materials/diffuse.h"
-#include "../Materials/texture.h"
-#include "../Materials/MaterialProperties/gloss.h"
+#include "../shapes/triangle.h"
+#include "../shapes/sphere.h"
+#include "../materials/material.h"
+#include "../materials/translucent.h"
+#include "../materials/specular.h"
+#include "../materials/diffuse.h"
+#include "../materials/texture.h"
+#include "../materials/material_properties/gloss.h"
 #include <sstream>
 // Used to describe a triangular surface:
 

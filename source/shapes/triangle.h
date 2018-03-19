@@ -3,11 +3,11 @@
 #include <cmath>
 #include <glm/glm.hpp>
 #include "shape2D.h"
-#include "../Light/intersection.h"
-#include "../Light/ray.h"
+#include "../light/intersection.h"
+#include "../light/ray.h"
 #include <initializer_list>
-#include "../Materials/MaterialProperties/gloss.h"
-#include "../Materials/material.h"
+#include "../materials/material_properties/gloss.h"
+#include "../materials/material.h"
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;

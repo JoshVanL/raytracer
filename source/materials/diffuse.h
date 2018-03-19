@@ -1,6 +1,6 @@
 #ifndef DIFFUSE_H
 #define DIFFUSE_H
-#include "../Light/lightsource.h"
+#include "../light/lightsource.h"
 #include "material.h"
 
 using glm::vec3;

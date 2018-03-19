@@ -2,7 +2,7 @@
 #define CAMERA_H
 #include "SDL.h"
 
-#include "../Light/ray.h"
+#include "../light/ray.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
 using glm::vec3;

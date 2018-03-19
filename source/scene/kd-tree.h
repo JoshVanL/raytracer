@@ -1,9 +1,9 @@
 #ifndef KD_TREE_H
 #define KD_TREE_H
 #include "SDL.h"
-#include "../Light/intersection.h"
-#include "../Light/ray.h"
-#include "../Shapes/shape2D.h"
+#include "../light/intersection.h"
+#include "../light/ray.h"
+#include "../shapes/shape2D.h"
 #include "glm/ext.hpp"
 
 class BoundingBox {

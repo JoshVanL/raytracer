@@ -1,7 +1,7 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 #include "SDL.h"
-#include "../Light/lightsource.h"
+#include "../light/lightsource.h"
 
 class Keyboard {
 public: 

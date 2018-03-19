@@ -2,8 +2,8 @@ FILE=raytracer
 
 ########
 #   Directories
-S_DIR=Source
-B_DIR=Build
+S_DIR=source
+B_DIR=build
 GLMDIR=../glm/
 ########
 #   Output
@@ -22,7 +22,7 @@ SDL_LDFLAGS := $(shell sdl2-config --libs)
 
 ########
 #   This is the default action
-all:Build
+all:build
 
 
 ########
@@ -33,14 +33,15 @@ OBJ = $(B_DIR)/$(FILE).o
 
 ########
 #   Objects
-$(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp   $(S_DIR)/Light/intersection.cpp $(S_DIR)/Scene/SDLauxiliary.h $(S_DIR)/Scene/scene.h
+$(B_DIR)/$(FILE).o : $(S_DIR)/$(FILE).cpp   $(S_DIR)/light/intersection.cpp $(S_DIR)/scene/SDLauxiliary.h $(S_DIR)/scene/scene.h
+	mkdir -p $(B_DIR)
 	$(CC) $(CC_OPTS) -o $(B_DIR)/$(FILE).o $(S_DIR)/$(FILE).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
 
 
 ########
 #   Main build rule
-Build : $(OBJ) Makefile
-	$(CC) -fopenmp -fopenmp -std=c++11 -o $(EXEC) $(OBJ) $(LN_OPTS) $(S_DIR)/Light/intersection.cpp  `sdl2-config --cflags --libs`
+build : $(OBJ) Makefile
+	$(CC) -fopenmp -fopenmp -std=c++11 -o $(EXEC) $(OBJ) $(LN_OPTS) $(S_DIR)/light/intersection.cpp  `sdl2-config --cflags --libs`
 
 
 clean:

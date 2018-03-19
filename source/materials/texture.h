@@ -3,7 +3,7 @@
 
 #include "material.h"
 #include <SDL.h>
-#include "../Scene/SDLauxiliary.h"
+#include "../scene/SDLauxiliary.h"
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;

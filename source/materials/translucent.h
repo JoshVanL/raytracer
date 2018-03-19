@@ -2,8 +2,8 @@
 #define TRANSLUCENT_H
 #include "material.h"
 #include <glm/gtx/normal.hpp>
-#include "../Shapes/shape2D.h"
-#include "../Light/ray.h"
+#include "../shapes/shape2D.h"
+#include "../light/ray.h"
 #include <typeinfo>
 #include <math.h>
 #include <stdio.h>

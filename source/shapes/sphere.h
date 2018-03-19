@@ -2,10 +2,10 @@
 #define SPHERE_H
 
 #include "shape2D.h"
-#include "../Light/intersection.h"
-#include "../Light/ray.h"
-#include "../Materials/MaterialProperties/gloss.h"
-#include "../Materials/material.h"
+#include "../light/intersection.h"
+#include "../light/ray.h"
+#include "../materials/material_properties/gloss.h"
+#include "../materials/material.h"
 #include <vector>
 #include <initializer_list>
 #define MAX_RAY_DEPTH_ 5

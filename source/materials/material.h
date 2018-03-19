@@ -4,7 +4,7 @@
 #include <iterator>
 #include <algorithm>
 #include <vector>
-#include "MaterialProperties/gloss.h"
+#include "material_properties/gloss.h"
 class Shape2D;
 class Intersection;
 class Ray;

@@ -1,8 +1,8 @@
 
 #include <glm/glm.hpp>
 #include <SDL2/SDL.h>
-#include "Scene/SDLauxiliary.h"
-#include "Scene/scene.h"
+#include "scene/SDLauxiliary.h"
+#include "scene/scene.h"
 #include <stdio.h>
 #include <omp.h>
 #include <glm/gtx/norm.hpp>
@@ -15,15 +15,15 @@
 #include <iostream>
 #include <cassert>
 #include <chrono>
-#include "Light/ray.h"
-#include "Scene/camera.h"
-#include "Scene/keyboard.h"
-#include "Scene/kd-tree.h"
-#include "Shapes/cuboid.h"
-#include "Shapes/triangle.h"
-#include "Shapes/sphere.h"
-#include "Light/pointlight.h"
-#include "Light/spotlight.h"
+#include "light/ray.h"
+#include "scene/camera.h"
+#include "scene/keyboard.h"
+#include "scene/kd-tree.h"
+#include "shapes/cuboid.h"
+#include "shapes/triangle.h"
+#include "shapes/sphere.h"
+#include "light/pointlight.h"
+#include "light/spotlight.h"
 using namespace std;
 
 using glm::vec3;
