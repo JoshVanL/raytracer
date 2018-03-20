@@ -10,7 +10,7 @@ public:
 
     PointLight( const vec4& pos         = vec4(1, 0.5, -1.4, 1.0), 
                 const glm::vec3& col    = vec3(1, 1, 1), 
-                const float& pow        = 30.f) 
+                const float& pow        = 40.f) 
     : LightSource(pos, col, pow){
 
     };

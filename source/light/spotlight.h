@@ -18,7 +18,7 @@ public:
                 const vec4& dir         = vec4(0, -1, 0, 0),
                 const float& angle      = 0.3f,
                 const glm::vec3& col    = vec3(1, 1, 1), 
-                const float& pow        = 10.f) 
+                const float& pow        = 30.f) 
     : LightSource(pos, col, pow), direction(dir), angleSpan(angle){
 
     };

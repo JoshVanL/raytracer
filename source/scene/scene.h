@@ -5,6 +5,8 @@
 #include <fstream>
 #include <glm/glm.hpp>
 #include <vector>
+#include <sstream>
+
 #include "../shapes/triangle.h"
 #include "../shapes/sphere.h"
 #include "../materials/material.h"
@@ -12,8 +14,8 @@
 #include "../materials/specular.h"
 #include "../materials/diffuse.h"
 #include "../materials/texture.h"
+#include "../materials/mirror.h"
 #include "../materials/material_properties/gloss.h"
-#include <sstream>
 // Used to describe a triangular surface:
 
 
@@ -28,8 +30,9 @@ vec3 green(  0.15f, 0.75f, 0.15f );
 vec3 cyan(   0.15f, 0.75f, 0.75f );
 vec3 blue(   0.15f, 0.15f, 0.75f );
 vec3 purple( 0.75f, 0.15f, 0.75f );
-vec3 white(  0.75f, 0.75f, 0.75f );
+vec3 white(  0.6f, 0.6f, 0.6f );
 vec3 darkcyan(   0.075f, 0.375f, 0.375f );
+vec3 lightblue(   0.5f, 0.5f, 0.4f );
 
 void readMeshData(std::string filepath, std::vector<Shape2D*>& shapes){
     std::ifstream infile(filepath);
@@ -99,6 +102,14 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 G(L,L,L,1);
     vec4 H(0,L,L,1);
 
+    // Mirror
+    vec4 I(4,100,400,1);
+    vec4 J(4,400,220,1);
+    vec4 K(4,400,400,1);
+    vec4 M(4,400,220,1);
+    vec4 N(4,100,400,1);
+    vec4 O(4,100,220,1);
+
     // Floor:
     shapes.push_back( new Triangle( C, B, A, white ,  {new Texture("source/materials/textures/carpet.bmp")}));
     shapes.push_back( new Triangle( C, D, B, white ,  {new Texture("source/materials/textures/carpet.bmp")} ));
@@ -108,8 +119,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( C, E, G, white,  {new Texture("source/materials/textures/wall2.bmp") } ) );
 
     // Right wall
-    shapes.push_back( new Triangle( F, B, D, yellow,  {new Texture("source/materials/textures/wall1.bmp")} ) );
-    shapes.push_back( new Triangle( H, F, D, yellow,  {new Texture("source/materials/textures/wall1.bmp")} ) );
+    shapes.push_back( new Triangle( F, B, D, white,  {new Texture("source/materials/textures/wall1.bmp")} ) );
+    shapes.push_back( new Triangle( H, F, D, white,  {new Texture("source/materials/textures/wall1.bmp")} ) );
 
     // Ceiling
     shapes.push_back( new Triangle( E, F, G, white ,  {new Texture("source/materials/textures/ceil.bmp")}) );
@@ -118,6 +129,13 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // Back wall
     shapes.push_back( new Triangle( G, D, C, white,  {new Texture("source/materials/textures/water.bmp")}) );
     shapes.push_back( new Triangle( G, H, D, white,  {new Texture("source/materials/textures/water.bmp")}) );
+
+    // ---------------------------------------------------------------------------
+    // Mirror
+
+    shapes.push_back( new Triangle( I, J, K, white,  {new Mirror()}));
+    shapes.push_back( new Triangle( M, N, O, white,  {new Mirror()}));
+
 
     // ---------------------------------------------------------------------------
     // Short block

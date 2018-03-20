@@ -18,19 +18,19 @@ public:
     const bool isRefractive;
     int count = 0;
 
-    Translucent(const bool isReflective = true, 
+    Translucent(const bool isReflective = true,
                 const bool isRefractive = true,
-                const float& transparency = 1.f, 
-                const float& refractive_index = 0.7f) : 
+                const float& transparency = 1.f,
+                const float& refractive_index = 0.7f) :
                 Material("Translucent", NORMALGLOSS, transparency), refractive_index(refractive_index), air_refractive_index(1.f),
                 isReflective(isReflective), isRefractive(isRefractive) {
     }
- 
+
     virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes,  LightSource* lightSource)  override {
         if(isRefractive || isReflective){
-            Shape2D* shape2D            = intersection.shape2D;   
+            Shape2D* shape2D            = intersection.shape2D;
             glm::vec3 normal            = glm::normalize((vec3) shape2D->getnormal(intersection));
-            glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction); 
+            glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction);
 
             float cosi                  = glm::dot(normal, ray_dir);
 
