@@ -20,7 +20,7 @@ public:
 
     Translucent(const bool isReflective = true,
                 const bool isRefractive = true,
-                const float& transparency = 1.f,
+                const float& transparency = 0.7f,
                 const float& refractive_index = 0.7f) :
                 Material("Translucent", NORMALGLOSS, transparency), refractive_index(refractive_index), air_refractive_index(1.f),
                 isReflective(isReflective), isRefractive(isRefractive) {
@@ -51,7 +51,7 @@ public:
                 kr = (Rs * Rs + Rp * Rp) / 2;
             }
 
-            kr *= 0.5;
+            kr *= 0.3;
             vec3 reflection;
             vec3 refraction;
             if(isReflective){
