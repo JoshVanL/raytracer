@@ -80,10 +80,8 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 #pragma omp parallel for schedule(static)
     for (int i = 1; i < SCREEN_WIDTH - 1; i += 2) {
         for (int j = 1; j < SCREEN_HEIGHT - 1; j += 2) {
-            vec3 color = (colors[i][j] + colors[i-1][j] + colors[i+1][j]
-                    + colors[i][j-1] + colors[i][j+1]
-                    + colors[i-1][j+1] + colors[i+1][j+1]
-                    + colors[i-1][j-1] + colors[i+1][j-1]) / 9;
+            vec3 color = (colors[i-1][j] + colors[i+1][j]
+                    + colors[i][j-1] + colors[i][j+1]) / 4;
             PutPixelSDL(screen, i/2, j/2, color);
         }
     }
