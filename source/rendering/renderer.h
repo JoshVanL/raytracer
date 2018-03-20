@@ -2,6 +2,7 @@
 #define RENDEREH_H
 
 #include "../scene/SDLauxiliary.h"
+#include "rasteriser.h"
 #include "pixel.h"
 #include <SDL2/SDL.h>
 #include <omp.h>
@@ -49,31 +50,17 @@ public:
         };
     }
 
-    static void ProcessPolygons( screen *screen, LightSource* lightSource, const vec3& origin, const vector<vec4>& vertices, vector<Shape2D*>& shapes) {
-        int V = vertices.size();
-        vector<Pixel> vertexPixels( V );
-        for( int i=0; i<V; i++ ) {
-            Pixel::VertexShader(vertices[i], origin, vertexPixels[i], shapes[i]);
-        }
-
-        vector<Pixel> leftPixels;
-        vector<Pixel> rightPixels;
-        Pixel::ComputePolygonRows(origin, vertexPixels, leftPixels, rightPixels );
-        for (int i = 0; i < leftPixels.size(); i++) {
-            RenderLine(screen, lightSource, origin, leftPixels[i], rightPixels[i], shapes[i]->color);
-        }
-    }
 
     static void RenderPolygon( screen *screen, LightSource* lightSource, const vec3& origin, const vector<vec4>& vertices, const vec3 color, Shape2D* shape) {
         int V = vertices.size();
         vector<Pixel> vertexPixels( V );
         for( int i=0; i<V; i++ ) {
-            Pixel::VertexShader(vertices[i], origin, vertexPixels[i], shape);
+            Rasteriser::VertexShader(vertices[i], origin, vertexPixels[i], shape);
         }
-
+ 
         vector<Pixel> leftPixels;
         vector<Pixel> rightPixels;
-        Pixel::ComputePolygonRows(origin, vertexPixels, leftPixels, rightPixels );
+        Rasteriser::ComputePolygonRows(origin, vertexPixels, leftPixels, rightPixels );
         for (int i = 0; i < leftPixels.size(); i++) {
             RenderLine(screen, lightSource, origin, leftPixels[i], rightPixels[i], color);
         }

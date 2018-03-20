@@ -14,8 +14,9 @@ class Camera {
 public:
 
     /////////////////////// GLOBAL VARS //////////////////////////////
-    const int SCREEN_WIDTH = 320;
-    const int SCREEN_HEIGHT = 256;
+    const static int SCREEN_WIDTH = 1000;
+    const static int SCREEN_HEIGHT = 1000;
+    constexpr static float FOCAL_LENGTH = 1000;
     const bool FULLSCREEN_MODE = false;
     const vec3 INDIRECT_LIGHT  = vec3(0.3,0.2,0.18);
     const float ANG = 0.1;
@@ -29,21 +30,20 @@ public:
     vec4 position;
     mat4 rotation;
     float yaw;
-    float focal_length;
 
-    Camera(vec4 pos, float foc, const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
-    :   position(pos), focal_length(foc), rotation(rot)
+    Camera(vec4 pos, const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
+    :   position(pos), rotation(rot)
     {
     }
 
-    Camera() : position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1))), focal_length(SCREEN_WIDTH)
+    Camera() : position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
     {
     }
 
     vec4 getDirection(int i, int j){
         return glm::normalize(rotation * vec4(  i - SCREEN_WIDTH/2 - position.x,
                                                 j - SCREEN_HEIGHT/2 - position.y,
-                                                focal_length - position.z,
+                                                FOCAL_LENGTH - position.z,
                                                 1));
     }
 

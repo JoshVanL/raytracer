@@ -63,7 +63,7 @@ int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN_MODE );
 
     LightSource* spotLight = new LightSource();
-    Camera camera(vec4(0.45, 0.5, -2.0, 1), focal_length);
+    Camera camera(vec4(0.45, 0.5, -2.0, 1));
     Keyboard keyboard(camera);
     vector<Shape2D*> shapes;
     LoadTestModel(shapes);
