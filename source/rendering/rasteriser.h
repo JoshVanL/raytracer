@@ -6,6 +6,7 @@
 #include "../scene/camera.h"
 #include <math.h>
 using glm::vec3;
+using glm::vec2;
 using glm::vec4;
 class Rasteriser {
 public:
@@ -13,47 +14,53 @@ public:
     Rasteriser(){};
 
     static glm::mat4 ViewMatrix(vec3 eye, vec3 center, vec3 up) {
-        vec3 zaxis = glm::normalize(eye - center);
-        vec3 xaxis = glm::normalize(glm::cross(up, zaxis));
-        vec3 yaxis = glm::cross(zaxis, xaxis);
-
-        glm::mat4 orientation(  vec4( xaxis.x, yaxis.x, zaxis.x, 0 ),
-                                vec4( xaxis.y, yaxis.y, zaxis.y, 0 ),
-                                vec4( xaxis.z, yaxis.z, zaxis.z, 0 ),
-                                vec4(   0,       0,       0,     1 ));
-
-        glm::mat4 translation(
-                                vec4(   1,      0,      0,   0 ),
-                                vec4(   0,      1,      0,   0 ), 
-                                vec4(   0,      0,      1,   0 ),
-                                vec4(-eye.x, -eye.y, -eye.z, 1 )
-                        );            
-        return ( orientation * translation );          
+        vec3 z = glm::normalize((eye-center));
+        vec3 x = glm::normalize(cross(up,z));
+        vec3 y = glm::normalize(cross(z,x));
+        glm::mat4 modelview(1);
+        for (int i=0; i<3; i++) {
+            modelview[0][i] = x[i];
+            modelview[1][i] = y[i];
+            modelview[2][i] = z[i];
+            modelview[i][3] = -center[i];
+        }     
+        return modelview;
     }
 
 
 
-    static glm::mat4 ViewPortMatrix(int x, int y, int w, int h) {
+    static glm::mat4 ViewPortMatrix(int x, int y, int w, int h, int depth) {
 
-        glm::mat4 viewport(  vec4( w/2.f,     0,       0,     (y + ( y + h))/2.f ),
-                             vec4(   0,       w/2.f,   0.5,   (x + ( x + w))/2.f ),
-                             vec4(   0,       0,       0.5,   0.5f ),
-                             vec4(   0,       0,       0,     1    ));
+        glm::mat4 viewport(1);  //identity
+        viewport[0][3] = x+w/2.f;
+        viewport[1][3] = y+h/2.f;
+        viewport[2][3] = depth/2.f;
+        viewport[0][0] = w/2.f;
+        viewport[1][1] = h/2.f;
+        viewport[2][2] = depth/2.f;
       
         return viewport;          
     }   
 
-    static glm::mat4 PerspectiveProjectionMatrix(float fov, int y, int w, int h) {
-        float s = 1.f/(tan(fov/2.f) * (PI/180.f));
-
-        glm::mat4 projection(  vec4(   s,       0,       0,      0 ),
-                               vec4(   0,       s,       0,      0 ),
-                               vec4(   0,       0,       -1.f,  -1 ),
-                               vec4(   0,       0,       0,      0 ));
-      
-        return projection;          
+    static glm::mat4 PerspectiveProjectionMatrix(float coeff) {
+        glm::mat4 projection(1);  //identity
+        projection[3][2] = coeff;        
+        return projection;
     }  
 
+    static vec3 Barycentric(vec2 A, vec2 B, vec2 C, vec2 P) {
+        vec3 s[2];
+        for (int i=2; i--; ) {
+            s[i][0] = C[i]-A[i];
+            s[i][1] = B[i]-A[i];
+            s[i][2] = A[i]-P[i];
+        }
+        vec3 u = cross(s[0], s[1]);
+        if (std::abs(u[2])>1e-2) 
+            return vec3(1.f-(u.x+u.y)/u.z, u.y/u.z, u.x/u.z);
+        else
+            return vec3(-1,1,1);        //discard
+    }
 
     // @: Takes 4D position of a vertex v, computes 2D image position, stores it inside 2D pixel vector p = (x,y) and assigns corresponding 2d shape
     static void VertexShader(const vec4& v, const vec3& origin, Pixel& p, Shape2D* shape) {
