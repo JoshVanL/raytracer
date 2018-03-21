@@ -28,19 +28,21 @@ public:
              glm::vec4 v1, 
              glm::vec4 v2, 
              glm::vec3 color, 
+             std::string id,
              const std::initializer_list<Material*>& materials = std::initializer_list<Material*>())
-        :   Shape2D(color, materials), 
+        :   Shape2D(color, materials, id), 
             v0((scalevec4(v0))), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
     }
     Triangle(glm::vec4 v0, 
              glm::vec4 v1, 
              glm::vec4 v2, 
-             glm::vec3 color, 
+             glm::vec3 color,
+             std::string id,
              bool scale,
              const std::initializer_list<Material*>& materials = std::initializer_list<Material*>()
              )
-        :   Shape2D(color, materials), 
+        :   Shape2D(color, materials, id), 
             v0(v0), v1(v1), v2(v2), normal(ComputeNormal())
     {
     }
@@ -75,7 +77,8 @@ public:
     }
 
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override{
-
+        if(materials.empty())
+            return color;
         vector<vec3> colors;
         for(int a = 0; a < materials.size(); a++){
             colors.push_back(materials[a]->material_color(intersection, primary_ray, shapes, lightSource));

@@ -56,6 +56,31 @@ public:
         }
         return found;
     }
+      bool ClosestIntersection(const std::string exclusion_id, const std::vector<Shape2D*>& shapes, Intersection &closestIntersection) 
+      {
+        closestIntersection.distance = std::numeric_limits<float>::max();
+        bool found = false;
+
+        glm::vec4 intersectionPoint;
+
+        for (size_t i=0; i<shapes.size(); i++) {
+            if((shapes[i]->intersect(*(this), (vec3) direction,
+                intersectionPoint)) && (shapes[i]->id != exclusion_id)){
+
+                float d = glm::distance(intersectionPoint, position);
+
+                if (d < closestIntersection.distance) {
+                    closestIntersection.position = intersectionPoint;
+                    closestIntersection.distance = d;
+                    closestIntersection.direction = direction;
+                    closestIntersection.shape2D = shapes[i];
+
+                    found = true;
+                }
+            }
+        }
+        return found;
+    }
 
 };
 

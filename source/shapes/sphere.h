@@ -26,9 +26,9 @@ public:
     Sphere(
             glm::vec4 &cent, 
             float r,
-            glm::vec3 col,
+            glm::vec3 col,          std::string id,
             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>()
-        ) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(col, materials)
+        ) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(color, materials, id)
     {   
         name = "Sphere";
     };

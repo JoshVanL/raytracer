@@ -75,7 +75,8 @@ public:
                  Mirror& callerObj) {
 
         int currentdepth = primary_ray.bounces;
-
+        if(currentdepth >= primary_ray.max_depth)
+            return vec3(0,0,0);
         vec4 new_dir = (callerObj.*direction_function)(intersection, t_shape);
         Ray new_ray(intersection.position, new_dir, currentdepth + 1);
 
