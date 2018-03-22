@@ -70,7 +70,7 @@ int main( int argc, char* argv[] ) {
 
     SDL_Event event;
     int runProgram = 0;
-    
+
     auto started = std::chrono::high_resolution_clock::now();
     Renderer::Draw(screen, (vec3) camera.position, spotLight, shapes, true);
 

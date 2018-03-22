@@ -1,4 +1,6 @@
-RAS=main
+.PHONY: build clean
+
+RAS=rasterizer
 
 ########
 #   Directories
@@ -25,10 +27,11 @@ RAYOBJ = $(B_DIR)/$(RAY).o
 RASOBJ = $(B_DIR)/$(RAS).o
 
 
-Build:
+build:
 	mkdir -p build
 	$(CC) $(CC_OPTS) -o $(B_DIR)/$(RAS).o $(S_DIR)/$(RAS).cpp $(SDL_CFLAGS) $(GLM_CFLAGS)
 	$(CC) $(LN_OPTS) -fopenmp -o $(RASEXEC) $(RASOBJ) $(SDL_LDFLAGS)
+	rm build/*.o
 
 clean:
 	rm -f $(B_DIR)/*
