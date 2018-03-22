@@ -62,7 +62,7 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
             Ray ray     = camera.createNewRay(i,j);
             Intersection intersection;
             intersection.distance = std::numeric_limits<float>::max();
-
+            
             if(tree.hit(ray, intersection)) {
                 vec3 color(0,0,0);
                 for(int k = 0; k < lights.size(); k++){
@@ -107,7 +107,7 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource
             }
             break;
         case SDL_KEYUP:
-            keyboard.ProcessKeyUp(event.key);
+            keyboard.ProcessKeyUp(event.key, runProgram);
             break;
         default:
             break;
@@ -119,9 +119,9 @@ int main( int argc, char* argv[] ) {
     vector<LightSource*> lights;
     LightSource* lightA = new PointLight();
     LightSource* lightB = new SpotLight();
-    lights.push_back(lightB);
     lights.push_back(lightA);
-    Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2);
+    lights.push_back(lightB);
+    Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
     LoadTestModel(shapes);

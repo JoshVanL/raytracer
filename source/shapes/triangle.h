@@ -8,6 +8,7 @@
 #include <initializer_list>
 #include "../materials/material_properties/gloss.h"
 #include "../materials/material.h"
+#include "../materials/diffuse.h"
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;
@@ -30,9 +31,20 @@ public:
              glm::vec3 color, 
              std::string id,
              const std::initializer_list<Material*>& materials = std::initializer_list<Material*>())
-        :   Shape2D(color, materials, id), 
+        :   Shape2D(color, check_mats(materials), id), 
             v0((scalevec4(v0))), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
+    }
+    vector<Material*> check_mats(vector<Material*> mats){
+        if(mats.empty()){
+            vector<Material*> initmaterials;
+            Diffuse* dif = new Diffuse();
+            initmaterials.push_back(dif);
+            return initmaterials;
+        }
+        else{
+            return mats;
+        }
     }
     Triangle(glm::vec4 v0, 
              glm::vec4 v1, 

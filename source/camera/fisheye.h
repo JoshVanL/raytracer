@@ -5,6 +5,7 @@
 #include <glm/gtx/norm.hpp>
 #include <math.h>
 #include <vector>
+#include <omp.h>
 #include "camera_effect.h"
 using glm::vec2;
 using glm::vec3;

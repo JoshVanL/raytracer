@@ -18,7 +18,7 @@ public:
                 const vec4& dir         = vec4(0, -1, 0, 0),
                 const float& angle      = 0.3f,
                 const glm::vec3& col    = vec3(1, 1, 1), 
-                const float& pow        = 30.f) 
+                const float& pow        = 10.f) 
     : LightSource(pos, col, pow), direction(dir), angleSpan(angle){
 
     };
@@ -54,7 +54,7 @@ public:
 
         float transparency = 1.f;
 
-        if (isOccluded(point, shapes, transparency)) {
+        if (isOccluded(point, shapes)) {
             if(transparency == 0.f)
                 return vec3(0.0001, 0.0001, 0.0001);
             else {
@@ -68,11 +68,11 @@ public:
     }
 
 
-    virtual bool isOccluded(Intersection& point, const std::vector<Shape2D*>& shapes, float& transparency) override {
+    virtual bool isOccluded(Intersection& point, const std::vector<Shape2D*>& shapes) override {
         Intersection intersect; 
         // vec4 shadow_dir = position - point.position;
         // Ray shadow_ray(position, shadow_dir);
-        vec4 shadow_dir = point.position - position;
+        vec4 shadow_dir = glm::normalize(point.position - position);
         Ray shadow_ray(position + shadow_dir*0.01f, shadow_dir);
         if(shadow_ray.ClosestIntersection(shapes, intersect, point.shape2D)){
             float distA = glm::distance(point.position, position);

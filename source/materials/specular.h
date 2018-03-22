@@ -39,7 +39,7 @@ public:
         vec3 specular_component = new_specular_highlight * intensity * vec3(1,1,1);
 
         /* Calculating Diffuse Component */
-        vec3 diffuse_component = diffuse_shader->material_color(intersection, primary_ray, shapes, lightSource);
+        vec3 diffuse_component = diffuse_shader->material_color(intersection, primary_ray, shapes, lightSource, intensity, indirectlight);
 
         return specular_component * Ks +  diffuse_component * Kd ;
     }

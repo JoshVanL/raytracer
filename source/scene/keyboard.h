@@ -15,16 +15,16 @@ public:
 
     void translateLight(SDL_KeyboardEvent key, LightSource* lightSource){
         switch( key.keysym.sym ){
-            case SDLK_w:
+            case SDLK_UP:
                 lightSource->position += vec4(0,0,0.2,0);
                 break;
-            case SDLK_a :
+            case SDLK_LEFT :
                 lightSource->position += vec4(-0.2,0,0,0);
                 break;
-            case SDLK_s:
+            case SDLK_DOWN:
                 lightSource->position += vec4(0,0,-0.2,0);
                 break;
-            case SDLK_d:
+            case SDLK_RIGHT:
                 lightSource->position += vec4(0.2,0,0,0);
                 break;
         }
@@ -67,7 +67,7 @@ public:
             return;
         }
     }
-    void ProcessKeyUp(SDL_KeyboardEvent key){
+    void ProcessKeyUp(SDL_KeyboardEvent key, int& runProgram){
         switch( key.keysym.sym ){
             case SDLK_LCTRL:
                 if(ROTATE_SET)
@@ -84,6 +84,7 @@ public:
             default:
                 break;
         }
+        runProgram = 0;
     }
 
 

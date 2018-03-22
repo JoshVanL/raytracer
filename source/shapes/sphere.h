@@ -28,11 +28,21 @@ public:
             float r,
             glm::vec3 col,          std::string id,
             const std::initializer_list<Material*>& materials = std::initializer_list<Material*>()
-        ) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(color, materials, id)
+        ) : radius(scalefloat(r)), radius2(pow(scalefloat(r), 2)), center(scalevec4(cent)), Shape2D(color, check_mats(materials), id)
     {   
         name = "Sphere";
     };
-
+    vector<Material*> check_mats(vector<Material*> mats){
+        if(mats.empty()){
+            vector<Material*> initmaterials;
+            Diffuse* dif = new Diffuse();
+            initmaterials.push_back(dif);
+            return initmaterials;
+        }
+        else{
+            return mats;
+        }
+    }
     virtual bool intersect(Ray &ray, vec3 dir, vec4& intersection) override
     {
         vec3 rayorig = (vec3) ray.position;

@@ -48,7 +48,7 @@ public:
                 cosi = fabsf(cosi);
                 float Rs = ((outgoing * cosi) - (incoming * cost)) / ((outgoing * cosi) + (incoming * cost));
                 float Rp = ((incoming * cosi) - (outgoing * cost)) / ((incoming * cosi) + (outgoing * cost));
-                kr = (Rs * Rs + Rp * Rp) / 2;
+                kr = (Rs * Rs + Rp * Rp) * 0.5f;
             }
 
             kr *= 0.3;
@@ -98,7 +98,7 @@ public:
         vec4 incident_ray = -intersection.direction;
         vec3 norm3d = t_shape->getnormal(intersection);
         vec4 norm = vec4(norm3d.x,norm3d.y,norm3d.z,1);
-        return incident_ray - 2.0f * dot(incident_ray, norm) * norm;
+        return incident_ray - (dot(incident_ray, norm) * norm) * 2.f;
     }
 
     vec4 refract_direction(Intersection intersection, Shape2D* t_shape){
@@ -112,9 +112,7 @@ public:
             normal_3d = -normal_3d;
             a = -dot(normal_3d, incoming_3d);
         }
-        float b = 1 - a * a;
-        float c = refractive_index * refractive_index * b;
-        float d = sqrt(1 - c);
+        float d = sqrt(1 - (refractive_index * refractive_index * (1 - a * a)));
         float e = refractive_index * a;
         vec3 f = (e - d) * normal_3d;
         vec3 g = refractive_index * incoming_3d + f;

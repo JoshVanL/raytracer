@@ -36,7 +36,7 @@ public:
 
     virtual vec3 getIndirectLight() = 0;
 
-    virtual bool isOccluded(Intersection& point, const std::vector<Shape2D*>& shapes, float& transparency) = 0;
+    virtual bool isOccluded(Intersection& point, const std::vector<Shape2D*>& shapes) = 0;
 
 };
 
