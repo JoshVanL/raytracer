@@ -15,7 +15,7 @@
 #include <cassert>
 #include <chrono>
 #include "light/ray.h"
-#include "scene/camera.h"
+#include "camera/camera.h"
 #include "scene/keyboard.h"
 #include "scene/kd-tree.h"
 #include "shapes/cuboid.h"
@@ -59,8 +59,6 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 #pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
-
-
             Ray ray     = camera.createNewRay(i,j);
             Intersection intersection;
             intersection.distance = std::numeric_limits<float>::max();
@@ -72,10 +70,17 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
                 }
 
                 colors[i][j] = color;
-
             }
         }
-    }
+    } 
+
+if(camera.currentEffect != nullptr){
+    vector<vec3> nline(SCREEN_HEIGHT, vec3(0, 0, 0));
+    vector<vector<vec3>> ncolors(SCREEN_WIDTH, line);
+    camera.currentEffect->applyCameraEffect(colors, ncolors, SCREEN_HEIGHT, SCREEN_WIDTH);
+    colors.clear();
+    colors = ncolors;
+}    
 
 #pragma omp parallel for schedule(static)
     for (int i = 1; i < SCREEN_WIDTH - 1; i += 2) {

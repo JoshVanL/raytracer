@@ -5,14 +5,19 @@
 #include "../light/ray.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
+#include "fisheye.h"
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 
+enum CameraEffectType{
+    FISHEYE,
+    NONE
+};
 
 class Camera {
 public:
-
+ 
     /////////////////////// GLOBAL VARS //////////////////////////////
     const int SCREEN_WIDTH = 1800;
     const int SCREEN_HEIGHT = 1800;
@@ -28,18 +33,24 @@ public:
 
     vec4 position;
     mat4 rotation;
-    float yaw;
     float focal_length;
     Ray primary_ray;
+    CameraEffect* currentEffect;
+    Fisheye fisheye;
 
     Camera(     vec4 pos, 
                 float foc, 
+                CameraEffectType cameff = CameraEffectType::NONE,
                 const mat4& rot = mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1)))
-                : position(pos), focal_length(foc), rotation(rot), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2))
+                : position(pos), focal_length(foc), rotation(rot), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2)),
+                  currentEffect(get_camera_effect(cameff)), fisheye(Fisheye(1.0, (double)SCREEN_WIDTH, (double)SCREEN_HEIGHT))
     {
     }
     
-    Camera() : position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1))), focal_length(SCREEN_WIDTH/2), primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2))
+    Camera() :  position(vec4(0, -2.25, 0, 1)), rotation(mat4(vec4(1,0,0,1), vec4(0,1,0,1), vec4(0,0,1,1), vec4(0,0,0,1))), focal_length(SCREEN_WIDTH/2), 
+                currentEffect(get_camera_effect(CameraEffectType::NONE)),
+                primary_ray(createNewRay((int)SCREEN_WIDTH/2, (int)SCREEN_HEIGHT/2) ), 
+                fisheye(Fisheye(1.0, (double)SCREEN_WIDTH, (double)SCREEN_HEIGHT))
     {
     }
 
@@ -48,6 +59,13 @@ public:
                                                 j - SCREEN_HEIGHT/2 - position.y,
                                                 focal_length - position.z,
                                                 1));
+    }
+
+    CameraEffect* get_camera_effect(CameraEffectType camefftype){
+        if(camefftype == CameraEffectType::NONE)
+            return nullptr;
+        if(camefftype == CameraEffectType::FISHEYE)
+            return &fisheye;
     }
 
     void translateCameraVert(SDL_KeyboardEvent key){

@@ -5,9 +5,10 @@
 
 class Keyboard {
 public: 
-
-    bool LCTRL = false;
-    bool LSHIFT = false;
+    char textbuffer[200];
+    bool ROTATE_SET = false;
+    bool VERTICAL_SET = false;
+    bool LIGHT_SET = false;
     Keyboard(){
 
     }
@@ -32,27 +33,32 @@ public:
 
     void ProcessKeyDown(SDL_KeyboardEvent key, LightSource* lightSource, Camera& camera, int& runProgram){
         if(key.keysym.sym == SDLK_LCTRL){
-            LCTRL = true;
+            ROTATE_SET = true;
             runProgram = 0;
             return;
         }
         else if(key.keysym.sym == SDLK_LSHIFT){
-            LSHIFT = true;
+            VERTICAL_SET = true;
             runProgram = 0;
             return;
         }
-        else if(key.keysym.sym == SDLK_UP || key.keysym.sym == SDLK_DOWN || key.keysym.sym == SDLK_LEFT || key.keysym.sym == SDLK_RIGHT){
-            if(LCTRL)
-                camera.rotateCamera(key);
-            else if(LSHIFT)
-                camera.translateCameraVert(key);
-            else 
-                camera.translateCamera(key);
-            runProgram = 1;
+        else if(key.keysym.sym == SDLK_LALT ) {
+            LIGHT_SET = true;
+            runProgram = 0;
             return;
         }
-        else if(key.keysym.sym == SDLK_a || key.keysym.sym ==  SDLK_s || key.keysym.sym ==  SDLK_d || key.keysym.sym ==  SDLK_w){
-            translateLight(key, lightSource);
+        else if(key.keysym.sym == SDLK_UP   || 
+                key.keysym.sym == SDLK_DOWN || 
+                key.keysym.sym == SDLK_LEFT || 
+                key.keysym.sym == SDLK_RIGHT){
+            if(ROTATE_SET)
+                camera.rotateCamera(key);
+            else if(VERTICAL_SET)
+                camera.translateCameraVert(key);
+            else if(LIGHT_SET)
+                translateLight(key, lightSource);
+            else 
+                camera.translateCamera(key);
             runProgram = 1;
             return;
         }
@@ -61,16 +67,19 @@ public:
             return;
         }
     }
-
     void ProcessKeyUp(SDL_KeyboardEvent key){
         switch( key.keysym.sym ){
             case SDLK_LCTRL:
-                if(LCTRL)
-                    LCTRL = false;
+                if(ROTATE_SET)
+                    ROTATE_SET = false;
                 break;
             case SDLK_LSHIFT:
-                if(LSHIFT)
-                    LSHIFT = false;
+                if(VERTICAL_SET)
+                    VERTICAL_SET = false;
+                break;
+            case SDLK_LALT:
+                if(LIGHT_SET)
+                    LIGHT_SET = false;
                 break;
             default:
                 break;
