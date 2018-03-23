@@ -13,7 +13,6 @@ using glm::clamp;
 #ifndef SMOKE_H
 #define SMOKE_H
 
-// Models suspended particles.
 class Smoke : public Material{
 public:
     const vec3 base_color;
@@ -22,12 +21,8 @@ public:
     };
 
 
-    // return: a color depending on how far the ray has to travel before
-    //         exiting the smoke.
     virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)   override {
-        // Offset into the shape as the excluded primitive on scene.closest_intersection
-        // cannot be used here. This is because the smoke may be made of one
-        // primitive (e.g. sphere) and we need to check for self-intersections.
+
         Ray outgoing = Ray(intersection.position + vec4(intersection.shape2D->getnormal(intersection) * -0.001f, 1), intersection.direction, primary_ray.bounces + 1);
         Intersection behindObjectIntersection;
         bool isObjectBehind = outgoing.ClosestIntersection(intersection.shape2D->id, shapes, behindObjectIntersection);
@@ -37,8 +32,6 @@ public:
             behindObjectColor = behindObjectIntersection.shape2D->getcolor(behindObjectIntersection, outgoing, shapes, lightSource);
         }
          
-        // How much of the behind object shows through depends on how much
-        // smoke the ray had to travel through.
         Intersection smokeExitIntersection;
         bool smokeExit = outgoing.ClosestIntersection(shapes, smokeExitIntersection, intersection.shape2D);
         float smoke_dist = glm::length(intersection.position - smokeExitIntersection.position);

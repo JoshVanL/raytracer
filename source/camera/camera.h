@@ -62,10 +62,9 @@ public:
     }
 
     CameraEffect* get_camera_effect(CameraEffectType camefftype){
-        if(camefftype == CameraEffectType::NONE)
-            return nullptr;
         if(camefftype == CameraEffectType::FISHEYE)
             return &fisheye;
+        else return nullptr;
     }
 
     void translateCameraVert(SDL_KeyboardEvent key){

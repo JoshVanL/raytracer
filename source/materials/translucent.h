@@ -89,9 +89,9 @@ public:
         if(new_ray.ClosestIntersection(shapes, new_intersection, t_shape)){
             return new_intersection.shape2D->getcolor(new_intersection, new_ray, shapes, lightSource);
         }
-        else {
-            return vec3(0,0,0);
-        }
+        
+        return vec3(0,0,0);
+        
     } 
  
     vec4 reflect_direction(Intersection intersection, Shape2D* t_shape){

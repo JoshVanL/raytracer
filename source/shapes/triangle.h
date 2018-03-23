@@ -42,9 +42,7 @@ public:
             initmaterials.push_back(dif);
             return initmaterials;
         }
-        else{
-            return mats;
-        }
+        return mats;
     }
     Triangle(glm::vec4 v0, 
              glm::vec4 v1, 
@@ -68,9 +66,9 @@ public:
         vec3 b = vec3(intersectpoint.position.x - v0.x, intersectpoint.position.y - v0.y, intersectpoint.position.z - v0.z);
         mat3 A( -(vec3)intersectpoint.direction, e1, e2 );
         vec3 x = glm::inverse( A ) * b;
-
         return vec2(x.y,x.z);
     }
+    
     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
@@ -97,13 +95,9 @@ public:
         }
         vec3 t_color = vec3(0,0,0);
         for(int a = 0; a < colors.size(); a++){
-            if(a == 0){
-               //t_color = colors[0];
+            if(a == 0)
                return colors[0] + (color * vec3(0.02, 0.02, 0.02));
-
-            }
-            else
-               t_color = glm::mix(t_color, colors[a], 0.5f);
+            t_color = glm::mix(t_color, colors[a], 0.5f);
         }
 
         return t_color;

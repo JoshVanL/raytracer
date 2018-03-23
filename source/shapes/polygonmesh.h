@@ -1,296 +1,242 @@
-// #ifndef POLYGONMESH_H
-// #define POLYGONMESH_H 
-// #include "shape3D.h"
-// #include "../Scene/scene.h"
-// #include <vector>
+#ifndef POLYGONMESH_H
+#define POLYGONMESH_H 
 
-// //////////////////////////////////////// 
-// // UNUSED
-// ////////////////////////////////////////
+#include "triangle.h"
+#include <vector>
+#include <glm/glm.hpp>
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+//////////////////////////////////////// 
+// UNUSED
+////////////////////////////////////////
+using glm::vec4;
+using glm::vec3;
+using glm::vec2;
+
+#define INFINITY_ 1e8 
+class PolygonMesh {
+public:
+    // member variables
+    uint32_t numTris;                         // number of triangles 
+    Triangle** triangles;
+    vec3* triVertexPositions;              // triangles vertex position 
+    uint32_t* triIndexes;         // vertex index array 
+    vec3* triNormals;                        // triangles vertex normals 
+    vec2* triTexCoordinates;       // triangles texture coordinates 
+    vec3 color = vec3(0.3, 0.5, 0.75);
+    PolygonMesh(uint nfaces, 
+                uint faceIndexes[], 
+                uint vertexIndexes[], 
+                vec3 vertices[], 
+                vec3 normals[],
+                vec2 st[]):numTris(0)
+    {
 
 
-// #define INFINITY_ 1e8 
-// class PolygonMesh : public Shape3D{
 
-//     std::vector<Triangle> triangles;
-//     std::vector<glm::vec3> vertices;
-//     PolygonMesh(std::vector<Triangle> triangles, glm::vec3 surfaceColor, glm::vec3 emissionColor,float transparency,float reflection)
-//     : triangles(triangles), Shape3D(getcenter(triangles), surfaceColor, emissionColor, transparency, reflection) {
+        int k = 0, maxVertexIndex = 0;
+        for (uint32_t i = 0; i < nfaces; ++i) { 
+            numTris += faceIndexes[i] - 2; 
+            for (uint32_t j = 0; j < faceIndexes[i]; ++j) 
+                if (vertexIndexes[k + j] > maxVertexIndex) 
+                    maxVertexIndex = vertexIndexes[k + j]; 
+            k += faceIndexes[i]; 
+        } 
+        maxVertexIndex += 1; 
 
-//     };
+        ///
+        triangles = (Triangle**) malloc(sizeof(Triangle*)*numTris );
+        triVertexPositions = new vec3[maxVertexIndex];
+        for(int i = 0; i < maxVertexIndex; i++){
+            triVertexPositions[i] = vertices[i];
+        }
+        for(int i = 0; i < numTris; i ++){
+            Triangle* tri = new Triangle(vec4(triVertexPositions[i*3], 1.f), vec4(triVertexPositions[i*3+1], 1.f), vec4(triVertexPositions[i*3+2], 1.f), 
+                            vec3(((static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) ,
+                                 (static_cast <float> (rand()) / static_cast <float> (RAND_MAX) ,
+                                 (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) ))), "tehe", new Diffuse());
+            triangles[i] = tri;
+        }
+        ///
+        triIndexes = new uint32_t[3*numTris];
+        triNormals  = new vec3[3*numTris];
+        triTexCoordinates = new vec2[3*numTris];
+        uint32_t l = 0;
+        for (uint32_t i = 0, k = 0; i < nfaces; ++i) { // for each  face 
+            for (uint32_t j = 0; j < faceIndexes[i] - 2; ++j) { // for each triangle in the face 
+                triIndexes[l] = vertexIndexes[k]; 
+                triIndexes[l + 1] = vertexIndexes[k + j + 1]; 
+                triIndexes[l + 2] = vertexIndexes[k + j + 2]; 
+                triNormals[l] = normals[k]; 
+                triNormals[l + 1] = normals[k + j + 1]; 
+                triNormals[l + 2] = normals[k + j + 2]; 
+                triTexCoordinates[l] = st[k]; 
+                triTexCoordinates[l + 1] = st[k + j + 1]; 
+                triTexCoordinates[l + 2] = st[k + j + 2]; 
+                l += 3; 
+            } 
+            k += faceIndexes[i]; 
+        } 
+        for(int i = 0; i < nfaces; i++){
+            std::cout << triVertexPositions[i].x << " " << triVertexPositions[i].x << " " << triVertexPositions[i].x << "\n";
+            
+        }
+        std::cout << "numtris " << numTris << "\n";
+    };
 
-//     void setvertices(){
-//         for(int i = 0; i < triangles.size(); i++){
-//             const Triangle& triangle = triangles[i];
-//             glm::vec3* v0 = NULL, *v1 = NULL, *v2 = NULL;
-//             for(int j = 0; j < vertices.size(); j++){
-//                 if(vertices[j] == (glm::vec3) triangle.v0){
-//                     v0 = NULL; 
-//                 }
-//                 if(vertices[j] == (glm::vec3) triangle.v1){
-//                     v1 = NULL;
-//                 }
-//                 if(vertices[j] == (glm::vec3) triangle.v2){
-//                     v2 = NULL;
-//                 }
-
-//             }
-//             if(v0 != NULL)  vertices.push_back(*v0);
-//             if(v1 != NULL)  vertices.push_back(*v1);
-//             if(v2 != NULL)  vertices.push_back(*v2);
-//         }
-//     }
-
-//     // friend bool operator== (glm::vec3& ours, glm::vec3& other) {
-//     //     if( (ours.x == other.v0 || ours.x == other.v1 || ours.x == other.v2) && 
-//     //         (ours.y == other.v0 || ours.y == other.v1 || ours.y == other.v2) &&
-//     //         (ours.z == other.v0 || ours.z == other.v1 || ours.z == other.v2))
-//     //         return false;
-//     //     return true;
-//     // }
-
-//     glm::vec3 getcenter(std::vector<Triangle> t_triangles){
-//         float x = 0, y = 0, z = 0;
-//         for(int i = 0; i < t_triangles.size(); i++){
-//             x += (t_triangles[i].v0.x  +  t_triangles[i].v1.x +  t_triangles[i].v2.x)/3  ;
-//             y += (t_triangles[i].v0.y  +  t_triangles[i].v1.y +  t_triangles[i].v2.y)/3  ;
-//             z += (t_triangles[i].v0.z  +  t_triangles[i].v1.z +  t_triangles[i].v2.z)/3  ;
-//         }
-//         return (glm::vec3(x/triangles.size(), y/triangles.size(), z/triangles.size()));
-//     }
+    bool rayTriIntersect(const vec3 orig, const vec3 dir, const vec3 v0, const vec3 v1, const vec3 v2,  float &t, float& u, float& v) const{
+        vec3 v0v1 = v1 - v0; 
+        vec3 v0v2 = v2 - v0; 
+        vec3 pvec = cross(dir,(v0v2)); 
+        float det = dot(v0v1,pvec); 
     
-//    bool intersect_tri(const glm::vec3& start, const glm::vec3& dir, const Triangle triangle, glm::vec3* intersectpoint){
-//         glm::vec3 v0 = (glm::vec3) triangle.v0;
-//         glm::vec3 v1 = (glm::vec3) triangle.v1;
-//         glm::vec3 v2 = (glm::vec3) triangle.v2;
-//         glm::vec3 e1 = glm::vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
-//         glm::vec3 e2 = glm::vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
-//         glm::vec3 b  = glm::vec3(start.x - v0.x, start.y - v0.y, start.z - v0.z);
-//         glm::vec3 d  = (glm::vec3) dir;
-//         glm::mat3 A( -d, e1, e2 );
-//         glm::vec3 x = glm::inverse( A ) * b;
+        // ray and triangle are parallel if det is close to 0
+        if (fabs(det) < INFINITY_) return false; 
+    
+        float invDet = 1 / det; 
+    
+        vec3 tvec = orig - v0; 
+        u = dot(tvec,(pvec)) * invDet; 
+        if (u < 0 || u > 1) return false; 
+    
+        vec3 qvec = cross(tvec, v0v1); 
+        v = dot(dir,qvec) * invDet; 
+        if (v < 0 || u + v > 1) return false; 
+    
+        t = dot(v0v2,qvec) * invDet; 
+    
+        return true; 
+    }
+    
+
+    bool intersect(const vec3 &orig, const vec3 &dir, float &closestDist, uint &triIndex, vec2 &uv) const 
+    {
        
-//         float t = x.x;
-//         float u = x.y;
-//         float v = x.z; 
+        // uint j = 0; 
+        // bool isect = false; 
+        // for (uint i = 0; i < numTris; ++i) { 
+        //     const vec3 &v0 = triVertexPositions[triIndexes[j]]; 
+        //     const vec3 &v1 = triVertexPositions[triIndexes[j + 1]]; 
+        //     const vec3 &v2 = triVertexPositions[triIndexes[j + 2]]; 
+        //     float t = INFINITY_, u, v; 
+        //     if (rayTriIntersect(orig, dir, v0, v1, v2, t, u, v) && t < closestDist) { 
+        //         closestDist = t; 
+        //         uv.x = u; 
+        //         uv.y = v; 
+        //         triIndex = i; 
+        //         isect = true; 
+        //     } 
+        //     j += 3; 
+        // } 
 
-//        if (0 <= t && 0 <= u && 0 <= v && u + v <= 1){
-//             intersectpoint = new glm::vec3(x);
-//             return true;
-//        }
-//        return false;
-//     }
+        // return isect; 
+    }
 
-//     bool trace(const glm::vec3 &orig, const glm::vec3 &dir, const std::vector<PolygonMesh*> polygons, glm::vec3* point_hit, Triangle* triangle_hit, PolygonMesh* polygon_hit) 
-//     { 
-//         float tNear= INFINITY_;
-//         bool found = false; 
-     
-//         for(int k = 0; k < polygons.size(); k++){
-//             for (uint32_t i = 0; i < triangles.size(); ++i) { 
-//                 float t = INFINITY_;
-//                 glm::vec3* point_attempt = NULL;
-//                 if (intersect_tri(orig, dir, triangles.at(i), point_attempt) && (t < tNear)) { 
-//                 tNear = t; 
-//                     polygon_hit = (polygons[k]);
-//                     point_hit = point_attempt;
-//                     triangle_hit = &(triangles[i]);
-//                     found = true; 
-//                 } 
-//             } 
-//         }
-//         if(!found) return false;
-//         else return true;
+    vec3 getcolor(
+        /*const uint32_t &triIndex, 
+        const vec2 &uv, 
+        vec3 &hitNormal*/)
+    {
+        return color;
+    }
 
-//         // glm::vec3 surfaceColor(0,0,0)
-//         // normal = (glm::vec3)triangle_hit.normal;
-//         // bool inside = false;
-//         // if (glm::dot(normal,dir) > 0) { 
-//         //     normal = -normal; 
-//         //     inside = true; 
-//         // }
-//         // float bias = 1e-4;
-//     } 
+    void getNormal(
+        const uint32_t &triIndex, 
+        const vec2 &uv, 
+        vec3 &hitNormal) 
+    { 
+        // face normal
+        const vec3 &v0 = triVertexPositions[triIndexes[triIndex * 3]]; 
+        const vec3 &v1 = triVertexPositions[triIndexes[triIndex * 3 + 1]]; 
+        const vec3 &v2 = triVertexPositions[triIndexes[triIndex * 3 + 2]]; 
+        hitNormal = glm::normalize(glm::cross((v1 - v0),(v2 - v0))); 
+    } 
 
+    void getTextureCoordinates( 
+        const uint32_t &triIndex, 
+        const vec2 &uv, 
+        vec2 &hitTextureCoordinates){
+         
+        // texture coordinates
+        const vec2 &st0 = triTexCoordinates[triIndex * 3]; 
+        const vec2 &st1 = triTexCoordinates[triIndex * 3 + 1]; 
+        const vec2 &st2 = triTexCoordinates[triIndex * 3 + 2]; 
+        hitTextureCoordinates = (1 - uv.x - uv.y) * st0 + uv.x * st1 + uv.y * st2; 
+ 
+    }
 
-//     // static void render(const std::vector<PolygonMesh>& polygons){
-//     //     using glm::vec3;
-//     //     using glm::vec4;
-//     //     loadpolygons(polygons);
-//     //     for(int i=0; i<SCREEN_WIDTH; i++) {
-//     //         for(int j=0; j<SCREEN_HEIGHT; j++) {
-
-//     //             vec3 dir = vec4(i - SCREEN_WIDTH/2 - camera.position.x,
-//     //                             j - SCREEN_HEIGHT/2 - camera.position.y,
-//     //                             SCREEN_WIDTH/2 - camera.position.z)
-//     //             vec3* point_hit;
-//     //             Triangle* triangle_hit;
-//     //             PolygonMesh* polygon_hit;
-//     //             if (trace(camera.position, dir, polygons, point_hit, triangle_hit, polygon_hit)){
-//     //                 vec3 color = triangle_hit->color;
-//     //                 vec3 directlight = GetLightIntensity(lightSource, intersection, triangles);
-//     //                 color *= (directlight + INDIRECT_LIGHT) * intersection.triangle->gloss;
-//     //                 PutPixelSDL(screen, i, j, color);
-//     //             }
-
-//     //         }
-//     //         PrintProgress(i+1);
-//     //     }
-//     // }
-
-//     static void loadpolygons(std::vector<PolygonMesh>& polygons){
-//     using glm::vec3;
-//     using glm::vec4;
-
-//     // Defines colors:
-//     vec3 red(    0.75f, 0.15f, 0.15f );
-//     vec3 yellow( 0.75f, 0.75f, 0.15f );
-//     vec3 green(  0.15f, 0.75f, 0.15f );
-//     vec3 cyan(   0.15f, 0.75f, 0.75f );
-//     vec3 blue(   0.15f, 0.15f, 0.75f );
-//     vec3 purple( 0.75f, 0.15f, 0.75f );
-//     vec3 white(  0.75f, 0.75f, 0.75f );
-
-//     vec3 lowGloss(0.7, 0.7, 0.7);
-//     vec3 normalGloss(1, 1, 1);
-//     vec3 someGloss(1.2, 1.2, 1.2);
-//     vec3 moreGloss(1.5, 1.5, 1.5);
-//     vec3 highGloss(2, 2, 2);
-//     vec3 superGloss(5, 5, 5);
-
-//     // ---------------------------------------------------------------------------
-//     // Room
-
-//     std::vector<Triangle> triangles;
-//     float L = 555;			// Length of Cornell Box side.
-
-//     vec4 A(L,0,0,1);
-//     vec4 B(0,0,0,1);
-//     vec4 C(L,0,L,1);
-//     vec4 D(0,0,L,1);
-
-//     vec4 E(L,L,0,1);
-//     vec4 F(0,L,0,1);
-//     vec4 G(L,L,L,1);
-//     vec4 H(0,L,L,1);
-
-//     // Floor:
-//     triangles.push_back( Triangle( C, B, A, green , moreGloss) );
-//     triangles.push_back( Triangle( C, D, B, green , moreGloss) );
-
-//     // Left wall
-//     triangles.push_back( Triangle( A, E, C, purple, highGloss ) );
-//     triangles.push_back( Triangle( C, E, G, purple, highGloss ) );
-
-//     // Right wall
-//     triangles.push_back( Triangle( F, B, D, yellow, lowGloss ) );
-//     triangles.push_back( Triangle( H, F, D, yellow, lowGloss ) );
-
-//     // Ceiling
-//     triangles.push_back( Triangle( E, F, G, cyan , normalGloss) );
-//     triangles.push_back( Triangle( F, H, G, cyan , normalGloss) );
-
-//     // Back wall
-//     triangles.push_back( Triangle( G, D, C, white, someGloss ) );
-//     triangles.push_back( Triangle( G, H, D, white, someGloss ) );
-//     polygons.push_back(PolygonMesh(triangles, vec3(23,12,55), vec3(30,100,4), 5,5));
-//     // ---------------------------------------------------------------------------
-//     // Short block
-
-//     A = vec4(290,0,114,1);
-//     B = vec4(130,0, 65,1);
-//     C = vec4(240,0,272,1);
-//     D = vec4( 82,0,225,1);
-
-//     E = vec4(290,165,114,1);
-//     F = vec4(130,165, 65,1);
-//     G = vec4(240,165,272,1);
-//     H = vec4( 82,165,225,1);
-//     std::vector<Triangle> triangles2;
-//     // Front
-//     triangles2.push_back( Triangle(E,B,A,red, someGloss) );
-//     triangles2.push_back( Triangle(E,F,B,red, someGloss) );
-
-//     // Front
-//     triangles2.push_back( Triangle(F,D,B,red, someGloss) );
-//     triangles2.push_back( Triangle(F,H,D,red, someGloss) );
-
-//     // BACK
-//     triangles2.push_back( Triangle(H,C,D,red, someGloss) );
-//     triangles2.push_back( Triangle(H,G,C,red, someGloss) );
-
-//     // LEFT
-//     triangles2.push_back( Triangle(G,E,C,red, someGloss) );
-//     triangles2.push_back( Triangle(E,A,C,red, someGloss) );
-
-//     // TOP
-//     triangles2.push_back( Triangle(G,F,E,red, superGloss) );
-//     triangles2.push_back( Triangle(G,H,F,red, superGloss) );
-//     polygons.push_back(PolygonMesh(triangles2, vec3(23,12,55), vec3(30,100,4), 5,5));
-//     // ---------------------------------------------------------------------------
-//     // Tall block
-
-//     A = vec4(423,0,247,1);
-//     B = vec4(265,0,296,1);
-//     C = vec4(472,0,406,1);
-//     D = vec4(314,0,456,1);
-
-//     E = vec4(423,330,247,1);
-//     F = vec4(265,330,296,1);
-//     G = vec4(472,330,406,1);
-//     H = vec4(314,330,456,1);
-//     std::vector<Triangle> triangles3;
-//     // Front
-//     triangles3.push_back( Triangle(E,B,A,blue, highGloss) );
-//     triangles3.push_back( Triangle(E,F,B,blue, highGloss) );
-
-//     // Front
-//     triangles3.push_back( Triangle(F,D,B,blue, highGloss) );
-//     triangles3.push_back( Triangle(F,H,D,blue, highGloss) );
-
-//     // BACK
-//     triangles3.push_back( Triangle(H,C,D,blue, highGloss) );
-//     triangles3.push_back( Triangle(H,G,C,blue, highGloss) );
-
-//     // LEFT
-//     triangles3.push_back( Triangle(G,E,C,blue, highGloss) );
-//     triangles3.push_back( Triangle(E,A,C,blue, highGloss) );
-
-//     // TOP
-//     triangles3.push_back( Triangle(G,F,E,blue, superGloss) );
-//     triangles3.push_back( Triangle(G,H,F,blue, superGloss) );
-//     polygons.push_back(PolygonMesh(triangles3, vec3(23,12,55), vec3(30,100,4), 5,5));
-
-//     // ----------------------------------------------
-//     // Scale to the volume [-1,1]^3
-//     for(int k = 0; k < polygons.size(); k ++){
-//         std::vector<Triangle> triangles = polygons[k].triangles;
-//         for( size_t i=0; i<triangles.size(); ++i )
-//         {
-//             triangles[i].v0 *= 2/L;
-//             triangles[i].v1 *= 2/L;
-//             triangles[i].v2 *= 2/L;
-
-//             triangles[i].v0 -= vec4(1,1,1,1);
-//             triangles[i].v1 -= vec4(1,1,1,1);
-//             triangles[i].v2 -= vec4(1,1,1,1);
-
-//             triangles[i].v0.x *= -1;
-//             triangles[i].v1.x *= -1;
-//             triangles[i].v2.x *= -1;
-
-//             triangles[i].v0.y *= -1;
-//             triangles[i].v1.y *= -1;
-//             triangles[i].v2.y *= -1;
-
-//             triangles[i].v0.w = 1.0;
-//             triangles[i].v1.w = 1.0;
-//             triangles[i].v2.w = 1.0;
-//         }
-//     }
-//     }
-// };
+    static PolygonMesh* generatePolySphere(float rad, uint32_t divs) 
+    { 
+        // generate points                                                                                                                                                                                      
+        uint32_t numVertices = (divs - 1) * divs + 2; 
+        vec3* P = new vec3[numVertices]; 
+        vec3* N = new vec3[numVertices]; 
+        vec2* st =new vec2[numVertices]; 
+    
+        float u = -M_PI_2; 
+        float v = -M_PI; 
+        float du = M_PI / divs; 
+        float dv = 2 * M_PI / divs; 
+    
+        P[0] = N[0] = vec3(0, -rad, 0); 
+        uint32_t k = 1; 
+        for (uint32_t i = 0; i < divs - 1; i++) { 
+            u += du; 
+            v = -M_PI; 
+            for (uint32_t j = 0; j < divs; j++) { 
+                float x = rad * cos(u) * cos(v) * 15; 
+                float y = rad * sin(u)  * 15; 
+                float z = rad * cos(u) * sin(v) * 15 ; 
+                P[k] = N[k] = vec3(x, y, z); 
+                st[k].x = u / M_PI + 0.5; 
+                st[k].y = v * 0.5 / M_PI + 0.5; 
+                v += dv, k++; 
+            } 
+        } 
+        P[k] = N[k] = vec3(0, rad, 0); 
+    
+        uint32_t npolys = divs * divs; 
+        uint32_t* faceIndex = new uint32_t[npolys]; 
+        uint32_t* vertsIndex = new uint32_t[(6 + (divs - 1) * 4) * divs]; 
+    
+        // create the connectivity lists                                                                                                                                                                        
+        uint32_t vid = 1, numV = 0, l = 0; 
+        k = 0; 
+        for (uint32_t i = 0; i < divs; i++) { 
+            for (uint32_t j = 0; j < divs; j++) { 
+                if (i == 0) { 
+                    faceIndex[k++] = 3; 
+                    vertsIndex[l] = 0; 
+                    vertsIndex[l + 1] = j + vid; 
+                    vertsIndex[l + 2] = (j == (divs - 1)) ? vid : j + vid + 1; 
+                    l += 3; 
+                } 
+                else if (i == (divs - 1)) { 
+                    faceIndex[k++] = 3; 
+                    vertsIndex[l] = j + vid + 1 - divs; 
+                    vertsIndex[l + 1] = vid + 1; 
+                    vertsIndex[l + 2] = (j == (divs - 1)) ? vid + 1 - divs : j + vid + 2 - divs; 
+                    l += 3; 
+                } 
+                else { 
+                    faceIndex[k++] = 4; 
+                    vertsIndex[l] = j + vid + 1 - divs; 
+                    vertsIndex[l + 1] = j + vid + 1; 
+                    vertsIndex[l + 2] = (j == (divs - 1)) ? vid + 1 : j + vid + 2; 
+                    vertsIndex[l + 3] = (j == (divs - 1)) ? vid + 1 - divs : j + vid + 2 - divs; 
+                    l += 4; 
+                } 
+                numV++; 
+            } 
+            vid = numV; 
+        } 
+    
+        return new PolygonMesh(npolys, faceIndex, vertsIndex, P, N, st); 
+    } 
+ 
+};
 
 
 
-// #endif
+#endif

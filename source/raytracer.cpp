@@ -18,7 +18,7 @@
 #include "camera/camera.h"
 #include "scene/keyboard.h"
 #include "scene/kd-tree.h"
-#include "shapes/cuboid.h"
+#include "scene/fractalgen.h"
 #include "shapes/triangle.h"
 #include "shapes/sphere.h"
 #include "light/pointlight.h"
@@ -115,6 +115,15 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource
 }
 
 int main( int argc, char* argv[] ) {
+    // FractalGen frac(vec4(10, 10, 10, 1), vec4(80, 10, 100, 1));
+    // for(int i = 0; i < 70; i++){
+    //     frac.height_map.push_back(std::vector<float>());
+    //     for(int j = 0; j < 90; j++){
+    //         frac.height_map[i].push_back(0);
+    //     }
+    // }
+    // frac.generate_terrain();
+   
     screen *screen = InitializeSDL( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, FULLSCREEN_MODE );
     vector<LightSource*> lights;
     LightSource* lightA = new PointLight();

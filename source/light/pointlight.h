@@ -32,7 +32,6 @@ public:
 
         if (isOccluded(point, shapes)) {
             return vec3(0.0001, 0.0001, 0.0001);
-
         }
 
         return color * powPerSurface;
@@ -45,9 +44,7 @@ public:
         if(shadow_ray.ClosestIntersection(shapes, intersect, point.shape2D)){
             float distA = glm::distance(point.position, position);
             float distB = glm::distance(intersect.position, position);
-            if(distB < distA){
-                return true;
-            }
+            return (distB < distA);
         }
         return false;
     }
