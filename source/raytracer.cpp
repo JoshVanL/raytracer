@@ -18,7 +18,7 @@
 #include "camera/camera.h"
 #include "scene/keyboard.h"
 #include "scene/kd-tree.h"
-#include "scene/fractalgen.h"
+#include "shapes/terrain.h"
 #include "shapes/triangle.h"
 #include "shapes/sphere.h"
 #include "light/pointlight.h"
@@ -115,15 +115,9 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource
 }
 
 int main( int argc, char* argv[] ) {
-    // FractalGen frac(vec4(10, 10, 10, 1), vec4(80, 10, 100, 1));
-    // for(int i = 0; i < 70; i++){
-    //     frac.height_map.push_back(std::vector<float>());
-    //     for(int j = 0; j < 90; j++){
-    //         frac.height_map[i].push_back(0);
-    //     }
-    // }
-    // frac.generate_terrain();
-   
+
+    Terrain* terrain = new Terrain;
+
     screen *screen = InitializeSDL( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, FULLSCREEN_MODE );
     vector<LightSource*> lights;
     LightSource* lightA = new PointLight();
@@ -133,7 +127,15 @@ int main( int argc, char* argv[] ) {
     Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
-    LoadTestModel(shapes);
+    printf("herez\n");
+    for(int i = 0; i < 10*10; i++){
+        vector<Triangle*> triangleset = terrain->triangles[i];
+        shapes.push_back(triangleset[0]);
+        shapes.push_back(triangleset[1]);
+        shapes.push_back(triangleset[2]);
+        shapes.push_back(triangleset[3]);
+    }
+    // LoadTestModel(shapes);
 
     SDL_Event event;
     int runProgram = 0;

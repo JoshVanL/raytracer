@@ -55,7 +55,7 @@ public:
             Triangle* tri = new Triangle(vec4(triVertexPositions[i*3], 1.f), vec4(triVertexPositions[i*3+1], 1.f), vec4(triVertexPositions[i*3+2], 1.f), 
                             vec3(((static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) ,
                                  (static_cast <float> (rand()) / static_cast <float> (RAND_MAX) ,
-                                 (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) ))), "tehe", new Diffuse());
+                                 (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) ))), "tehe", false, {new Diffuse()});
             triangles[i] = tri;
         }
         ///
