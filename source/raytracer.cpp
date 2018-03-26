@@ -18,7 +18,7 @@
 #include "camera/camera.h"
 #include "scene/keyboard.h"
 #include "scene/kd-tree.h"
-#include "shapes/terrain.h"
+#include "shapes/water.h"
 #include "shapes/triangle.h"
 #include "shapes/sphere.h"
 #include "light/pointlight.h"
@@ -116,7 +116,6 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource
 
 int main( int argc, char* argv[] ) {
 
-    Terrain* terrain = new Terrain;
 
     screen *screen = InitializeSDL( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, FULLSCREEN_MODE );
     vector<LightSource*> lights;
@@ -126,14 +125,12 @@ int main( int argc, char* argv[] ) {
     lights.push_back(lightB);
     Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
+    Water water;
     vector<Shape2D*> shapes;
-    printf("herez\n");
-    for(int i = 0; i < 10*10; i++){
-        vector<Triangle*> triangleset = terrain->triangles[i];
-        shapes.push_back(triangleset[0]);
-        shapes.push_back(triangleset[1]);
-        shapes.push_back(triangleset[2]);
-        shapes.push_back(triangleset[3]);
+    for(int i = 0; i < water.triangles.size();i++){
+        for(int j = 0; j < water.triangles[i].size();j++){
+            shapes.push_back(water.triangles[i][j]);
+        }
     }
     // LoadTestModel(shapes);
 

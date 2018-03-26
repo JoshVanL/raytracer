@@ -22,7 +22,7 @@ public:
                 const bool isRefractive = true,
                 const float& transparency = 0.7f,
                 const float& refractive_index = 0.7f) :
-                Material("Translucent", NORMALGLOSS, transparency), refractive_index(refractive_index), air_refractive_index(1.f),
+                Material("Translucent", HIGHGLOSS, transparency), refractive_index(refractive_index), air_refractive_index(1.f),
                 isReflective(isReflective), isRefractive(isRefractive) {
     }
 
@@ -51,16 +51,18 @@ public:
                 kr = (Rs * Rs + Rp * Rp) * 0.5f;
             }
 
-            kr *= 0.3;
+            kr *= 0.4;
             vec3 reflection;
             vec3 refraction;
+            vec3 intensity = lightSource->getDirectLight(intersection, shapes);
+            vec3 indirectlight = lightSource->getIndirectLight();
             if(isReflective){
-                reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this));
+                reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this)) +  intensity * 0.02f;
                 if(!isRefractive)
                     return reflection;
             }
             if(isRefractive){
-                refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this));
+                refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this)) +  intensity * 0.02f ;
                 if(!isReflective)
                     return refraction;
             }

@@ -114,6 +114,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // Floor:
     shapes.push_back( new Triangle( C, B, A, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")}));
     shapes.push_back( new Triangle( C, D, B, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")} ));
+    // shapes.push_back( new Triangle( C, B, A, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")}));
+    // shapes.push_back( new Triangle( C, D, B, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")} ));
 
     // Left wall
     shapes.push_back( new Triangle( A, E, C, white, "wall",   {new Texture("source/materials/textures/wall2.bmp") }) );
@@ -226,11 +228,14 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
 
     // ---------------------------------------------------------------------------
     // Sphere
-    float radius = 100;
+    float radius = 60;
     float empty = 0;
-    A = vec4(250, 300, 200, 1);
+    A = vec4(200, 230, 150, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     shapes.push_back( new Sphere( A, radius, blue, "sphere1", { new Translucent() }) );
+    A = vec4(350, 400, 350, 1);
+    radius = 70;
+    shapes.push_back( new Sphere( A, radius ,red, "sphere2", { new Mirror(), new Specular() }) );
 }
 
 

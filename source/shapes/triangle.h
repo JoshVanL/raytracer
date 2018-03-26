@@ -95,14 +95,14 @@ public:
         }
         vec3 t_color = vec3(0,0,0);
         for(int a = 0; a < colors.size(); a++){
-            if(a == 0)
+            if(colors.size() == 1)
                return colors[0] + (color * vec3(0.02, 0.02, 0.02));
             t_color = glm::mix(t_color, colors[a], 0.5f);
         }
 
         return t_color;
-
     }
+
     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {
         float u = cam_intersect[1], v = cam_intersect[2];
         vec4 e1 = v1 - v0;
