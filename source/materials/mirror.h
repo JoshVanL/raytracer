@@ -20,13 +20,19 @@ public:
 
     Mirror(const bool isReflective = true,
                 const bool isRefractive = false,
-                const float& transparency = 0.f,
+                const float& transparency = 0.8f,
                 const float& refractive_index = 0.9f) :
                 Material("Mirror", HIGHGLOSS, transparency), refractive_index(refractive_index), air_refractive_index(1.f),
                 isReflective(isReflective), isRefractive(isRefractive) {
     }
 
-    virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes,  LightSource* lightSource)  override {
+    virtual vec3 material_color(Intersection& intersection, 
+                                const Ray& primary_ray, 
+                                const std::vector<Shape2D*>& shapes,  
+                                LightSource* lightSource,
+                                vec3 directLight,
+                                vec3 indirectLight) override 
+    {
         Shape2D* shape2D            = intersection.shape2D;
         glm::vec3 normal            = glm::normalize((vec3) shape2D->getnormal(intersection));
         glm::vec3 ray_dir           = (vec3) glm::normalize(primary_ray.direction);
@@ -50,14 +56,14 @@ public:
             kr = (Rs * Rs + Rp * Rp) / 2;
         }
 
-        kr *= 0.5;
+        kr *= 0.4;
         vec3 reflection;
         vec3 refraction;
         if(isReflective){
             reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Mirror::reflect_direction, *(this));
             //fprintf(stderr, "%f %f %f\n", reflection.x, reflection.y, reflection.z);
             if(!isRefractive)
-                return reflection * kr;
+                return reflection ;
         }
         if(isRefractive){
             refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Mirror::refract_direction, *(this));
@@ -68,11 +74,14 @@ public:
     }
 
     //Returns the color of final ray intersection point
-    vec3 recurse_ray(const Ray& primary_ray, Intersection intersection,
-                 Shape2D* t_shape, const std::vector<Shape2D*>& shapes,
-                 LightSource* lightSource,
-                 vec4 (Mirror::*direction_function)(Intersection, Shape2D*),
-                 Mirror& callerObj) {
+    vec3 recurse_ray(const Ray& primary_ray, 
+                     Intersection intersection,
+                     Shape2D* t_shape, 
+                     const std::vector<Shape2D*>& shapes,
+                     LightSource* lightSource,
+                     vec4 (Mirror::*direction_function)(Intersection, Shape2D*),
+                     Mirror& callerObj) 
+    {
 
         int currentdepth = primary_ray.bounces;
         if(currentdepth >= primary_ray.max_depth)
@@ -87,15 +96,16 @@ public:
             return vec3(0.2f,0.2f,0.2f);
         }
     }
-
-    vec4 reflect_direction(Intersection intersection, Shape2D* t_shape){
+    vec4 reflect_direction(Intersection intersection, 
+                           Shape2D* t_shape){
         vec4 incident_ray = -intersection.direction;
         vec3 norm3d = t_shape->getnormal(intersection);
         vec4 norm = vec4(norm3d.x,norm3d.y,norm3d.z,1);
-        return incident_ray - 2.0f * dot(incident_ray, norm) * norm;
+        return incident_ray - dot(incident_ray, norm) * norm * 2.f;
     }
 
-    vec4 refract_direction(Intersection intersection, Shape2D* t_shape){
+    vec4 refract_direction(Intersection intersection, 
+                           Shape2D* t_shape){
 
         vec3 normal_3d = normalize(t_shape->getnormal(intersection));
         vec3 incoming_3d = normalize(vec3(intersection.direction));

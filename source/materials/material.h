@@ -23,7 +23,12 @@ public:
              gloss(new Gloss(glossType)), material_type(material_type), transparency(trans){
  
     };
-    virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) = 0;
+    virtual glm::vec3 material_color(   Intersection& intersection, 
+                                        const Ray& primary_ray, 
+                                        const std::vector<Shape2D*>& shapes, 
+                                        LightSource* lightSource,
+                                        vec3 directLight,
+                                        vec3 indirectLight) = 0;
  
 };
 

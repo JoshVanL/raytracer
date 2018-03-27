@@ -16,7 +16,6 @@ public:
     const float air_refractive_index;
     const bool isReflective;
     const bool isRefractive;
-    int count = 0;
 
     Translucent(const bool isReflective = true,
                 const bool isRefractive = true,
@@ -26,7 +25,9 @@ public:
                 isReflective(isReflective), isRefractive(isRefractive) {
     }
 
-    virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes,  LightSource* lightSource)  override {
+    virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes,  LightSource* lightSource,
+                                        vec3 directLight,
+                                        vec3 indirectLight)  override {
         if(isRefractive || isReflective){
             Shape2D* shape2D            = intersection.shape2D;
             glm::vec3 normal            = glm::normalize((vec3) shape2D->getnormal(intersection));
@@ -54,15 +55,14 @@ public:
             kr *= 0.4;
             vec3 reflection;
             vec3 refraction;
-            vec3 intensity = lightSource->getDirectLight(intersection, shapes);
-            vec3 indirectlight = lightSource->getIndirectLight();
+
             if(isReflective){
-                reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this)) +  intensity * 0.02f;
+                reflection = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::reflect_direction, *(this)) +  directLight * 0.02f;
                 if(!isRefractive)
                     return reflection;
             }
             if(isRefractive){
-                refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this)) +  intensity * 0.02f ;
+                refraction = recurse_ray(primary_ray, intersection, intersection.shape2D, shapes, lightSource, &Translucent::refract_direction, *(this)) +  directLight * 0.02f ;
                 if(!isReflective)
                     return refraction;
             }
@@ -98,7 +98,13 @@ public:
  
     vec4 reflect_direction(Intersection intersection, Shape2D* t_shape){
         vec4 incident_ray = -intersection.direction;
+        vec3 incoming_3d = normalize(vec3(intersection.direction));
         vec3 norm3d = t_shape->getnormal(intersection);
+
+        if (dot(norm3d, incoming_3d) > 0) {
+            norm3d = -norm3d;
+        }
+
         vec4 norm = vec4(norm3d.x,norm3d.y,norm3d.z,1);
         return incident_ray - (dot(incident_ray, norm) * norm) * 2.f;
     }

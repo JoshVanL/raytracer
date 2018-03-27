@@ -56,11 +56,9 @@ public:
             v0(v0), v1(v1), v2(v2), normal(ComputeNormal())
     {
     }
+
     virtual vec2 getUV(Intersection& intersectpoint) override {
-        // if (!hasTextures) return false;
 
-
-        //Use the same code as for getNormalAt to get the barycentric points
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
         vec3 b = vec3(intersectpoint.position.x - v0.x, intersectpoint.position.y - v0.y, intersectpoint.position.z - v0.z);
@@ -87,11 +85,16 @@ public:
     }
 
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override{
-        if(materials.empty())
-            return color;
+        if(materials.empty())   return color;
         vector<vec3> colors;
+
+        vec3 directLight = lightSource->getDirectLight(intersection, shapes);
+        vec3 indirectLight = lightSource->getIndirectLight();
+
+
+
         for(int a = 0; a < materials.size(); a++){
-            colors.push_back(materials[a]->material_color(intersection, primary_ray, shapes, lightSource));
+            colors.push_back(materials[a]->material_color(intersection, primary_ray, shapes, lightSource, directLight, indirectLight));
         }
         vec3 t_color = vec3(0,0,0);
         for(int a = 0; a < colors.size(); a++){
@@ -111,14 +114,11 @@ public:
     }
 
     virtual vec3 getnormal(Intersection& intersection){
-
-        vec3 a =  (vec3) glm::normalize(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2));
-        vec3 b = -a;
-        if(glm::dot(a, (vec3) glm::normalize(intersection.direction)) <= 0){
-            return a;
+        if(glm::dot(normal, glm::normalize(intersection.direction)) <= 0){
+            return vec3(normal);
         }
         else{
-            return b;
+            return -vec3(normal);
         }
     }
 
@@ -126,8 +126,6 @@ public:
         vec3 minPos = (vec3)v0;
         for (int i = 0; i < 3; i++) {
             if ( v1[i] < minPos[i] ) minPos[i] = v1[i];
-        }
-        for (int i = 0; i < 3; i++) {
             if ( v2[i] < minPos[i] ) minPos[i] = v2[i];
         }
         return minPos;
@@ -137,8 +135,6 @@ public:
         vec3 maxPos = (vec3)v0;
         for (int i = 0; i < 3; i++) {
             if ( v1[i] > maxPos[i] ) maxPos[i] = v1[i];
-        }
-        for (int i = 0; i < 3; i++) {
             if ( v2[i] > maxPos[i] ) maxPos[i] = v2[i];
         }
         return maxPos;
@@ -168,16 +164,7 @@ private:
 
     vec4 ComputeNormal()
     {
-        vec4 norm;
-        glm::vec3 e1 = glm::vec3(v1.x-v0.x,v1.y-v0.y,v1.z-v0.z);
-        glm::vec3 e2 = glm::vec3(v2.x-v0.x,v2.y-v0.y,v2.z-v0.z);
-        glm::vec3 normal3 = glm::normalize( glm::cross( e2, e1 ) );
-        norm.x = normal3.x;
-        norm.y = normal3.y;
-        norm.z = normal3.z;
-        norm.w = 1.0;
-
-        return norm;
+        return glm::normalize(vec4(glm::triangleNormal((vec3) v0, (vec3) v1, (vec3) v2), 1));
     }
 };
 #endif

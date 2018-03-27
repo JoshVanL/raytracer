@@ -71,6 +71,14 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
                 colors[i][j] = color;
             }
+            else if(ray.ClosestIntersection(shapes, intersection)){
+                vec3 color(0,0,0);
+                for(int k = 0; k < lights.size(); k++){
+                    color += intersection.shape2D->getcolor(intersection, ray, shapes, lights[k]);
+                }
+
+                colors[i][j] = color;
+            }
         }
     } 
 
@@ -125,14 +133,14 @@ int main( int argc, char* argv[] ) {
     lights.push_back(lightB);
     Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
-    Water water;
     vector<Shape2D*> shapes;
-    for(int i = 0; i < water.triangles.size();i++){
-        for(int j = 0; j < water.triangles[i].size();j++){
-            shapes.push_back(water.triangles[i][j]);
-        }
-    }
-    // LoadTestModel(shapes);
+    // Water water;
+    // for(int i = 0; i < water.triangles.size();i++){
+    //     for(int j = 0; j < water.triangles[i].size();j++){
+    //         shapes.push_back(water.triangles[i][j]);
+    //     }
+    // }
+    LoadTestModel(shapes);
 
     SDL_Event event;
     int runProgram = 0;

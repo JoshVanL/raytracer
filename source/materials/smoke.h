@@ -21,7 +21,12 @@ public:
     };
 
 
-    virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)   override {
+    virtual glm::vec3 material_color(Intersection& intersection, 
+                                     const Ray& primary_ray, 
+                                     const std::vector<Shape2D*>& shapes, 
+                                     LightSource* lightSource,
+                                        vec3 directLight,
+                                        vec3 indirectLight)  override {
 
         Ray outgoing = Ray(intersection.position + vec4(intersection.shape2D->getnormal(intersection) * -0.001f, 1), intersection.direction, primary_ray.bounces + 1);
         Intersection behindObjectIntersection;

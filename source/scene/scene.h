@@ -9,6 +9,7 @@
 
 #include "../shapes/triangle.h"
 #include "../shapes/sphere.h"
+#include "../shapes/wave.h"
 #include "../materials/material.h"
 #include "../materials/translucent.h"
 #include "../materials/specular.h"
@@ -66,7 +67,18 @@ void readMeshData(std::string filepath, std::vector<Shape2D*>& shapes){
     
 }
 
+void LoadTest(std::vector<Shape2D*>& shapes){
+    using glm::vec3; 
+    using glm::vec4;
+  float L = 555;
+    vec4 A(L,0,0,1);
+    vec4 B(0,0,0,1);
+    vec4 C(L,L,0,1);
+    vec4 D(0,0,L,1);
 
+    shapes.push_back( new Wave( B, C, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")}));
+
+}
 void LoadTestModel( std::vector<Shape2D*>& shapes )
 {
    
@@ -136,8 +148,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     // Mirror
 
-    shapes.push_back( new Triangle( I, J, K, white, "mirror",   {new Mirror()}));
-    shapes.push_back( new Triangle( M, N, O, white, "mirror",  {new Mirror()}));
+    shapes.push_back( new Triangle( I, J, K, white, "mirror",   {new Translucent(true, false)}));
+    shapes.push_back( new Triangle( M, N, O, white, "mirror",  {new Translucent(true, false)}));
 
 
     // ---------------------------------------------------------------------------
@@ -235,7 +247,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Sphere( A, radius, blue, "sphere1", { new Translucent() }) );
     A = vec4(350, 400, 350, 1);
     radius = 70;
-    shapes.push_back( new Sphere( A, radius ,red, "sphere2", { new Mirror(), new Specular() }) );
+    shapes.push_back( new Sphere( A, radius ,red, "sphere2", { new Translucent(true, false), new Specular() }) );
 }
 
 
