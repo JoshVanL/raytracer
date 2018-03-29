@@ -77,7 +77,7 @@ public:
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)  override 
     {   
         vec3 indirectLight = lightSource->getIndirectLight();
-        vec3 directSight = lightSource->getDirectLight(intersection, shapes);
+        vec3 directLight = lightSource->getDirectLight(intersection, shapes);
 
         vector<vec3> colors;
         for(int a = 0; a < materials.size(); a++){

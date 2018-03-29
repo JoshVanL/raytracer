@@ -94,7 +94,9 @@ public:
         }
         return found;
     }
-
+    Ray offset(vec4 offset_dir, float offset_scalar) {
+        return Ray(position+ offset_scalar * offset_dir, direction, bounces);
+    }
     bool ClosestIntersection(const std::string exclusion_id, const std::vector<Shape2D*>& shapes, Intersection &closestIntersection) 
     {
         closestIntersection.distance = std::numeric_limits<float>::max();

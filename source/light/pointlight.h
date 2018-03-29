@@ -8,9 +8,9 @@ using glm::vec3;
 class PointLight : public LightSource {
 public:
 
-    PointLight( const vec4& pos         = vec4(0.5, 0.5, -0.5, 1.0), 
+    PointLight( const vec4& pos         = vec4(0.5, 0.2, -0.5, 1.0), 
                 const glm::vec3& col    = vec3(1, 1, 1), 
-                const float& pow        = 10.f) 
+                const float& pow        = 7.f) 
     : LightSource(pos, col, pow){
 
     };
@@ -41,7 +41,7 @@ public:
         Intersection intersect; 
         vec4 shadow_dir = glm::normalize(point.position - position);
         Ray shadow_ray(position + shadow_dir*0.01f, shadow_dir);
-        if(shadow_ray.ClosestIntersection(shapes, intersect, point.shape2D)){
+        if(shadow_ray.ClosestIntersection(shapes, intersect, "Smoke", point.shape2D)){
             float distA = glm::distance(point.position, position);
             float distB = glm::distance(intersect.position, position);
             return (distB < distA);

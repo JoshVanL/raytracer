@@ -9,6 +9,7 @@
 
 #include "../shapes/triangle.h"
 #include "../shapes/sphere.h"
+#include "../shapes/rectangle.h"
 #include "../shapes/wave.h"
 #include "../materials/material.h"
 #include "../materials/translucent.h"
@@ -70,13 +71,13 @@ void readMeshData(std::string filepath, std::vector<Shape2D*>& shapes){
 void LoadTest(std::vector<Shape2D*>& shapes){
     using glm::vec3; 
     using glm::vec4;
-  float L = 555;
+    float L = 555;
     vec4 A(L,0,0,1);
     vec4 B(0,0,0,1);
-    vec4 C(L,L,0,1);
+    vec4 C(L,0,L,1);
     vec4 D(0,0,L,1);
 
-    shapes.push_back( new Wave( B, C, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")}));
+    shapes.push_back( new Rectangle(A, B, C, D, white , "wall", {new Specular()}));
 
 }
 void LoadTestModel( std::vector<Shape2D*>& shapes )
@@ -176,8 +177,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     H = vec4( 82,165,225,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,red, "shortblock",  {new Translucent()} ));
-    shapes.push_back( new Triangle(E,F,B,red, "shortblock",  {new Translucent()} ));
+    shapes.push_back( new Triangle(E,B,A,red, "shortblock",  {new Smoke(red)} ));
+    shapes.push_back( new Triangle(E,F,B,red, "shortblock",  {new Smoke(red)} ));
 
     // Front
     shapes.push_back( new Triangle(F,D,B,red,"shortblock",   {new Translucent()} ));
@@ -219,8 +220,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     H = vec4(314,330,456,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,blue,"tallblock",  { new Translucent() }) );
-    shapes.push_back( new Triangle(E,F,B,blue, "tallblock",  { new Translucent() }) );
+    shapes.push_back( new Triangle(E,B,A,blue,"tallblock",  {  new Smoke(blue) }) );
+    shapes.push_back( new Triangle(E,F,B,blue, "tallblock",  {  new Smoke(blue)}) );
 
     // Front
     shapes.push_back( new Triangle(F,D,B,blue, "tallblock",  { new Translucent() }) );
@@ -244,7 +245,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     float empty = 0;
     A = vec4(200, 230, 150, 1);
     vec3 emptyv3 =  vec3(0,0,0);
-    shapes.push_back( new Sphere( A, radius, blue, "sphere1", { new Translucent() }) );
+    shapes.push_back( new Sphere( A, radius, blue, "sphere1", { new Translucent()}) );
     A = vec4(350, 400, 350, 1);
     radius = 70;
     shapes.push_back( new Sphere( A, radius ,red, "sphere2", { new Translucent(true, false), new Specular() }) );

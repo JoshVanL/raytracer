@@ -14,7 +14,7 @@ public:
     vec4 direction;
     float angleSpan;
 
-    SpotLight(  const vec4& pos         = vec4(1, -0.5, -1.4, 1.0), 
+    SpotLight(  const vec4& pos         = vec4(0.6, 0.2, -0.7, 1.0), 
                 const vec4& dir         = vec4(0, -1, 0, 0),
                 const float& angle      = 0.3f,
                 const glm::vec3& col    = vec3(1, 1, 1), 
@@ -55,12 +55,9 @@ public:
         float transparency = 1.f;
 
         if (isOccluded(point, shapes)) {
-            if(transparency == 0.f)
-                return vec3(0.0001, 0.0001, 0.0001);
-            else {
                 vec3 light_a = (color * powPerSurface * (0.8f/(transparency)));
                 return (light_a * fabs(log2f( (angleToPoint + 0.01f)*2.f)) )  ;
-            }
+            
         }
 
         vec3 light_a = (color * powPerSurface * (0.8f/(transparency)));

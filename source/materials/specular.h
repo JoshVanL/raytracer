@@ -40,7 +40,7 @@ public:
 
         /* Calculating Diffuse Component */
         vec3 diffuse_component = diffuse_shader->material_color(intersection, primary_ray, shapes, lightSource, directLight, indirectLight);
-
+   
         return specular_component * Ks +  diffuse_component * Kd ;
     }
 
