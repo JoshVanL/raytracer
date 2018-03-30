@@ -125,12 +125,12 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 N(4,100,400,1);
     vec4 O(4,100,220,1);
 
-    vec4 Ia(540,100,150,1);
-    vec4 Ja(540,400,-30,1);
-    vec4 Ka(540,400,150,1);
-    vec4 Ma(540,400,-30,1);
-    vec4 Na(540,100,150,1);
-    vec4 Oa(540,100,-30,1);
+    vec4 Ia(540,100,200,1);
+    vec4 Ja(540,400,20,1);
+    vec4 Ka(540,400,200,1);
+    vec4 Ma(540,400,20,1);
+    vec4 Na(540,100,200,1);
+    vec4 Oa(540,100,20,1);
 
     // Floor:
     shapes.push_back( new Triangle( C, B, A, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")}));

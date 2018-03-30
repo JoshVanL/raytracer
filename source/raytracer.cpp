@@ -131,15 +131,9 @@ int main( int argc, char* argv[] ) {
     LightSource* lightB = new SpotLight();
     lights.push_back(lightA);
     lights.push_back(lightB);
-    Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
+    Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::FISHEYE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
-    // Water water;
-    // for(int i = 0; i < water.triangles.size();i++){
-    //     for(int j = 0; j < water.triangles[i].size();j++){
-    //         shapes.push_back(water.triangles[i][j]);
-    //     }
-    // }
     LoadTestModel(shapes);
 
     SDL_Event event;
