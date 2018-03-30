@@ -66,7 +66,7 @@ public:
         vec3 reflected_dir = normalize(2.0f * dot(l, surface_normal) * surface_normal - l);
 
         //Viewing direction
-        vec3 v = normalize(-vec3(primary_ray.direction));
+        vec3 v = normalize(vec3(primary_ray.direction));
 
         //Calculate component of viewing direction in the direction of reflected ray
         float specular_highlight = dot(v, reflected_dir);
@@ -87,22 +87,15 @@ public:
         float i;
 
         if(intersection.position.x < 1.f && intersection.position.x > -0.1) {
-            i = (((intersection.position.x ) ) * (float) height);
+            i = abs((((intersection.position.x ) ) * (float) height));
         } else {
-            i = (((intersection.position.z ) ) * (float) height);
+            i = abs((((intersection.position.z ) ) * (float) height));
         }
 
         if(intersection.position.y < 1.f && intersection.position.y > -0.1) {
-            j = (((intersection.position.y ) ) * (float) width);
+            j = abs((((intersection.position.y ) ) * (float) width));
         } else {
-            j = (((intersection.position.z ) ) * (float) width);
-        }
-
-        if (i < 0) {
-            i = -i;
-        }
-        if (j < 0) {
-            j = -j;
+            j = abs((((intersection.position.z ) ) * (float) width));
         }
 
         i = fmod(i, height);

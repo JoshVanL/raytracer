@@ -60,7 +60,14 @@ public:
                                                 focal_length - position.z,
                                                 1));
     }
+    Ray createNewRay(int i, int j) const {
 
+        vec4 dir = glm::normalize(  rotation * vec4(i - SCREEN_WIDTH / 2 - position.x, 
+                                    j - SCREEN_HEIGHT/ 2 - position.y, 
+                                    focal_length - position.z, 1));
+
+        return Ray(position, dir, 0);
+    }
     CameraEffect* get_camera_effect(CameraEffectType camefftype){
         if(camefftype == CameraEffectType::FISHEYE)
             return &fisheye;
@@ -74,7 +81,7 @@ public:
                 position += rotation*vec4(0,0.1f,0,0);
                 break;
             case SDLK_LEFT:
-                primary_ray.position += rotation*vec4(-0.5,0,0,0);
+                primary_ray.position += rotation*vec4(-0.1f,0,0,0);
                 position += rotation*vec4(-0.1f,0,0,0);
                 break;
             case SDLK_UP:
@@ -104,7 +111,7 @@ public:
                 break;
             case SDLK_RIGHT :
                 primary_ray.position += rotation*vec4(0.1f,0,0,0);
-                position += rotation*(vec4(0.5f,0,0,0));
+                position += rotation*(vec4(0.1f,0,0,0));
                 break;
         }
     }
@@ -126,14 +133,7 @@ public:
         }
     }
 
-    Ray createNewRay(int i, int j) const {
 
-        vec4 dir = glm::normalize(  rotation * vec4(i - SCREEN_WIDTH / 2 - position.x, 
-                                    j - SCREEN_HEIGHT/ 2 - position.y, 
-                                    focal_length - position.z, 1));
-
-        return Ray(position, dir, 0);
-    }
 
 };
 

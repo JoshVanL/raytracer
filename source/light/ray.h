@@ -34,6 +34,8 @@ public:
 
     bool ClosestIntersection(const std::vector<Shape2D*>& shapes, Intersection &closestIntersection,
                              const Shape2D* exclusion = nullptr) {
+        if(bounces >= 3)
+            return false;
         closestIntersection.distance = std::numeric_limits<float>::max();
         bool found = false;
 
@@ -44,7 +46,7 @@ public:
                 intersectionPoint)) && (shapes[i] != exclusion)){
 
                 float d = glm::distance(intersectionPoint, position);
-
+ 
                 if (d < closestIntersection.distance) {
                     closestIntersection.position = intersectionPoint;
                     closestIntersection.distance = d;

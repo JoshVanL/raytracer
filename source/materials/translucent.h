@@ -42,7 +42,7 @@ public:
             float cos2 = sqrtf(std::max(0.f, 1 - std::pow(cosi, 2.f)));
             float sint = (incoming / refractive_index) * cos2;
 
-            float kr = 1;
+            float kr = 0.4f;
 
             if(sint < 1){
                 float cost = sqrtf(std::max(0.f, 1 - sint * sint));
@@ -52,7 +52,6 @@ public:
                 kr = (Rs * Rs + Rp * Rp) * 0.5f;
             }
 
-            kr *= 0.4;
             vec3 reflection;
             vec3 refraction;
 
@@ -106,7 +105,7 @@ public:
         }
 
         vec4 norm = vec4(norm3d.x,norm3d.y,norm3d.z,1);
-        return incident_ray - (dot(incident_ray, norm) * norm) * 2.f;
+        return (dot(incident_ray, norm) * norm) * 2.f - incident_ray;
     }
 
     vec4 refract_direction(Intersection intersection, Shape2D* t_shape){
@@ -114,11 +113,11 @@ public:
         vec3 normal_3d = normalize(t_shape->getnormal(intersection));
         vec3 incoming_3d = normalize(vec3(intersection.direction));
   
-        float a = -dot(normal_3d, incoming_3d); 
+        float a = dot(normal_3d, incoming_3d); 
 
-        if (a < 0) {
+        if (a > 0) {
             normal_3d = -normal_3d;
-            a = -dot(normal_3d, incoming_3d);
+            a = dot(normal_3d, incoming_3d);
         }
         float d = sqrt(1 - (refractive_index * refractive_index * (1 - a * a)));
         float e = refractive_index * a;

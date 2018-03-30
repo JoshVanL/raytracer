@@ -31,9 +31,12 @@ public:
              glm::vec3 color, 
              std::string id,
              const std::initializer_list<Material*>& materials = std::initializer_list<Material*>())
-        :   Shape2D(color, check_mats(materials), id), 
+        :   Shape2D(color, (materials), id), 
             v0((scalevec4(v0))), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
+    }
+    void addMaterial(Material* mat){
+        materials.push_back(mat);
     }
     vector<Material*> check_mats(vector<Material*> mats){
         if(mats.empty()){
@@ -44,6 +47,7 @@ public:
         }
         return mats;
     }
+
     Triangle(glm::vec4 v0, 
              glm::vec4 v1, 
              glm::vec4 v2, 
@@ -85,7 +89,7 @@ public:
     }
 
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override{
-        if(materials.empty())   return color;
+        if(materials.empty())  {printf("empty\n"); return color;}
         vector<vec3> colors;
 
         vec3 directLight = lightSource->getDirectLight(intersection, shapes);

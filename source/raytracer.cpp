@@ -71,8 +71,7 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
                 colors[i][j] = color;
             }
-            else 
-            if(ray.ClosestIntersection(shapes, intersection)){
+            else if(ray.ClosestIntersection(shapes, intersection)){
                 vec3 color(0,0,0);
                 for(int k = 0; k < lights.size(); k++){
                     color += intersection.shape2D->getcolor(intersection, ray, shapes, lights[k]);
