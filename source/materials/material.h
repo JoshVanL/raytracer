@@ -24,7 +24,7 @@ public:
     };
 
 
-    virtual glm::vec3 material_color(const int posx, const int posy) = 0;
+    virtual glm::vec3 material_color(vec3 pos3d, vec3 minPos, vec3 maxPos) = 0;
 
 };
 

@@ -27,7 +27,7 @@ public:
 
     }
 
-    virtual glm::vec3 getcolor(const int posx, const int posy)  override {
+    virtual glm::vec3 getcolor(vec3 pos3d)  override {
         return color;
     }
     virtual glm::vec3 getnormal(vec4 start, vec4 dir) override {

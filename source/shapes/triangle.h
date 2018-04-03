@@ -31,8 +31,12 @@ public:
         mat = material;
     }
 
-    virtual glm::vec3 getcolor(const int posx, const int posy) override{
-        return mat->material_color(posx, posy);
+    virtual glm::vec3 getcolor(vec3 pos3d) override{
+        if (mat != nullptr) {
+            return mat->material_color(pos3d, minPosition(), maxPosition());
+        }
+
+        return color;
     }
     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {
         float u = cam_intersect[1], v = cam_intersect[2];

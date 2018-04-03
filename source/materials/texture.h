@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <math.h>
 #include <omp.h>
+#include <unistd.h>
 
 #include "material.h"
 #include "../scene/SDLauxiliary.h"
@@ -32,6 +33,11 @@ public:
 #pragma omp critical
         {
 
+        if( access( imagePath, F_OK ) == -1 ) {
+            fprintf(stderr, "image file doesn't exist: %s\n", imagePath);
+            exit(1);
+        }
+
         FILE* f = fopen(imagePath, "rb");
         unsigned char info[54];
         fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
@@ -53,10 +59,48 @@ public:
         return vec3(pixels[3 * (x * width + y) + 2], pixels[3 * (x * width + y) + 1], pixels[3 * (x * width + y)]);
     }
 
-    virtual glm::vec3 material_color(const int posx, const int posy) override {
+    virtual glm::vec3 material_color(vec3 pos3d, vec3 minPos, vec3 maxPos) override {
 
-        int i = posx % height;
-        int j = posy % width;
+        float percentX, percentY;
+
+        if (minPos.x == maxPos.x) {
+            percentX = (pos3d.z - minPos.z) / (maxPos.z - minPos.z);
+        } else {
+            percentX = (pos3d.x - minPos.x) / (maxPos.x - minPos.x);
+        }
+        if (minPos.y == maxPos.y) {
+            percentY = (pos3d.z - minPos.z) / (maxPos.z - minPos.z);
+        } else {
+            percentY = (pos3d.y - minPos.y) / (maxPos.y - minPos.y);
+        }
+
+        if (isinf(percentX) || isnan(percentX)) {
+            percentX = 0;
+        }
+        if (isinf(percentY) || isnan(percentY)) {
+            percentY = 0;
+        }
+
+        if (percentX < 0) {
+            percentX = -percentX;
+        }
+        if (percentY < 0) {
+            percentY = -percentY;
+        }
+
+        float i = abs(percentX * ((float) height));
+        float j = abs(percentY * ((float) width));
+
+        if (i < 0) {
+            i = -i;
+        }
+        if (j < 0) {
+            j = -j;
+        }
+
+
+        i = fmod(i, height);
+        j = fmod(j, width);
 
         vec3 pixel = get_pixel(i, j);
 

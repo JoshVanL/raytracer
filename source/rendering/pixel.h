@@ -20,7 +20,7 @@ public:
     Pixel(){
 
     }
-    
+
     Pixel(int x, int y, float zinv, vec3 pos3D, Shape2D* shape2D): x(x), y(y), zinv(zinv), pos3d(pos3D), shape(shape2D){
 
     }

@@ -46,7 +46,7 @@ public:
         v *= 2/L;
         return v;
     }
-    virtual glm::vec3 getcolor(const int posx, const int posy) = 0;
+    virtual glm::vec3 getcolor(vec3 pos3d) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;
 

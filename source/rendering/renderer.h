@@ -89,7 +89,7 @@ public:
                 for(int c = max(i-1, 0); c < min(i+2,SCREEN_HEIGHT); c++){
                     for(int d = max(j-1, 0); d < min(j+1,SCREEN_WIDTH); d++){
                         if(depthBuffer[c][d].shape != nullptr)
-                            frameBuffer[i][j] += depthBuffer[c][d].shape->getcolor(c, d);
+                            frameBuffer[i][j] += depthBuffer[c][d].shape->getcolor(depthBuffer[c][d].pos3d);
                     }
                 }
                 frameBuffer[i][j] /= 8.f;

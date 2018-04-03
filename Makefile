@@ -13,7 +13,7 @@ RAYEXEC=$(B_DIR)/$(RAY)
 RASEXEC=$(B_DIR)/$(RAS)
 
 # default build settings
-CC_OPTS=-fopenmp -Ofast -std=c++11 -c -pipe -Wno-switch -ggdb -g3 -ggdb
+CC_OPTS=-fopenmp -O3 -std=c++11 -c -pipe -Wno-switch -ggdb -g3 -ggdb
 LN_OPTS=
 CC=g++
 
