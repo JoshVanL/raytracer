@@ -71,7 +71,7 @@ public:
         return vec2(x.y,x.z);
     }
     
-    virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint) override {
+    virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint, glm::vec2* uv = nullptr) override {
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
         vec3 b = vec3(ray.position.x - v0.x, ray.position.y - v0.y, ray.position.z - v0.z);

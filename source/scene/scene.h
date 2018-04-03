@@ -116,7 +116,15 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 F(0,L,0,1);
     vec4 G(L,L,L,1);
     vec4 H(0,L,L,1);
-
+    // A = vec4(450,0,270,1);
+    // B = vec4(330,0,150,1);
+    // C = vec4(450,0,150,1);
+    // D = vec4(330,0,270,1);
+    // E = vec4(390,150,210,1);
+    // shapes.push_back( new Triangle(A,C,E,green, "pyramid",  {new Translucent()}));
+    // shapes.push_back( new Triangle(C,B,E,red, "pyramid",  {new Smoke(red)}));
+    // shapes.push_back( new Triangle(B,D,E,green, "pyramid",  {new Translucent()}));
+    // shapes.push_back( new Triangle(D,A,E,green, "pyramid",  {new Translucent()}));
     // Mirror
     vec4 I(4,100,400,1);
     vec4 J(4,400,220,1);

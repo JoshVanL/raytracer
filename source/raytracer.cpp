@@ -20,9 +20,11 @@
 #include "scene/kd-tree.h"
 #include "shapes/water.h"
 #include "shapes/triangle.h"
+#include "shapes/terrain.h"
 #include "shapes/sphere.h"
 #include "light/pointlight.h"
 #include "light/spotlight.h"
+#include "perlinnoise.h"
 using namespace std;
 
 using glm::vec3;
@@ -39,7 +41,7 @@ using glm::mat4;
 #define NUM_THREADS 16
 
 bool LCTRL = false;
-
+Terrain* terrain;
 /* ----------------------------------------------------------------------------*/
 /* FUNCTIONS                                                                   */
 void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource*> lights, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram, KDNode& tree);
@@ -75,6 +77,7 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
                 vec3 color(0,0,0);
                 for(int k = 0; k < lights.size(); k++){
                     color += intersection.shape2D->getcolor(intersection, ray, shapes, lights[k]);
+                  
                 }
 
                 colors[i][j] = color;
@@ -124,31 +127,36 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource
 
 int main( int argc, char* argv[] ) {
 
-
+  
+    
     screen *screen = InitializeSDL( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, FULLSCREEN_MODE );
     vector<LightSource*> lights;
     LightSource* lightA = new PointLight();
-    LightSource* lightB = new SpotLight();
+    // LightSource* lightB = new SpotLight();
     lights.push_back(lightA);
-    lights.push_back(lightB);
-    Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::FISHEYE);
+    // lights.push_back(lightB);
+    Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
-    LoadTestModel(shapes);
-
+    // LoadTestModel(shapes);
+    
     SDL_Event event;
     int runProgram = 0;
 
-    KDNode tree = *KDNode().buildTree(shapes, 0);
+    KDNode tree;// = *KDNode().buildTree(shapes, 0);
 
+    float** displacement = noisemap();
+    // for(int i = 0; i < 512; i++){
+    //     for(int j = 0; j < 512; j++){
+    //         printf("%f ", displacement[i][j]);
+    //     }
+    //     printf("\n");
+    // }return 0;
+    Terrain* terrain = new Terrain(displacement, 512, 512, vec4(100, 300, 200, 1), vec4(00, 300, 200, 1), vec4(200, 300, 400, 1));
+    shapes.push_back(terrain);
     auto started = std::chrono::high_resolution_clock::now();
-
     Draw(screen, camera, lights, shapes, tree);
-
     auto done = std::chrono::high_resolution_clock::now();
-    cout << "Render time: ";
-    cout << chrono::duration_cast<chrono::milliseconds>(done-started).count();
-    cout << " ms \n";
 
     SDL_Renderframe(screen);
 
@@ -157,6 +165,7 @@ int main( int argc, char* argv[] ) {
             Update(screen, event, camera, lights, keyboard, shapes, runProgram, tree);
         }
     }
+
     SDL_SaveImage( screen, "screenshot.bmp" );
 
     KillSDL(screen);

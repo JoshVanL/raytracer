@@ -79,10 +79,6 @@ public:
         vec3 diffuse_component = diffuse_shader->material_color(intersection, primary_ray, shapes, lightSource,
                                          directLight,
                                          indirectLight);
-
-        Shape2D* t_shape = intersection.shape2D;
-        vec2 uv = t_shape->getUV(intersection);
-
         float j;
         float i;
 

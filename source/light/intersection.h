@@ -12,6 +12,7 @@ class Intersection {
 public:
     glm::vec4 position;
     glm::vec4 direction;
+    glm::vec2 uv;
     std::vector<Material*> materials;
     float distance;
     int triangleIndex;

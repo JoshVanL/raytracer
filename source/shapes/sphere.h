@@ -43,7 +43,7 @@ public:
             return mats;
         }
     }
-    virtual bool intersect(Ray &ray, vec3 dir, vec4& intersection) override
+    virtual bool intersect(Ray &ray, vec3 dir, vec4& intersection, glm::vec2* uv = nullptr) override
     {
         vec3 rayorig = (vec3) ray.position;
         dir = normalize(vec3(ray.direction));

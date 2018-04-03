@@ -25,7 +25,7 @@ public:
     vector<Material*> materials;
     Shape3D* shape3D = nullptr;
     
-
+    Shape2D(){};
     Shape2D(vec3 color,
             vector<Material*> materials, 
             std::string id,
@@ -42,6 +42,14 @@ public:
         v.w = 1.0;
         return v;
     }
+    vec4 unscalevec4(vec4 v) {
+        v.x *= -1;
+        v.y *= -1;
+        v += vec4(1,1,1,1);
+        v *= L/2;
+        v.w = 1.0;
+        return v;
+    }
     vec3 scalevec3(vec3 v) {
         v *= 2/L;
         v -= vec3(1,1,1);
@@ -53,8 +61,12 @@ public:
         v *= 2/L;
         return v;
     }
+    float unscalefloat(float v) {
+        v *= L/2;
+        return v;
+    }
     virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) = 0;
-    virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint) = 0;
+    virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint, glm::vec2* uv = nullptr) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(Intersection& intersection) = 0;
     virtual vec2 getUV(Intersection& intersectpoint) = 0;

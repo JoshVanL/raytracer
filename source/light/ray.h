@@ -40,19 +40,18 @@ public:
         bool found = false;
 
         glm::vec4 intersectionPoint;
-
         for (size_t i=0; i<shapes.size(); i++) {
+ 
             if((shapes[i]->intersect(*(this), (vec3) direction,
                 intersectionPoint)) && (shapes[i] != exclusion)){
-
+  
                 float d = glm::distance(intersectionPoint, position);
- 
+
                 if (d < closestIntersection.distance) {
                     closestIntersection.position = intersectionPoint;
                     closestIntersection.distance = d;
                     closestIntersection.direction = direction;
                     closestIntersection.shape2D = shapes[i];
-
                     found = true;
                 }
             }
