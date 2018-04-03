@@ -24,8 +24,8 @@ public:
     Sphere(glm::vec4 cent, float r, glm::vec3 col) : center(cent), radius(r), radius2(r * r), Shape2D(col){
 
     }
-        
-    virtual glm::vec3 getcolor()  override {
+
+    virtual glm::vec3 getcolor(const int posx, const int posy)  override {
         return color;
     }
     virtual glm::vec3 getnormal(vec4 start, vec4 dir) override {

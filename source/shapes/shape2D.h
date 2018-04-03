@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
+#include "../materials/material.h"
 
 using glm::vec3;
 using glm::vec4;
@@ -45,9 +46,13 @@ public:
         v *= 2/L;
         return v;
     }
-    virtual glm::vec3 getcolor() = 0;
+    virtual glm::vec3 getcolor(const int posx, const int posy) = 0;
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect) = 0;
     virtual glm::vec3 getnormal(glm::vec4 start, glm::vec4 dir) = 0;
+
+    virtual void SetMaterial(Material* material) {
+        material = material;
+    }
 
     virtual vec3 ComputeNormal() {
         return vec3();

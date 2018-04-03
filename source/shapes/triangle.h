@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include "shape2D.h"
 #include <vector>
+#include <initializer_list>
+#include "../materials/material.h"
 using glm::vec3;
 using glm::vec4;
 using glm::mat3;
@@ -16,6 +18,9 @@ public:
     glm::vec4 v1;
     glm::vec4 v2;
     glm::vec4 normal;
+    Material* mat = nullptr;
+
+    bool hasMaterial = false;
 
     Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2,
              glm::vec3 color)
@@ -24,7 +29,18 @@ public:
     {
     }
 
-    virtual glm::vec3 getcolor() override{
+    virtual void SetMaterial(Material* material) {
+        mat = material;
+        hasMaterial = true;
+    }
+
+    virtual glm::vec3 getcolor(const int posx, const int posy) override{
+        if (hasMaterial) {
+            return mat->material_color(posx, posy);
+            //return vec3(1, 1, 1);
+        }
+
+
         return color;
     }
     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {

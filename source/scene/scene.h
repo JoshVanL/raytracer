@@ -9,6 +9,7 @@
 
 #include "../shapes/triangle.h"
 #include "../shapes/sphere.h"
+#include "../materials/texture.h"
 // Used to describe a triangular surface:
 
 // Loads the Cornell Box. It is scaled to fill the volume:
@@ -27,7 +28,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec3 cyan(   0.15f, 0.75f, 0.75f );
     vec3 blue(   0.10f, 0.10f, 0.70f );
     vec3 purple( 0.75f, 0.15f, 0.75f );
-    vec3 white(  0.75f, 0.75f, 0.75f );
+    vec3 white( 0.75f, 0.75f, 0.75f );
 
     vec3 lowGloss(0.7, 0.7, 0.7);
     vec3 normalGloss(1, 1, 1);
@@ -85,13 +86,30 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     G = vec4(240,165,272,1);
     H = vec4( 82,165,225,1);
 
-    // Front
-    shapes.push_back( new Triangle(E,B,A,red ));
-    shapes.push_back( new Triangle(E,F,B,red ));
 
+
+    Triangle* front1 = new Triangle(E,B,A,red);
+    Triangle* front2 = new Triangle(E,F,B,red );
+    Triangle* front3 = new Triangle(F,D,B,red );
+    Triangle* front4 = new Triangle(F,H,D,red );
+    front1->SetMaterial(new Texture("source/materials/textures/carpet.bmp"));
+    front2->SetMaterial(new Texture("source/materials/textures/carpet.bmp"));
+    front3->SetMaterial(new Texture("source/materials/textures/carpet.bmp"));
+    front4->SetMaterial(new Texture("source/materials/textures/carpet.bmp"));
+
+    shapes.push_back( front1 );
+    shapes.push_back( front2 );
+
+    //// Front
+    shapes.push_back( front3 );
+    shapes.push_back( front4 );
     // Front
-    shapes.push_back( new Triangle(F,D,B,red ));
-    shapes.push_back( new Triangle(F,H,D,red ));
+    //shapes.push_back( new Triangle(E,B,A,red ));
+    //shapes.push_back( new Triangle(E,F,B,red ));
+
+    //// Front
+    //shapes.push_back( new Triangle(F,D,B,red ));
+    //shapes.push_back( new Triangle(F,H,D,red ));
 
     // BACK
     shapes.push_back( new Triangle(H,C,D,red));
