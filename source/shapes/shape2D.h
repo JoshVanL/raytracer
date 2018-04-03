@@ -22,8 +22,8 @@ public:
 
     vec3    color;
     vec4    normal;
-    Material* material = nullptr;
-    Shape2D(vec3 color):color(color){
+    Material* mat = nullptr;
+    Shape2D(vec3 color): color(color){
 
     }
 

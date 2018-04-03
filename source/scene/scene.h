@@ -54,24 +54,24 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     vec4 H(0,L,L,1);
 
     // Floor:
-    shapes.push_back( new Triangle( C, B, A, green ) );
-    shapes.push_back( new Triangle( C, D, B, green ) );
+    shapes.push_back( new Triangle( C, B, A, green, new Texture("source/materials/textures/carpet.bmp") ) );
+    shapes.push_back( new Triangle( C, D, B, green, new Texture("source/materials/textures/carpet.bmp") ) );
 
-    // Left wall
-    shapes.push_back( new Triangle( A, E, C, purple ) );
-    shapes.push_back( new Triangle( C, E, G, purple ) );
+    //// Left wall
+    shapes.push_back( new Triangle( A, E, C, purple, new Texture("source/materials/textures/wall1.bmp") ) );
+    shapes.push_back( new Triangle( C, E, G, purple, new Texture("source/materials/textures/wall1.bmp") ) );
 
     // Right wall
-    shapes.push_back( new Triangle( F, B, D, yellow ) );
-    shapes.push_back( new Triangle( H, F, D, yellow ) );
+    shapes.push_back( new Triangle( F, B, D, yellow, new Texture("source/materials/textures/wall2.bmp") ) );
+    shapes.push_back( new Triangle( H, F, D, yellow, new Texture("source/materials/textures/wall2.bmp") ) );
 
     // Ceiling
-    shapes.push_back( new Triangle( E, F, G, cyan ) );
-    shapes.push_back( new Triangle( F, H, G, cyan ) );
+    shapes.push_back( new Triangle( E, F, G, cyan, new Texture("source/materials/textures/ceil.bmp") ) );
+    shapes.push_back( new Triangle( F, H, G, cyan, new Texture("source/materials/textures/ceil.bmp") ) );
 
     // Back wall
-    shapes.push_back( new Triangle( G, D, C, white ) );
-    shapes.push_back( new Triangle( G, H, D, white ) );
+    shapes.push_back( new Triangle( G, D, C, white, new Texture("source/materials/textures/water.bmp") ) );
+    shapes.push_back( new Triangle( G, H, D, white, new Texture("source/materials/textures/water.bmp") ) );
 
     // ---------------------------------------------------------------------------
     // Short block
@@ -88,40 +88,23 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
 
 
 
-    Triangle* front1 = new Triangle(E,B,A,red);
-    Triangle* front2 = new Triangle(E,F,B,red );
-    Triangle* front3 = new Triangle(F,D,B,red );
-    Triangle* front4 = new Triangle(F,H,D,red );
-    front1->SetMaterial(new Texture("source/materials/textures/carpet.bmp"));
-    front2->SetMaterial(new Texture("source/materials/textures/carpet.bmp"));
-    front3->SetMaterial(new Texture("source/materials/textures/carpet.bmp"));
-    front4->SetMaterial(new Texture("source/materials/textures/carpet.bmp"));
-
-    shapes.push_back( front1 );
-    shapes.push_back( front2 );
-
-    //// Front
-    shapes.push_back( front3 );
-    shapes.push_back( front4 );
-    // Front
-    //shapes.push_back( new Triangle(E,B,A,red ));
-    //shapes.push_back( new Triangle(E,F,B,red ));
-
-    //// Front
-    //shapes.push_back( new Triangle(F,D,B,red ));
-    //shapes.push_back( new Triangle(F,H,D,red ));
+    // FRONT
+    shapes.push_back( new Triangle(E,B,A,red, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(E,F,B,red, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(F,D,B,red, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(F,H,D,red, new Texture("source/materials/textures/wood.bmp")));
 
     // BACK
-    shapes.push_back( new Triangle(H,C,D,red));
-    shapes.push_back( new Triangle(H,G,C,red));
+    shapes.push_back( new Triangle(H,C,D,red, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(H,G,C,red, new Texture("source/materials/textures/wood.bmp")));
 
     // LEFT
-    shapes.push_back( new Triangle(G,E,C,red));
-    shapes.push_back( new Triangle(E,A,C,red));
+    shapes.push_back( new Triangle(G,E,C,red, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(E,A,C,red, new Texture("source/materials/textures/wood.bmp")));
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,red));
-    shapes.push_back( new Triangle(G,H,F,red));
+    shapes.push_back( new Triangle(G,F,E,red, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(G,H,F,red, new Texture("source/materials/textures/wood.bmp")));
 
     // ---------------------------------------------------------------------------
     // Tall block
@@ -137,24 +120,24 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     H = vec4(314,330,456,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,blue) );
-    shapes.push_back( new Triangle(E,F,B,blue) );
+    shapes.push_back( new Triangle(E,B,A,blue, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(E,F,B,blue, new Texture("source/materials/textures/wood.bmp")));
 
     // Front
-    shapes.push_back( new Triangle(F,D,B,blue) );
-    shapes.push_back( new Triangle(F,H,D,blue) );
+    shapes.push_back( new Triangle(F,D,B,blue, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(F,H,D,blue, new Texture("source/materials/textures/wood.bmp")));
 
     // BACK
-    shapes.push_back( new Triangle(H,C,D,blue) );
-    shapes.push_back( new Triangle(H,G,C,blue) );
+    shapes.push_back( new Triangle(H,C,D,blue, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(H,G,C,blue, new Texture("source/materials/textures/wood.bmp")));
 
     // LEFT
-    shapes.push_back( new Triangle(G,E,C,blue) );
-    shapes.push_back( new Triangle(E,A,C,blue) );
+    shapes.push_back( new Triangle(G,E,C,blue, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(E,A,C,blue, new Texture("source/materials/textures/wood.bmp")));
 
     // TOP
-    shapes.push_back( new Triangle(G,F,E,blue) );
-    shapes.push_back( new Triangle(G,H,F,blue) );
+    shapes.push_back( new Triangle(G,F,E,blue, new Texture("source/materials/textures/wood.bmp")));
+    shapes.push_back( new Triangle(G,H,F,blue, new Texture("source/materials/textures/wood.bmp")));
 
     // ---------------------------------------------------------------------------
     // Sphere

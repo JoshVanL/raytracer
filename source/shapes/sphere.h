@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "shape2D.h"
+#include "../materials/material.h"
 
 #define MAX_RAY_DEPTH_ 5
 #define M_PI_ 3.141592653589793
@@ -20,8 +21,9 @@ public:
 
     glm::vec4 center;
     float radius, radius2;
+    Material* mat;
 
-    Sphere(glm::vec4 cent, float r, glm::vec3 col) : center(cent), radius(r), radius2(r * r), Shape2D(col){
+    Sphere(glm::vec4 cent, float r, glm::vec3 col, Material* mat) : center(cent), radius(r), radius2(r * r), Shape2D(col), mat(mat){
 
     }
 

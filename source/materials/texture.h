@@ -55,40 +55,6 @@ public:
 
     virtual glm::vec3 material_color(const int posx, const int posy) override {
 
-        //vec3 l = (vec3) (lightSource->position - intersection.position);
-        //vec3 surface_normal = normalize(intersection.shape2D->getnormal(intersection));
-
-        //vec3 reflected_dir = normalize(2.0f * dot(l, surface_normal) * surface_normal - l);
-
-        ////Viewing direction
-        //vec3 v = normalize(vec3(primary_ray.direction));
-
-        ////Calculate component of viewing direction in the direction of reflected ray
-        //float specular_highlight = dot(v, reflected_dir);
-        //float new_specular_highlight = glm::pow(specular_highlight, specular_exponent);
-
-        ///* Calculating Specular Component */
-        //vec3 specular_component = new_specular_highlight * directLight * vec3(1,1,1);
-
-        ///* Calculating Diffuse Component */
-        //vec3 diffuse_component = diffuse_shader->material_color(intersection, primary_ray, shapes, lightSource,
-        //                                 directLight,
-        //                                 indirectLight);
-        //float j;
-        //float i;
-
-        //if(intersection.position.x < 1.f && intersection.position.x > -0.1) {
-        //    i = abs((((intersection.position.x ) ) * (float) height));
-        //} else {
-        //    i = abs((((intersection.position.z ) ) * (float) height));
-        //}
-
-        //if(intersection.position.y < 1.f && intersection.position.y > -0.1) {
-        //    j = abs((((intersection.position.y ) ) * (float) width));
-        //} else {
-        //    j = abs((((intersection.position.z ) ) * (float) width));
-        //}
-
         int i = posx % height;
         int j = posy % width;
 
@@ -96,9 +62,7 @@ public:
 
         pixel /= vec3(255, 255, 255);
 
-        //return (specular_component * Ks +  diffuse_component * Kd) * pixel * vec3(0.8, 0.8, 0.8);
         return pixel;
-        //return vec3(1, 1, 1);
     };
 
 };

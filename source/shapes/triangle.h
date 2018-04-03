@@ -20,28 +20,19 @@ public:
     glm::vec4 normal;
     Material* mat = nullptr;
 
-    bool hasMaterial = false;
-
     Triangle(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2,
-             glm::vec3 color)
+             glm::vec3 color, Material* mat)
         :   Shape2D(color),
-            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(vec4())
+            v0(scalevec4(v0)), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(vec4()), mat(mat)
     {
-    }
+    };
 
     virtual void SetMaterial(Material* material) {
         mat = material;
-        hasMaterial = true;
     }
 
     virtual glm::vec3 getcolor(const int posx, const int posy) override{
-        if (hasMaterial) {
-            return mat->material_color(posx, posy);
-            //return vec3(1, 1, 1);
-        }
-
-
-        return color;
+        return mat->material_color(posx, posy);
     }
     virtual vec4 toworldcoordinates(glm::vec4 cam_intersect) override {
         float u = cam_intersect[1], v = cam_intersect[2];
