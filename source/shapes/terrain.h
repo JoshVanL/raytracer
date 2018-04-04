@@ -16,7 +16,7 @@ public:
     vec4 bl;
     vec4 tl;
     Terrain(float** hmap, float h, float w, vec4 bottom_left): heightmap(hmap), height(h), width(w),
-    bl(bottom_left), tl() bottom_left(scalevec4(bottom_left)), Shape2D(vec3(0.3, 0.5, 0.3), std::initializer_list<Material*>(), "Terrain"){
+    bl(bottom_left), bottom_left(scalevec4(bottom_left)), Shape2D(vec3(0.3, 0.5, 0.3), std::initializer_list<Material*>(), "Terrain"){
     }
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint, glm::vec2* uv = nullptr) 
     {
@@ -33,12 +33,11 @@ public:
             if(pt.x < bl.x + width && pt.x > bl.x && pt.z < height + bl.z && pt.z > bl.z){
                 if(u > 0 && v > 0 && (int)u < 512 && (int)v < 512 && pt.y > 0 && pt.y < 50 * (heightmap[(int) u ][(int) v  ]) )
                 { 
-                    intersectionpoint = abs(p.y*vec4(0,-50,0,0)) - p.x*vec4(width,0,0,0) - p.z*vec4(0,0,height,0) + vec4(0,0,0,1);
+                    intersectionpoint = vec4(0, -50.f * heightmap[(int) u ][(int) v  ] ,0,0) - p.x*vec4(width,0,0,0) - p.z*vec4(0,0,height,0) + vec4(0,0,0,1);
                     return true;
                 }
             }
         }
-        return false;
     }
 
     virtual  glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)   {
