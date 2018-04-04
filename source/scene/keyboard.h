@@ -28,6 +28,7 @@ public:
                 lightSource->position += vec4(0.2,0,0,0);
                 break;
         }
+        printf("%f %f %f \n", lightSource->position.x, lightSource->position.y, lightSource->position.z);
     }
 
 

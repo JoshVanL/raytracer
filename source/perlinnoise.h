@@ -31,66 +31,11 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <glm/glm.hpp>
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
 
-template<typename T>
-class Vec2
-{
-public:
-    Vec2() : x(T(0)), y(T(0)) {}
-    Vec2(T xx, T yy) : x(xx), y(yy) {}
-    Vec2 operator * (const T &r) const { return Vec2(x * r, y * r); }
-    Vec2& operator *= (const T &r) { x *= r, y *= r; return *this; }
-    T x, y;
-};
-
-template<typename T>
-class Vec3
-{
-public:
-    Vec3() : x(T(0)), y(T(0)), z(T(0)) {}
-    Vec3(T xx, T yy, T zz) : x(xx), y(yy), z(zz) {}
-    Vec3 operator * (const T &r) const { return Vec3(x * r, y * r, z * r); }
-    Vec3 operator - (const Vec3 &v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
-    Vec3& operator *= (const T &r) { x *= r, y *= r, z *= r; return *this; }
-    T length2() const { return x * x + y * y + z * z; }
-    Vec3& operator /= (const T &r) { x /= r, y /= r, z /= r; return *this; }
-    Vec3 cross(const Vec3 &v) const
-    {
-        return Vec3(
-            y * v.z - z * v.y,
-            z * v.x - x * v.z,
-            x * v.y - y * v.x
-        );
-    }
-    Vec3& normalize()
-    {
-        T len2 = length2();
-        if (len2 > 0) {
-            T invLen = T(1) / sqrt(len2);
-            x *= invLen, y *= invLen, z *= invLen;
-        }
-        return *this;
-    }
-    friend std::ostream & operator << (std::ostream &os, const Vec3<T> &v)
-    {
-        os << v.x << ", " << v.y << ", " << v.z;
-        return os;
-    }
-    T x, y, z;
-};
-
-typedef Vec2<float> Vec2f;
-typedef Vec3<float> Vec3f;
-
-template<typename T = float>
-inline T dot(const Vec3<T> &a, const Vec3<T> &b)
-{ return a.x * b.x + a.y * b.y + a.z * b.z; }
-
-template<typename T = float>
-inline T lerp(const T &lo, const T &hi, const T &t)
-{
-    return lo * (1 - t) + hi * t;
-}
 
 inline
 float smoothstep(const float &t)
@@ -125,24 +70,13 @@ public:
         std::uniform_real_distribution<float> distribution;
         auto dice = std::bind(distribution, generator);
         for (unsigned i = 0; i < tableSize; ++i) {
-#if 0
-            // bad
-            float gradientLen2;
-            do {
-                gradients[i] = Vec3f(2 * dice() - 1, 2 * dice() - 1, 2 * dice() - 1);
-                gradientLen2 = gradients[i].length2();
-            } while (gradientLen2 > 1);
-            gradients[i].normalize();
-#else
-            // better
             float theta = acos(2 * dice() - 1);
             float phi = 2 * dice() * M_PI;
 
             float x = cos(phi) * sin(theta);
             float y = sin(phi) * sin(theta);
             float z = cos(theta);
-            gradients[i] = Vec3f(x, y, z);
-#endif
+            gradients[i] = vec3(x, y, z);
             permutationTable[i] = i;
         }
 
@@ -156,13 +90,8 @@ public:
             permutationTable[tableSize + i] = permutationTable[i];
         }
     }
-    virtual ~PerlinNoise() {}
 
-    //[comment]
-    // Improved Noise implementation (2002)
-    // This version compute the derivative of the noise function as well
-    //[/comment]
-    float eval(const Vec3f &p, Vec3f& derivs) const 
+    float eval(const vec3 &p, vec3& derivs) const 
     {
         int xi0 = ((int)std::floor(p.x)) & tableSizeMask;
         int yi0 = ((int)std::floor(p.y)) & tableSizeMask;
@@ -214,112 +143,47 @@ public:
         return k0 + k1 * u + k2 * v + k3 * w + k4 * u * v + k5 * u * w + k6 * v * w + k7 * u * v * w;
     }
 
-    //[comment]
-    // classic/original Perlin noise implementation (1985)
-    //[/comment]
-    float eval(const Vec3f &p) const
-    {
-        int xi0 = ((int)std::floor(p.x)) & tableSizeMask;
-        int yi0 = ((int)std::floor(p.y)) & tableSizeMask;
-        int zi0 = ((int)std::floor(p.z)) & tableSizeMask;
-
-        int xi1 = (xi0 + 1) & tableSizeMask;
-        int yi1 = (yi0 + 1) & tableSizeMask;
-        int zi1 = (zi0 + 1) & tableSizeMask;
-
-        float tx = p.x - ((int)std::floor(p.x));
-        float ty = p.y - ((int)std::floor(p.y));
-        float tz = p.z - ((int)std::floor(p.z));
-
-        float u = smoothstep(tx);
-        float v = smoothstep(ty);
-        float w = smoothstep(tz);
-
-        // gradients at the corner of the cell
-        const Vec3f &c000 = gradients[hash(xi0, yi0, zi0)];
-        const Vec3f &c100 = gradients[hash(xi1, yi0, zi0)];
-        const Vec3f &c010 = gradients[hash(xi0, yi1, zi0)];
-        const Vec3f &c110 = gradients[hash(xi1, yi1, zi0)];
-
-        const Vec3f &c001 = gradients[hash(xi0, yi0, zi1)];
-        const Vec3f &c101 = gradients[hash(xi1, yi0, zi1)];
-        const Vec3f &c011 = gradients[hash(xi0, yi1, zi1)];
-        const Vec3f &c111 = gradients[hash(xi1, yi1, zi1)];
-
-        // generate vectors going from the grid points to p
-        float x0 = tx, x1 = tx - 1;
-        float y0 = ty, y1 = ty - 1;
-        float z0 = tz, z1 = tz - 1;
-
-        Vec3f p000 = Vec3f(x0, y0, z0);
-        Vec3f p100 = Vec3f(x1, y0, z0);
-        Vec3f p010 = Vec3f(x0, y1, z0);
-        Vec3f p110 = Vec3f(x1, y1, z0);
-
-        Vec3f p001 = Vec3f(x0, y0, z1);
-        Vec3f p101 = Vec3f(x1, y0, z1);
-        Vec3f p011 = Vec3f(x0, y1, z1);
-        Vec3f p111 = Vec3f(x1, y1, z1);
-
-        // linear interpolation
-        float a = lerp(dot(c000, p000), dot(c100, p100), u);
-        float b = lerp(dot(c010, p010), dot(c110, p110), u);
-        float c = lerp(dot(c001, p001), dot(c101, p101), u);
-        float d = lerp(dot(c011, p011), dot(c111, p111), u);
-
-        float e = lerp(a, b, v);
-        float f = lerp(c, d, v);
-
-        return lerp(e, f, w); // g
-    }
 
 private:
-    /* inline */
     uint8_t hash(const int &x, const int &y, const int &z) const
     {
         return permutationTable[permutationTable[permutationTable[x] + y] + z];
     }
 
-    //[comment]
+
     // Compute dot product between vector from cell corners to P with predefined gradient directions
-    //
     //    perm: a value between 0 and 255
-    //
     //    float x, float y, float z: coordinates of vector from cell corner to shaded point
-    //[/comment]
-    float gradientDotV(
-        uint8_t perm, // a value between 0 and 255
-        float x, float y, float z) const
+    float gradientDotV( uint8_t perm, // a value between 0 and 255
+                        float x, float y, float z) const
     {
         switch (perm & 15) {
-        case  0: return  x + y; // (1,1,0)
-        case  1: return -x + y; // (-1,1,0)
-        case  2: return  x - y; // (1,-1,0)
-        case  3: return -x - y; // (-1,-1,0)
-        case  4: return  x + z; // (1,0,1)
-        case  5: return -x + z; // (-1,0,1)
-        case  6: return  x - z; // (1,0,-1)
-        case  7: return -x - z; // (-1,0,-1)
-        case  8: return  y + z; // (0,1,1),
-        case  9: return -y + z; // (0,-1,1),
-        case 10: return  y - z; // (0,1,-1),
-        case 11: return -y - z; // (0,-1,-1)
-        case 12: return  y + x; // (1,1,0)
-        case 13: return -x + y; // (-1,1,0)
-        case 14: return -y + z; // (0,-1,1)
-        case 15: return -y - z; // (0,-1,-1)
+            case  0: return  x + y; // (1,1,0)
+            case  1: return -x + y; // (-1,1,0)
+            case  2: return  x - y; // (1,-1,0)
+            case  3: return -x - y; // (-1,-1,0)
+            case  4: return  x + z; // (1,0,1)
+            case  5: return -x + z; // (-1,0,1)
+            case  6: return  x - z; // (1,0,-1)
+            case  7: return -x - z; // (-1,0,-1)
+            case  8: return  y + z; // (0,1,1),
+            case  9: return -y + z; // (0,-1,1),
+            case 10: return  y - z; // (0,1,-1),
+            case 11: return -y - z; // (0,-1,-1)
+            case 12: return  y + x; // (1,1,0)
+            case 13: return -x + y; // (-1,1,0)
+            case 14: return -y + z; // (0,-1,1)
+            case 15: return -y - z; // (0,-1,-1)
         }
     }
 
     static const unsigned tableSize = 256;
     static const unsigned tableSizeMask = tableSize - 1;
-    Vec3f gradients[tableSize];
+    vec3 gradients[tableSize];
     unsigned permutationTable[tableSize * 2];
 };
 
-//[comment]
-// Simple class to define a polygonal mesh
-//[/comment]
+
 class PolyMesh
 {
 public:
@@ -330,72 +194,33 @@ public:
         if (st) delete[] st;
         if (normals) delete[] normals;
     }
-    Vec3f *vertices;
-    Vec2f *st;
-    Vec3f *normals;
+    vec3 *vertices;
+    vec2 *st;
+    vec3 *normals;
     uint32_t *faceArray;
     uint32_t *verticesArray;
     uint32_t numVertices;
     uint32_t numFaces;
-    void exportToObj();
 };
 
-//[comment]
-// Export polygonal mesh to OBJ file (vertex positions, texture coordinates and vertex normals)
-//[/comment]
-void PolyMesh::exportToObj()
+PolyMesh* createPolyMesh(   uint32_t width = 1,
+                            uint32_t height = 1,
+                            uint32_t subdivisionWidth = 40,
+                            uint32_t subdivisionHeight = 40)
 {
-    std::ofstream ofs;
-    ofs.open("./polyMesh.obj", std::ios_base::out);
-
-    for (uint32_t i = 0; i < numVertices; ++i) {
-        ofs << "v " << vertices[i].x << " " << vertices[i].y << " " << vertices[i].z << std::endl;
-    }
-
-    for (uint32_t i = 0; i < numVertices; ++i) {
-        ofs << "vt " << st[i].x << " " << st[i].y << std::endl;
-    }
-
-    for (uint32_t i = 0; i < numVertices; ++i) {
-        ofs << "vn " << normals[i].x << " " << normals[i].y << " " << normals[i].z << std::endl;
-    }
-
-    for (uint32_t i = 0, k = 0; i < numFaces; ++i) {
-        ofs << "f ";
-        for (uint32_t j = 0; j < faceArray[i]; ++j) {
-            uint32_t objIndex = verticesArray[k + j] + 1;
-            ofs << objIndex << "/" << objIndex << "/" << objIndex << ((j == (faceArray[i] - 1)) ? "" : " ");
-        }
-        ofs << std::endl;
-        k += faceArray[i];
-    }
-
-    ofs.close();
-}
-
-//[comment]
-// Simple function to create a polygonal grid centred around the origin
-//[/comment]
-PolyMesh* createPolyMesh(
-    uint32_t width = 1,
-    uint32_t height = 1,
-    uint32_t subdivisionWidth = 40,
-    uint32_t subdivisionHeight = 40)
-{
-    PolyMesh *poly = new PolyMesh;
-    poly->numVertices = (subdivisionWidth + 1) * (subdivisionHeight + 1);
-    std::cerr << poly->numVertices << std::endl;
-    poly->vertices = new Vec3f[poly->numVertices];
-    poly->normals = new Vec3f[poly->numVertices];
-    poly->st = new Vec2f[poly->numVertices];
-    float invSubdivisionWidth = 1.f / subdivisionWidth;
-    float invSubdivisionHeight = 1.f / subdivisionHeight;
+    PolyMesh *poly          = new PolyMesh;
+    poly->numVertices       = (subdivisionWidth + 1) * (subdivisionHeight + 1);
+    poly->vertices          = new vec3[poly->numVertices];
+    poly->normals           = new vec3[poly->numVertices];
+    poly->st                = new vec2[poly->numVertices];
+    float invSubdivisionWidth   = 1.f / subdivisionWidth;
+    float invSubdivisionHeight  = 1.f / subdivisionHeight;
+    
     for (uint32_t j = 0; j <= subdivisionHeight; ++j) {
         for (uint32_t i = 0; i <= subdivisionWidth; ++i) {
-            poly->vertices[j * (subdivisionWidth + 1) + i] = Vec3f(width * (i * invSubdivisionWidth - 0.5), 0, height * (j * invSubdivisionHeight - 0.5));
-            poly->st[j * (subdivisionWidth + 1) + i] = Vec2f(i * invSubdivisionWidth, j * invSubdivisionHeight);
+            poly->vertices[j * (subdivisionWidth + 1) + i] = vec3(width * (i * invSubdivisionWidth - 0.5), 0, height * (j * invSubdivisionHeight - 0.5));
+            poly->st[j * (subdivisionWidth + 1) + i] = vec2(i * invSubdivisionWidth, j * invSubdivisionHeight);
         }
-        std::cerr << std::endl;
     }
 
     poly->numFaces = subdivisionWidth * subdivisionHeight;
@@ -417,61 +242,46 @@ PolyMesh* createPolyMesh(
     return poly;
 }
 
-
-
-
-float** noisemap()
+float** genHeightMap()
 {
     PerlinNoise noise;
 
     PolyMesh *poly = createPolyMesh(3, 3, 30, 30);
 
     // displace and compute analytical normal using noise function partial derivatives
-    Vec3f derivs;
+    vec3 derivs;
     for (uint32_t i = 0; i < poly->numVertices; ++i) {
-        Vec3f p((poly->vertices[i].x + 0.5), 0, (poly->vertices[i].z + 0.5));
+        vec3 p((poly->vertices[i].x + 0.5), 0, (poly->vertices[i].z + 0.5));
         poly->vertices[i].y = noise.eval(p, derivs);
-
-        Vec3f tangent(1, derivs.x, 0); // tangent
-        Vec3f bitangent(0, derivs.z, 1); // bitangent
-        // equivalent to bitangent.cross(tangent)
-        poly->normals[i] = Vec3f(-derivs.x, 1, -derivs.z);
-        poly->normals[i].normalize();
-
+        vec3 tangent(1, derivs.x, 0); 
+        vec3 bitangent(0, derivs.z, 1); 
+        poly->normals[i] = glm::normalize(vec3(-derivs.x, 1, -derivs.z));
     }
 
-    // compute face normal if you want
-    
-    for (uint32_t k = 0, off = 0; k < poly->numFaces; ++k) {
-        uint32_t nverts = poly->faceArray[k];
-        const Vec3f &va = poly->vertices[poly->verticesArray[off]];
-        const Vec3f &vb = poly->vertices[poly->verticesArray[off + 1]];
-        const Vec3f &vc = poly->vertices[poly->verticesArray[off + nverts - 1]];
+// for (uint32_t k = 0, off = 0; k < poly->numFaces; ++k) {
+    //     uint32_t nverts = poly->faceArray[k];
+    //     const vec3 &va = poly->vertices[poly->verticesArray[off]];
+    //     const vec3 &vb = poly->vertices[poly->verticesArray[off + 1]];
+    //     const vec3 &vc = poly->vertices[poly->verticesArray[off + nverts - 1]];
+    //     vec3 tangent = vb - va;
+    //     vec3 bitangent = vc - va;
+    //     poly->normals[poly->verticesArray[off]] = glm::normalize(glm::cross(bitangent, tangent));
+    //     off += nverts;
+// }
 
-        Vec3f tangent = vb - va;
-        Vec3f bitangent = vc - va;
-
-        poly->normals[poly->verticesArray[off]] = bitangent.cross(tangent);
-        poly->normals[poly->verticesArray[off]].normalize();
-
-        off += nverts;
-    }
-
-
-    poly->exportToObj();
     delete poly;
 
     // output noise map to PPM
     const uint32_t width = 512, height = 512;
-    float **noiseMap = (float**) malloc(width*height*sizeof(float*)); 
+    float **heightMap = (float**) malloc(width*height*sizeof(float*)); 
 
     for (uint32_t j = 0; j < height; ++j) {
-        noiseMap[j] = (float*) malloc(width*sizeof(float)); 
+        heightMap[j] = (float*) malloc(width*sizeof(float)); 
         for (uint32_t i = 0; i < width; ++i) {
-            noiseMap[j][i] = (noise.eval(Vec3f(i, 0, j) * (1 / 64.), derivs) + 1) * 0.5;
+            heightMap[j][i] = (noise.eval(vec3(i, 0, j) * (1 / 64.), derivs) + 1) * 0.5;
         }
     }
 
-    return noiseMap;
+    return heightMap;
 }
 #endif

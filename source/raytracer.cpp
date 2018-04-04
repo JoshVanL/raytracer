@@ -65,7 +65,7 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
             Intersection intersection;
             intersection.distance = std::numeric_limits<float>::max();
             
-            if(tree.hit(ray, intersection)) {
+            /*if(tree.hit(ray, intersection)) {
                 vec3 color(0,0,0);
                 for(int k = 0; k < lights.size(); k++){
                     color += intersection.shape2D->getcolor(intersection, ray, shapes, lights[k]);
@@ -73,7 +73,8 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
                 colors[i][j] = color;
             }
-            else if(ray.ClosestIntersection(shapes, intersection)){
+            else*/ 
+            if(ray.ClosestIntersection(shapes, intersection)){
                 vec3 color(0,0,0);
                 for(int k = 0; k < lights.size(); k++){
                     color += intersection.shape2D->getcolor(intersection, ray, shapes, lights[k]);
@@ -135,7 +136,7 @@ int main( int argc, char* argv[] ) {
     // LightSource* lightB = new SpotLight();
     lights.push_back(lightA);
     // lights.push_back(lightB);
-    Camera camera(vec4(1.0f, 0.5f, -1.25f, 1.0f), SCREEN_WIDTH/2, CameraEffectType::NONE);
+    Camera camera(vec4(0.1f, 0.5f, -1.2f, 1.0f), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
     // LoadTestModel(shapes);
@@ -145,7 +146,7 @@ int main( int argc, char* argv[] ) {
 
     KDNode tree;// = *KDNode().buildTree(shapes, 0);
 
-    float** displacement = noisemap();
+    float** displacement = genHeightMap();
     // for(int i = 0; i < 512; i++){
     //     for(int j = 0; j < 512; j++){
     //         printf("%f ", displacement[i][j]);
@@ -153,7 +154,7 @@ int main( int argc, char* argv[] ) {
     //     printf("\n");
     // }return 0;
     Terrain* terrain = new Terrain(displacement, 512, 512, vec4(200, 400, 200, 1));
-    // shapes.push_back(terrain);
+    shapes.push_back(terrain);
     auto started = std::chrono::high_resolution_clock::now();
     Draw(screen, camera, lights, shapes, tree);
     auto done = std::chrono::high_resolution_clock::now();
