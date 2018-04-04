@@ -136,7 +136,7 @@ int main( int argc, char* argv[] ) {
     // LightSource* lightB = new SpotLight();
     lights.push_back(lightA);
     // lights.push_back(lightB);
-    Camera camera(vec4(0.1f, 0.5f, -1.2f, 1.0f), SCREEN_WIDTH/2, CameraEffectType::NONE);
+    Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
     // LoadTestModel(shapes);
@@ -147,12 +147,7 @@ int main( int argc, char* argv[] ) {
     KDNode tree;// = *KDNode().buildTree(shapes, 0);
 
     float** displacement = genHeightMap();
-    // for(int i = 0; i < 512; i++){
-    //     for(int j = 0; j < 512; j++){
-    //         printf("%f ", displacement[i][j]);
-    //     }
-    //     printf("\n");
-    // }return 0;
+
     Terrain* terrain = new Terrain(displacement, 512, 512, vec4(200, 400, 200, 1));
     shapes.push_back(terrain);
     auto started = std::chrono::high_resolution_clock::now();

@@ -24,6 +24,7 @@ public:
     virtual vec3 getDirectLight(Intersection& point, const std::vector<Shape2D*>& shapes) override {
         vec4 point_position = point.shape2D->id == "Terrain" ? scalevec4(point.position) : point.position;
         float dist = glm::distance(position, point_position);
+        
         vec3 surfaceNormal =  point.shape2D->getnormal(point);
         vec3 pointToLight =   glm::normalize((vec3) position - (vec3) point_position);
         float dotProduct = glm::dot(surfaceNormal, pointToLight);
@@ -31,7 +32,7 @@ public:
         
         if (isOccluded(point, shapes)) {
             vec3 shadow(0.0005, 0.0005, 0.0005);
-            return shadow  * color;
+            return shadow  ;
         }
         return color * powPerSurface;
     }
@@ -40,10 +41,12 @@ public:
         vec4 point_position = point.shape2D->id == "Terrain" ? scalevec4(point.position) : point.position;
         Intersection intersect; 
         vec4 shadow_dir = glm::normalize(point_position - position);
-        Ray shadow_ray(position + shadow_dir * 2.f, shadow_dir);
-        if(shadow_ray.ClosestIntersection(shapes, intersect, "Smoke"/*, point.shape2D*/)){
+        Ray shadow_ray(position + shadow_dir * 0.05f, shadow_dir);
+        Shape2D* excludedShape = point.shape2D->id == "Terrain" ? nullptr : point.shape2D;
+        if(shadow_ray.ClosestIntersection(shapes, intersect, "Smoke", excludedShape)){
+            vec4 intersect_pos = point.shape2D->id == "Terrain" ? scalevec4(intersect.position) : intersect.position;
             float distA = glm::distance(point_position, position);
-            float distB = glm::distance(scalevec4(intersect.position), position);
+            float distB = glm::distance(intersect_pos, position);
 
             return (distB < distA);
         }
