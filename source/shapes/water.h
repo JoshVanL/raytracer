@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include "shape2D.h"
 #include "../materials/translucent.h"
+
 #include "triangle.h"
 #include <vector>
 using std::vector;

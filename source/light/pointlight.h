@@ -10,7 +10,7 @@ public:
 
     PointLight( const vec4& pos         = vec4(0.5, 0.2, -0.5, 1.0), 
                 const glm::vec3& col    = vec3(1, 1, 1), 
-                const float& pow        = 50.f) 
+                const float& pow        = 10.f) 
     : LightSource(pos, col, pow){
 
     };
@@ -29,11 +29,10 @@ public:
         float dotProduct = glm::dot(surfaceNormal, pointToLight);
         float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
         
-        // if (isOccluded(point, shapes)) {
-        //     vec3 shadow(0.0005, 0.0005, 0.0005);
-        //     return shadow  * color;
-        // }
-        // printf("%f %f %f \n", point.position.x, point.position.y, point.position.z );
+        if (isOccluded(point, shapes)) {
+            vec3 shadow(0.0005, 0.0005, 0.0005);
+            return shadow  * color;
+        }
         return color * powPerSurface;
     }
 

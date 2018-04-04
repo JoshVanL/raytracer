@@ -135,7 +135,7 @@ int main( int argc, char* argv[] ) {
     // LightSource* lightB = new SpotLight();
     lights.push_back(lightA);
     // lights.push_back(lightB);
-    Camera camera(vec4(0.45, 0.5, -0.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
+    Camera camera(vec4(1.0f, 0.5f, -1.25f, 1.0f), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
     // LoadTestModel(shapes);

@@ -61,13 +61,7 @@ public:
     }
 
     virtual vec2 getUV(Intersection& intersectpoint) override {
-        // float u = intersectpoint.position.x 
-        // // vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
-        // // vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
-        // // vec3 b = vec3(intersectpoint.position.x - v0.x, intersectpoint.position.y - v0.y, intersectpoint.position.z - v0.z);
-        // // mat3 A( -(vec3)intersectpoint.direction, e1, e2 );
-        // // vec3 x = glm::inverse( A ) * b;
-        // // return vec2(x.y,x.z);
+
     }
     
     virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint, glm::vec2* uv = nullptr) override {
@@ -85,7 +79,7 @@ public:
 
         float t1 = x1.x;
         float u1 = x1.y;
-        float v1 = x1.z; 
+        float v1 = x1.z;
 
         float t2 = x2.x;
         float u2 = x2.y;

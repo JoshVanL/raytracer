@@ -33,7 +33,7 @@ public:
             if(pt.x < bl.x + width && pt.x > bl.x && pt.z < height + bl.z && pt.z > bl.z){
                 if(u > 0 && v > 0 && (int)u < 512 && (int)v < 512 && pt.y > 0 && pt.y < 50 * (heightmap[(int) u ][(int) v  ]) )
                 { 
-                    intersectionpoint = vec4(0, -50.f * heightmap[(int) u ][(int) v  ] ,0,0) - p.x*vec4(width,0,0,0) - p.z*vec4(0,0,height,0) + vec4(0,0,0,1);
+                    intersectionpoint = vec4(0, pt.y,0,0) - p.x*vec4(width,0,0,0) - p.z*vec4(0,0,height,0) + vec4(0,0,0,1);
                     return true;
                 }
             }
@@ -47,7 +47,7 @@ public:
         vec3 norm = intersection.shape2D->getnormal(intersection);
         float prop = dot(normalize(norm), -l);
         float projection_factor = std::max(prop, 0.0f);
-        return intersection.shape2D->color * projection_factor * (directLight+indirectLight);
+        return intersection.shape2D->color /** projection_factor*/ * (directLight+indirectLight);
     }
 
     virtual  vec3 getnormal(Intersection& intersection){
