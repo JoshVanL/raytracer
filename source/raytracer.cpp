@@ -153,7 +153,7 @@ int main( int argc, char* argv[] ) {
     //     printf("\n");
     // }return 0;
     Terrain* terrain = new Terrain(displacement, 512, 512, vec4(200, 400, 200, 1));
-    shapes.push_back(terrain);
+    // shapes.push_back(terrain);
     auto started = std::chrono::high_resolution_clock::now();
     Draw(screen, camera, lights, shapes, tree);
     auto done = std::chrono::high_resolution_clock::now();
