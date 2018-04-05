@@ -24,7 +24,7 @@
 #include "shapes/sphere.h"
 #include "light/pointlight.h"
 #include "light/spotlight.h"
-#include "perlinnoise.h"
+#include "scene/perlinnoise.h"
 using namespace std;
 
 using glm::vec3;
@@ -139,7 +139,7 @@ int main( int argc, char* argv[] ) {
     Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
-    // LoadTestModel(shapes);
+    LoadTestModel(shapes);
     
     SDL_Event event;
     int runProgram = 0;
@@ -148,8 +148,8 @@ int main( int argc, char* argv[] ) {
 
     float** displacement = genHeightMap();
 
-    Terrain* terrain = new Terrain(displacement, 512, 512, vec4(200, 400, 200, 1));
-    shapes.push_back(terrain);
+    // Terrain* terrain = new Terrain(displacement, 512, 512, vec4(200, 300, -300, 1));
+    // shapes.push_back(terrain);
     auto started = std::chrono::high_resolution_clock::now();
     Draw(screen, camera, lights, shapes, tree);
     auto done = std::chrono::high_resolution_clock::now();

@@ -31,7 +31,7 @@ public:
             float u =  (((pt.x) - bl.x));
             float v =  (((pt.z) - bl.z));
             if(pt.x < bl.x + width && pt.x > bl.x && pt.z < height + bl.z && pt.z > bl.z){
-                if(u > 0 && v > 0 && (int)u < 512 && (int)v < 512 && pt.y > 0 && pt.y < 50 * (heightmap[(int) u ][(int) v  ]) )
+                if(u > 0 && v > 0 && (int)u < width && (int)v < height && pt.y > 0 && pt.y < 50 * (heightmap[(int) u ][(int) v  ]) )
                 { 
                     intersectionpoint = vec4(0, pt.y,0,0) + p.x*vec4(width,0,0,0) + p.z*vec4(0,0,height,0) + vec4(0,0,0,1);
                     return true;
@@ -54,8 +54,8 @@ public:
         vec4 pt =  (intersection.position);
         float u =  abs(((pt.x) - bl.x));
         float v =  abs(((pt.z) - bl.z));
-        if(u >= 512 || v >= 512)
-            return vec3(0,-1,0);
+        if(u >= width || v >= height)
+            return vec3(0,1,0);
         // printf("%f %f \n", u, v);
         float down =    unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v-4))]  );
         float up =      unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v+4))]  );

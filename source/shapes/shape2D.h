@@ -33,7 +33,7 @@ public:
             color(color), id(id),materials(materials) {
     };
 
-    
+    inline
     vec4 scalevec4(vec4 v) {
         v *= 2/L;
         v -= vec4(1,1,1,1);
@@ -42,6 +42,7 @@ public:
         v.w = 1.0;
         return v;
     }
+    inline
     vec4 unscalevec4(vec4 v) {
         v.x *= -1;
         v.y *= -1;

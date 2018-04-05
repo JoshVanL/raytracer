@@ -8,7 +8,7 @@ using glm::vec3;
 class PointLight : public LightSource {
 public:
 
-    PointLight( const vec4& pos         = vec4(1.0, 0.2, -0.9, 1.0), 
+    PointLight( const vec4& pos         = vec4(0.5, 0.2, -0.9, 1.0), 
                 const glm::vec3& col    = vec3(1, 1, 1), 
                 const float& pow        = 10.f) 
     : LightSource(pos, col, pow){
@@ -31,8 +31,7 @@ public:
         float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
         
         if (isOccluded(point, shapes)) {
-            vec3 shadow(0.0005, 0.0005, 0.0005);
-            return shadow  ;
+            return vec3(0.0005, 0.0005, 0.0005);
         }
         return color * powPerSurface;
     }
@@ -44,9 +43,9 @@ public:
         Ray shadow_ray(position + shadow_dir * 0.05f, shadow_dir);
         Shape2D* excludedShape = point.shape2D->id == "Terrain" ? nullptr : point.shape2D;
         if(shadow_ray.ClosestIntersection(shapes, intersect, "Smoke", excludedShape)){
-            vec4 intersect_pos = point.shape2D->id == "Terrain" ? scalevec4(intersect.position) : intersect.position;
+            vec4 intersect_position = intersect.shape2D->id == "Terrain" ? scalevec4(intersect.position) : intersect.position;
             float distA = glm::distance(point_position, position);
-            float distB = glm::distance(intersect_pos, position);
+            float distB = glm::distance(intersect_position, position);
 
             return (distB < distA);
         }
