@@ -24,13 +24,13 @@ public:
     int origformat;
     unsigned char * pixels;
     int width, height;
-
+    bool isHorizontal;
     int specular_exponent = 100;
     Diffuse* diffuse_shader;
     float Kd = 0.8; // diffuse weight
     float Ks = 0.3; // specular weight
 
-    Texture(const char* imagePath) : Material("Texture") {
+    Texture(const char* imagePath, bool isHorizontal) : Material("Texture"),isHorizontal(isHorizontal) {
 #pragma omp critical
         {
         diffuse_shader = new Diffuse();
@@ -88,11 +88,11 @@ public:
             i = abs((((intersection.position.z ) ) * (float) height));
         }
 
-        if(intersection.position.y < 1.f && intersection.position.y > -0.1) {
-            j = abs((((intersection.position.y ) ) * (float) width));
-        } else {
+        if(isHorizontal) {
             j = abs((((intersection.position.z ) ) * (float) width));
-        }
+        }else{
+            j = abs((((intersection.position.y ) ) * (float) width));
+        } 
 
         i = fmod(i, height);
         j = fmod(j, width);

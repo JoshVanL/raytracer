@@ -68,7 +68,15 @@ void readMeshData(std::string filepath, std::vector<Shape2D*>& shapes){
     }
     
 }
-
+vec4 scalevec4(vec4 v) {
+        v *= 2/555;
+        v -= vec4(1,1,1,1);
+        v.x *= -1;
+        v.y *= -1;
+        v.w = 1.0;
+        return v;
+    
+}
 void LoadTest(std::vector<Shape2D*>& shapes){
     using glm::vec3; 
     using glm::vec4;
@@ -107,15 +115,17 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
 
     float L = 555;
 
-    vec4 A(L,0,0,1);
-    vec4 B(0,0,0,1);
-    vec4 C(L,0,L,1);
-    vec4 D(0,0,L,1);
+    vec4 A(L,0+600,0,1);
+    vec4 B(0,0+600,0,1);
+    vec4 C(L,0+600,L,1);
+    vec4 D(0,0+600,L,1);
 
-    vec4 E(L,L,0,1);
-    vec4 F(0,L,0,1);
-    vec4 G(L,L,L,1);
-    vec4 H(0,L,L,1);
+    vec4 E(L,L+600,0,1);
+    vec4 F(0,L+600,0,1);
+    vec4 G(L,L+600,L,1);
+    vec4 H(0,L+600,L,1);   
+    vec4 shit = scalevec4(A);
+    printf("%f %f %f\n", shit.x, shit.y , shit.z);
     // A = vec4(450,0,270,1);
     // B = vec4(330,0,150,1);
     // C = vec4(450,0,150,1);
@@ -126,38 +136,38 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // shapes.push_back( new Triangle(B,D,E,green, "pyramid",  {new Translucent()}));
     // shapes.push_back( new Triangle(D,A,E,green, "pyramid",  {new Translucent()}));
     // Mirror
-    vec4 I(4,100,400,1);
-    vec4 J(4,400,220,1);
-    vec4 K(4,400,400,1);
-    vec4 M(4,400,220,1);
-    vec4 N(4,100,400,1);
-    vec4 O(4,100,220,1);
+    vec4 I(4,100+600,400,1);
+    vec4 J(4,400+600,220,1);
+    vec4 K(4,400+600,400,1);
+    vec4 M(4,400+600,220,1);
+    vec4 N(4,100+600,400,1);
+    vec4 O(4,100+600,220,1);
 
-    vec4 Ia(540,100,200,1);
-    vec4 Ja(540,400,20,1);
-    vec4 Ka(540,400,200,1);
-    vec4 Ma(540,400,20,1);
-    vec4 Na(540,100,200,1);
-    vec4 Oa(540,100,20,1);
+    vec4 Ia(540,100+600,200,1);
+    vec4 Ja(540,400+600,20,1);
+    vec4 Ka(540,400+600,200,1);
+    vec4 Ma(540,400+600,20,1);
+    vec4 Na(540,100+600,200,1);
+    vec4 Oa(540,100+600,20,1);
 
     // Floor:
-    shapes.push_back( new Triangle( C, B, A, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")}));
-    shapes.push_back( new Triangle( C, D, B, white , "wall",   {new Texture("source/materials/textures/carpet.bmp")} ));
+    // shapes.push_back( new Triangle( C, B, A, white , "wall",   {new Texture("source/materials/textures/carpet.bmp",true)}));
+    // shapes.push_back( new Triangle( C, D, B, white , "wall",   {new Texture("source/materials/textures/carpet.bmp",true)} ));
 
     // Left wall
-    shapes.push_back( new Triangle( A, E, C, white, "wall",   {new Texture("source/materials/textures/wall2.bmp") }) );
-    shapes.push_back( new Triangle( C, E, G, white, "wall",   {new Texture("source/materials/textures/wall2.bmp") } ) );
+    shapes.push_back( new Triangle( A, E, C, white, "wall",   {new Texture("source/materials/textures/wall2.bmp",false) }) );
+    shapes.push_back( new Triangle( C, E, G, white, "wall",   {new Texture("source/materials/textures/wall2.bmp",false) } ) );
 
     // Right wall
-    shapes.push_back( new Triangle( F, B, D, white, "wall",   {new Texture("source/materials/textures/wall1.bmp")} ) );
-    shapes.push_back( new Triangle( H, F, D, white, "wall",   {new Texture("source/materials/textures/wall1.bmp")} ) ); 
+    shapes.push_back( new Triangle( F, B, D, white, "wall",   {new Texture("source/materials/textures/wall1.bmp",false)} ) );
+    shapes.push_back( new Triangle( H, F, D, white, "wall",   {new Texture("source/materials/textures/wall1.bmp",false)} ) ); 
 
     // Ceiling
-    shapes.push_back( new Triangle( E, F, G, white ,"wall",    {new Texture("source/materials/textures/ceil.bmp")}) );
-    shapes.push_back( new Triangle( F, H, G, white , "wall",   {new Texture("source/materials/textures/ceil.bmp")}) );
+    shapes.push_back( new Triangle( E, F, G, white ,"wall",    {new Texture("source/materials/textures/ceil.bmp",true)}) );
+    shapes.push_back( new Triangle( F, H, G, white , "wall",   {new Texture("source/materials/textures/ceil.bmp",true)}) );
     // Back wall
-    shapes.push_back( new Triangle( G, D, C, white, "wall",   {new Texture("source/materials/textures/water.bmp")}) );
-    shapes.push_back( new Triangle( G, H, D, white, "wall",   {new Texture("source/materials/textures/water.bmp")}) );
+    shapes.push_back( new Triangle( G, D, C, white, "wall",   {new Texture("source/materials/textures/water.bmp",false)}) );
+    shapes.push_back( new Triangle( G, H, D, white, "wall",   {new Texture("source/materials/textures/water.bmp",false)}) );
 
     // // ---------------------------------------------------------------------------
     // // Mirror
@@ -191,20 +201,21 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     //G = vec4(640,165,322,1);
     //H = vec4(482,165,275,1);
 
-    A = vec4(290,0,114,1);
-    B = vec4(130,0, 65,1);
-    C = vec4(240,0,272,1);
-    D = vec4( 82,0,225,1);
+    A = vec4(290,0+600,114,1);
+    B = vec4(130,0+600, 65,1);
+    C = vec4(240,0+600,272,1);
+    D = vec4( 82,0+600,225,1);
 
-    E = vec4(290,165,114,1);
-    F = vec4(130,165, 65,1);
-    G = vec4(240,165,272,1);
-    H = vec4( 82,165,225,1);
+    E = vec4(290,165+600,114,1);
+    F = vec4(130,165+600, 65,1);
+    G = vec4(240,165+600,272,1);
+    H = vec4( 82,165+600,225,1);
 
     // Front
     shapes.push_back( new Triangle(E,B,A,red, "shortblock",  {new Smoke(red)} ));
     shapes.push_back( new Triangle(E,F,B,red, "shortblock",  {new Smoke(red)} ));
-
+    shapes.push_back( new Triangle(C,A,B,red, "shortblock",  {new Smoke(red)} ));
+    shapes.push_back( new Triangle(C,D,B,red, "shortblock",  {new Smoke(red)} ));
     // // Front
     shapes.push_back( new Triangle(F,D,B,red,"shortblock",   {new Translucent()} ));
     shapes.push_back( new Triangle(F,H,D,red, "shortblock",  {new Translucent()} ));
@@ -234,21 +245,24 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     //G = vec4(472,330,406,1);
     //H = vec4(314,330,456,1);
 
-    A = vec4(423,0,247,1);
-    B = vec4(265,0,296,1);
-    C = vec4(472,0,406,1);
-    D = vec4(314,0,456,1);
+    A = vec4(423,0+600,247,1);
+    B = vec4(265,0+600,296,1);
+    C = vec4(472,0+600,406,1);
+    D = vec4(314,0+600,456,1);
 
-    E = vec4(423,330,247,1);
-    F = vec4(265,330,296,1);
-    G = vec4(472,330,406,1);
-    H = vec4(314,330,456,1);
+    E = vec4(423,330+600,247,1);
+    F = vec4(265,330+600,296,1);
+    G = vec4(472,330+600,406,1);
+    H = vec4(314,330+600,456,1);
 
     // Front
     shapes.push_back( new Triangle(E,B,A,blue,"tallblock",  {  new Smoke(blue) }) );
     shapes.push_back( new Triangle(E,F,B,blue, "tallblock",  {  new Smoke(blue)}) );
+    // Bottom
+    shapes.push_back( new Triangle(C,A,B,blue,"tallblock",  {  new Smoke(blue) }) );
+    shapes.push_back( new Triangle(C,D,B,blue, "tallblock",  {  new Smoke(blue)}) );
 
-    // Front
+    // RIGHT
     shapes.push_back( new Triangle(F,D,B,blue, "tallblock",  { new Translucent() }) );
     shapes.push_back( new Triangle(F,H,D,blue,"tallblock",   { new Translucent() }) );
 
@@ -264,140 +278,154 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle(G,F,E,blue, "tallblock",  { new Translucent() }) );
     shapes.push_back( new Triangle(G,H,F,blue, "tallblock",  { new Translucent() }) );
 
+    A = vec4(423,0+600,247,1);
+    B = vec4(265,0+600,296,1);
+    C = vec4(472,0+600,406,1);
+    D = vec4(314,0+600,456,1);
+
+    E = vec4(423,330+600,247,1);
+    F = vec4(265,330+600,296,1);
+    G = vec4(472,330+600,406,1);
+    H = vec4(314,330+600,456,1);
+
+
+
+
     // ---------------------------------------------------------------------------
     // Sphere
     float radius = 60;
     float empty = 0;
-    A = vec4(200, 230, 150, 1);
+    A = vec4(200, 230+600, 150, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     shapes.push_back( new Sphere( A, radius, blue, "sphere1", { new Translucent() }) );
-    A = vec4(350, 400, 350, 1);
+    A = vec4(350, 400+600, 350, 1);
     radius = 70;
     shapes.push_back( new Sphere( A, radius ,red, "sphere2", { new Translucent(true, false), new Specular() }) );
 }
 
 
-void LoadTestModel2( std::vector<Shape2D*>& shapes )
-{
-    using glm::vec3; 
-    using glm::vec4;
+// void LoadTestModel2( std::vector<Shape2D*>& shapes )
+// {
+//     using glm::vec3; 
+//     using glm::vec4;
 
-    // Defines colors:
-    vec3 red(    0.75f, 0.15f, 0.15f );
-    vec3 yellow( 0.75f, 0.75f, 0.15f );
-    vec3 green(  0.15f, 0.75f, 0.15f );
-    vec3 cyan(   0.15f, 0.75f, 0.75f );
-    vec3 blue(   0.15f, 0.15f, 0.75f );
-    vec3 purple( 0.75f, 0.15f, 0.75f );
-    vec3 white(  0.75f, 0.75f, 0.75f );
+//     // Defines colors:
+//     vec3 red(    0.75f, 0.15f, 0.15f );
+//     vec3 yellow( 0.75f, 0.75f, 0.15f );
+//     vec3 green(  0.15f, 0.75f, 0.15f );
+//     vec3 cyan(   0.15f, 0.75f, 0.75f );
+//     vec3 blue(   0.15f, 0.15f, 0.75f );
+//     vec3 purple( 0.75f, 0.15f, 0.75f );
+//     vec3 white(  0.75f, 0.75f, 0.75f );
 
-    // ---------------------------------------------------------------------------
-    // Room
+//     // ---------------------------------------------------------------------------
+//     // Room
 
-    float L = 1000;			// Length of Cornell Box side.
+//     float L = 1000;			// Length of Cornell Box side.
 
-    vec4 A(2.f*L,0,0,1);
-    vec4 B(0,0,0,1);
-    vec4 C(2.f*L,0,L,1);
-    vec4 D(0,0,L,1);
+//     vec4 A(2.f*L,0,0,1);
+//     vec4 B(0,0,0,1);
+//     vec4 C(2.f*L,0,L,1);
+//     vec4 D(0,0,L,1);
 
-    vec4 E(2.f*L,L,0,1);
-    vec4 F(0,L,0,1);
-    vec4 G(2.f*L,L,L,1);
-    vec4 H(0,L,L,1);
+//     vec4 E(2.f*L,L,0,1);
+//     vec4 F(0,L,0,1);
+//     vec4 G(2.f*L,L,L,1);
+//     vec4 H(0,L,L,1);
 
-    // Floor:
-    shapes.push_back( new Triangle( C, B, A, green , "wall" ));
-    shapes.push_back( new Triangle( C, D, B, green , "wall" ));
+//     // Floor:
+//     shapes.push_back( new Triangle( C, B, A, green , "wall" ));
+//     shapes.push_back( new Triangle( C, D, B, green , "wall" ));
 
-    // Left wall
-    shapes.push_back( new Triangle( A, E, C, purple,"wall") );
-    shapes.push_back( new Triangle( C, E, G, purple, "wall" ) );
+//     // Left wall
+//     shapes.push_back( new Triangle( A, E, C, purple,"wall") );
+//     shapes.push_back( new Triangle( C, E, G, purple, "wall" ) );
 
-    // Right wall
-    shapes.push_back( new Triangle( F, B, D, yellow, "wall" ) );
-    shapes.push_back( new Triangle( H, F, D, yellow, "wall" ) );
+//     // Right wall
+//     shapes.push_back( new Triangle( F, B, D, yellow, "wall" ) );
+//     shapes.push_back( new Triangle( H, F, D, yellow, "wall" ) );
 
-    // Ceiling
-    shapes.push_back( new Triangle( E, F, G, cyan , "wall") );
-    shapes.push_back( new Triangle( F, H, G, cyan , "wall") );
+//     // Ceiling
+//     shapes.push_back( new Triangle( E, F, G, cyan , "wall") );
+//     shapes.push_back( new Triangle( F, H, G, cyan , "wall") );
 
-    // Back wall
-    shapes.push_back( new Triangle( G, D, C, white, "wall") );
-    shapes.push_back( new Triangle( G, H, D, white, "wall" ) );
+//     // Back wall
+//     shapes.push_back( new Triangle( G, D, C, white, "wall") );
+//     shapes.push_back( new Triangle( G, H, D, white, "wall" ) );
 
-    // ---------------------------------------------------------------------------
-    // Short block
+//     // ---------------------------------------------------------------------------
+//     // Short block
 
-    A = vec4(690,0,164,1);
-    B = vec4(530,0,115,1);
-    C = vec4(640,0,322,1);
-    D = vec4(482,0,275,1);
+//     A = vec4(690,0,164,1);
+//     B = vec4(530,0,115,1);
+//     C = vec4(640,0,322,1);
+//     D = vec4(482,0,275,1);
 
-    E = vec4(690,165,164,1);
-    F = vec4(530,165,115,1);
-    G = vec4(640,165,322,1);
-    H = vec4(482,165,275,1);
+//     E = vec4(690,165,164,1);
+//     F = vec4(530,165,115,1);
+//     G = vec4(640,165,322,1);
+//     H = vec4(482,165,275,1);
 
-    // Front
-    shapes.push_back( new Triangle(E,B,A,red, "sb",   {new Translucent()} ));
-    shapes.push_back( new Triangle(E,F,B,red, "sb",  {new Translucent()} ));
+//     // Front
+//     shapes.push_back( new Triangle(E,B,A,red, "sb",   {new Translucent()} ));
+//     shapes.push_back( new Triangle(E,F,B,red, "sb",  {new Translucent()} ));
 
-    // Front
-    shapes.push_back( new Triangle(F,D,B,red,"sb",   {new Translucent()} ));
-    shapes.push_back( new Triangle(F,H,D,red, "sb",  {new Translucent()} ));
+//     // Front
+//     shapes.push_back( new Triangle(F,D,B,red,"sb",   {new Translucent()} ));
+//     shapes.push_back( new Triangle(F,H,D,red, "sb",  {new Translucent()} ));
 
-    // BACK
-    shapes.push_back( new Triangle(H,C,D,red, "sb",  {new Translucent()}));
-    shapes.push_back( new Triangle(H,G,C,red, "sb",  {new Translucent()}));
+//     // BACK
+//     shapes.push_back( new Triangle(H,C,D,red, "sb",  {new Translucent()}));
+//     shapes.push_back( new Triangle(H,G,C,red, "sb",  {new Translucent()}));
 
-    // LEFT
-    shapes.push_back( new Triangle(G,E,C,red,"sb",   {new Translucent()}));
-    shapes.push_back( new Triangle(E,A,C,red,"sb",   {new Translucent()}));
+//     // LEFT
+//     shapes.push_back( new Triangle(G,E,C,red,"sb",   {new Translucent()}));
+//     shapes.push_back( new Triangle(E,A,C,red,"sb",   {new Translucent()}));
 
-    // TOP
-    shapes.push_back( new Triangle(G,F,E,red, "sb",  {new Translucent()}));
-    shapes.push_back( new Triangle(G,H,F,red,"sb",   {new Translucent()}));
+//     // TOP
+//     shapes.push_back( new Triangle(G,F,E,red, "sb",  {new Translucent()}));
+//     shapes.push_back( new Triangle(G,H,F,red,"sb",   {new Translucent()}));
 
-    // ---------------------------------------------------------------------------
-    // Tall block
+//     // ---------------------------------------------------------------------------
+//     // Tall block
 
-    A = vec4(423,0,247,1);
-    B = vec4(265,0,296,1);
-    C = vec4(472,0,406,1);
-    D = vec4(314,0,456,1);
+//     A = vec4(423,0,247,1);
+//     B = vec4(265,0,296,1);
+//     C = vec4(472,0,406,1);
+//     D = vec4(314,0,456,1);
 
-    E = vec4(423,330,247,1);
-    F = vec4(265,330,296,1);
-    G = vec4(472,330,406,1);
-    H = vec4(314,330,456,1);
+//     E = vec4(423,330,247,1);
+//     F = vec4(265,330,296,1);
+//     G = vec4(472,330,406,1);
+//     H = vec4(314,330,456,1);
 
-    // Front
-    shapes.push_back( new Triangle(E,B,A,blue,"tb",  { new Translucent() }) );
-    shapes.push_back( new Triangle(E,F,B,blue,"tb",    { new Translucent() }) );
+//     // Front
+//     shapes.push_back( new Triangle(E,B,A,blue,"tb",  { new Translucent() }) );
+//     shapes.push_back( new Triangle(E,F,B,blue,"tb",    { new Translucent() }) );
 
-    // Front
-    shapes.push_back( new Triangle(F,D,B,blue,"tb",    { new Translucent() }) );
-    shapes.push_back( new Triangle(F,H,D,blue,"tb",    { new Translucent() }) );
+//     // Front
+//     shapes.push_back( new Triangle(F,D,B,blue,"tb",    { new Translucent() }) );
+//     shapes.push_back( new Triangle(F,H,D,blue,"tb",    { new Translucent() }) );
 
-    // BACK
-    shapes.push_back( new Triangle(H,C,D,blue,"tb",    { new Translucent() }) );
-    shapes.push_back( new Triangle(H,G,C,blue,"tb",    { new Translucent() }) );
+//     // BACK
+//     shapes.push_back( new Triangle(H,C,D,blue,"tb",    { new Translucent() }) );
+//     shapes.push_back( new Triangle(H,G,C,blue,"tb",    { new Translucent() }) );
 
-    // LEFT
-    shapes.push_back( new Triangle(G,E,C,blue,"tb",    { new Translucent() }) );
-    shapes.push_back( new Triangle(E,A,C,blue,"tb",    { new Translucent() }) );
+//     // LEFT
+//     shapes.push_back( new Triangle(G,E,C,blue,"tb",    { new Translucent() }) );
+//     shapes.push_back( new Triangle(E,A,C,blue,"tb",    { new Translucent() }) );
 
-    // TOP
-    shapes.push_back( new Triangle(G,F,E,blue,"tb",    { new Translucent(), new Specular() }) );
-    shapes.push_back( new Triangle(G,H,F,blue,"tb",    { new Translucent() }) );
+//     // TOP
+//     shapes.push_back( new Triangle(G,F,E,blue,"tb",    { new Translucent(), new Specular() }) );
+//     shapes.push_back( new Triangle(G,H,F,blue,"tb",    { new Translucent() }) );
 
-    // ---------------------------------------------------------------------------
-    // Sphere
-    float radius = 100;
-    float empty = 0;
-    A = vec4(700, 300, 200, 1);
-    vec3 emptyv3 =  vec3(0,0,0);
-    shapes.push_back( new Sphere( A, radius, blue,"sph1", { new Translucent() }) );
-}
+//     // ---------------------------------------------------------------------------
+//     // Sphere
+//     float radius = 100;
+//     float empty = 0;
+//     A = vec4(700, 300, 200, 1);
+//     vec3 emptyv3 =  vec3(0,0,0);
+//     shapes.push_back( new Sphere( A, radius, blue,"sph1", { new Translucent() }) );
+// }  
+
 #endif
