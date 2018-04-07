@@ -35,7 +35,7 @@ public:
 
             if(p.x < bl.x  && p.x > br.x && p.z < tl.z  && p.z > bl.z){
                 // printf("true\n");
-                if(p.y < 0 && p.y > -0.2 * (heightmap[(int) (u * width) ][(int) (v * height)  ])  )
+                if(p.y > -1.1 && p.y < 0.2 * (heightmap[(int) (u * width) ][(int) (v * height)  ]) -1.1f )
                 { 
                     intersectionpoint = p;
                     return true;
@@ -48,11 +48,11 @@ public:
     virtual  glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)   {
         vec3 directLight   = lightSource->getDirectLight(intersection, shapes);
         vec3 indirectLight = lightSource->getIndirectLight();
-        // vec3 l = (vec3) intersection.direction;
-        // vec3 norm = intersection.shape2D->getnormal(intersection);
-        // float prop = dot(normalize(norm), -l);
-        // float projection_factor = std::max(prop, 0.0f);
-        return intersection.shape2D->color /** projection_factor*/ * (directLight+indirectLight) * 1.5f;
+        vec3 l = (vec3) intersection.direction;
+        vec3 norm = intersection.shape2D->getnormal(intersection);
+        float prop = dot(normalize(norm), l);
+        float projection_factor = std::max(prop, 0.0f);
+        return intersection.shape2D->color * projection_factor * (directLight+indirectLight) * 3.5f;
     }
 
     virtual  vec3 getnormal(Intersection& intersection){
@@ -61,12 +61,12 @@ public:
         float v = 512*((p.z - br.z) / (tl.z - br.z) );
         
         // printf("%f %f \n", u, v);
-        float down =    unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v-4))]  );
-        float up =      unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v+4))]  );
-        float left =    unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u-4))] [(int)v]                                    );
-        float right =   unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u+4))] [(int)v]                                    );
-        vec3 yz = vec3(intersection.position.x, up, intersection.position.z + 4.f) - vec3(intersection.position.x, down, intersection.position.z - 4.f);
-        vec3 yx = vec3(intersection.position.x + 4.f, left, intersection.position.z) - vec3(intersection.position.x - 4.f, right, intersection.position.z);
+        float down =    unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v-1))]  );
+        float up =      unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v+1))]  );
+        float left =    unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u-1))] [(int)v]                                    );
+        float right =   unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u+1))] [(int)v]                                    );
+        vec3 yz = vec3(intersection.position.x, up, intersection.position.z + 1.f) - vec3(intersection.position.x, down, intersection.position.z - 1.f);
+        vec3 yx = vec3(intersection.position.x + 1.f, left, intersection.position.z) - vec3(intersection.position.x - 1.f, right, intersection.position.z);
         return glm::normalize(cross(yx, yz));
     }
 

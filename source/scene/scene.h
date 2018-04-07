@@ -115,15 +115,15 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
 
     float L = 555;
 
-    vec4 A(L,0+600,0,1);
-    vec4 B(0,0+600,0,1);
-    vec4 C(L,0+600,L,1);
-    vec4 D(0,0+600,L,1);
+    vec4 A(L,0+500,0,1);
+    vec4 B(0,0+500,0,1);
+    vec4 C(L,0+500,L,1);
+    vec4 D(0,0+500,L,1);
 
-    vec4 E(L,L+600,0,1);
-    vec4 F(0,L+600,0,1);
-    vec4 G(L,L+600,L,1);
-    vec4 H(0,L+600,L,1);   
+    vec4 E(L,L+500,0,1);
+    vec4 F(0,L+500,0,1);
+    vec4 G(L,L+500,L,1);
+    vec4 H(0,L+500,L,1);   
     vec4 shit = scalevec4(A);
     printf("%f %f %f\n", shit.x, shit.y , shit.z);
     // A = vec4(450,0,270,1);
@@ -136,23 +136,23 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // shapes.push_back( new Triangle(B,D,E,green, "pyramid",  {new Translucent()}));
     // shapes.push_back( new Triangle(D,A,E,green, "pyramid",  {new Translucent()}));
     // Mirror
-    vec4 I(4,100+600,400,1);
-    vec4 J(4,400+600,220,1);
-    vec4 K(4,400+600,400,1);
-    vec4 M(4,400+600,220,1);
-    vec4 N(4,100+600,400,1);
-    vec4 O(4,100+600,220,1);
+    vec4 I(4,100+500,400,1);
+    vec4 J(4,400+500,220,1);
+    vec4 K(4,400+500,400,1);
+    vec4 M(4,400+500,220,1);
+    vec4 N(4,100+500,400,1);
+    vec4 O(4,100+500,220,1);
 
-    vec4 Ia(540,100+600,200,1);
-    vec4 Ja(540,400+600,20,1);
-    vec4 Ka(540,400+600,200,1);
-    vec4 Ma(540,400+600,20,1);
-    vec4 Na(540,100+600,200,1);
-    vec4 Oa(540,100+600,20,1);
+    vec4 Ia(540,100+500,200,1);
+    vec4 Ja(540,400+500,20,1);
+    vec4 Ka(540,400+500,200,1);
+    vec4 Ma(540,400+500,20,1);
+    vec4 Na(540,100+500,200,1);
+    vec4 Oa(540,100+500,20,1);
 
     // Floor:
-    // shapes.push_back( new Triangle( C, B, A, white , "wall",   {new Texture("source/materials/textures/carpet.bmp",true)}));
-    // shapes.push_back( new Triangle( C, D, B, white , "wall",   {new Texture("source/materials/textures/carpet.bmp",true)} ));
+    shapes.push_back( new Triangle( C, B, A, white , "wall",   {new Texture("source/materials/textures/carpet.bmp",true)}));
+    shapes.push_back( new Triangle( C, D, B, white , "wall",   {new Texture("source/materials/textures/carpet.bmp",true)} ));
 
     // Left wall
     shapes.push_back( new Triangle( A, E, C, white, "wall",   {new Texture("source/materials/textures/wall2.bmp",false) }) );
@@ -163,8 +163,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( H, F, D, white, "wall",   {new Texture("source/materials/textures/wall1.bmp",false)} ) ); 
 
     // Ceiling
-    shapes.push_back( new Triangle( E, F, G, white ,"wall",    {new Texture("source/materials/textures/ceil.bmp",true)}) );
-    shapes.push_back( new Triangle( F, H, G, white , "wall",   {new Texture("source/materials/textures/ceil.bmp",true)}) );
+    // shapes.push_back( new Triangle( E, F, G, white ,"wall",    {new Texture("source/materials/textures/ceil.bmp",true)}) );
+    // shapes.push_back( new Triangle( F, H, G, white , "wall",   {new Texture("source/materials/textures/ceil.bmp",true)}) );
     // Back wall
     shapes.push_back( new Triangle( G, D, C, white, "wall",   {new Texture("source/materials/textures/water.bmp",false)}) );
     shapes.push_back( new Triangle( G, H, D, white, "wall",   {new Texture("source/materials/textures/water.bmp",false)}) );
@@ -201,21 +201,21 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     //G = vec4(640,165,322,1);
     //H = vec4(482,165,275,1);
 
-    A = vec4(290,0+600,114,1);
-    B = vec4(130,0+600, 65,1);
-    C = vec4(240,0+600,272,1);
-    D = vec4( 82,0+600,225,1);
+    A = vec4(290,0+500,114,1);
+    B = vec4(130,0+500, 65,1);
+    C = vec4(240,0+500,272,1);
+    D = vec4( 82,0+500,225,1);
 
-    E = vec4(290,165+600,114,1);
-    F = vec4(130,165+600, 65,1);
-    G = vec4(240,165+600,272,1);
-    H = vec4( 82,165+600,225,1);
+    E = vec4(290,165+500,114,1);
+    F = vec4(130,165+500, 65,1);
+    G = vec4(240,165+500,272,1);
+    H = vec4( 82,165+500,225,1);
 
     // Front
     shapes.push_back( new Triangle(E,B,A,red, "shortblock",  {new Smoke(red)} ));
     shapes.push_back( new Triangle(E,F,B,red, "shortblock",  {new Smoke(red)} ));
-    shapes.push_back( new Triangle(C,A,B,red, "shortblock",  {new Smoke(red)} ));
-    shapes.push_back( new Triangle(C,D,B,red, "shortblock",  {new Smoke(red)} ));
+    // shapes.push_back( new Triangle(C,A,B,red, "shortblock",  {new Translucent()} ));
+    // shapes.push_back( new Triangle(C,D,B,red, "shortblock",  {new Translucent()} ));
     // // Front
     shapes.push_back( new Triangle(F,D,B,red,"shortblock",   {new Translucent()} ));
     shapes.push_back( new Triangle(F,H,D,red, "shortblock",  {new Translucent()} ));
@@ -245,22 +245,22 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     //G = vec4(472,330,406,1);
     //H = vec4(314,330,456,1);
 
-    A = vec4(423,0+600,247,1);
-    B = vec4(265,0+600,296,1);
-    C = vec4(472,0+600,406,1);
+    A = vec4(423,0+500,247,1);
+    B = vec4(265,0+500,296,1);
+    C = vec4(472,0+500,406,1);
     D = vec4(314,0+600,456,1);
 
-    E = vec4(423,330+600,247,1);
-    F = vec4(265,330+600,296,1);
-    G = vec4(472,330+600,406,1);
-    H = vec4(314,330+600,456,1);
+    E = vec4(423,330+500,247,1);
+    F = vec4(265,330+500,296,1);
+    G = vec4(472,330+500,406,1);
+    H = vec4(314,330+500,456,1);
 
     // Front
     shapes.push_back( new Triangle(E,B,A,blue,"tallblock",  {  new Smoke(blue) }) );
     shapes.push_back( new Triangle(E,F,B,blue, "tallblock",  {  new Smoke(blue)}) );
-    // Bottom
-    shapes.push_back( new Triangle(C,A,B,blue,"tallblock",  {  new Smoke(blue) }) );
-    shapes.push_back( new Triangle(C,D,B,blue, "tallblock",  {  new Smoke(blue)}) );
+    // // Bottom
+    // shapes.push_back( new Triangle(C,A,B,blue,"tallblock",  {  new Smoke(blue) }) );
+    // shapes.push_back( new Triangle(C,D,B,blue, "tallblock",  {  new Smoke(blue)}) );
 
     // RIGHT
     shapes.push_back( new Triangle(F,D,B,blue, "tallblock",  { new Translucent() }) );
@@ -278,15 +278,15 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle(G,F,E,blue, "tallblock",  { new Translucent() }) );
     shapes.push_back( new Triangle(G,H,F,blue, "tallblock",  { new Translucent() }) );
 
-    A = vec4(423,0+600,247,1);
-    B = vec4(265,0+600,296,1);
-    C = vec4(472,0+600,406,1);
-    D = vec4(314,0+600,456,1);
+    A = vec4(423,0+500,247,1);
+    B = vec4(265,0+500,296,1);
+    C = vec4(472,0+500,406,1);
+    D = vec4(314,0+500,456,1);
 
-    E = vec4(423,330+600,247,1);
-    F = vec4(265,330+600,296,1);
-    G = vec4(472,330+600,406,1);
-    H = vec4(314,330+600,456,1);
+    E = vec4(423,330+500,247,1);
+    F = vec4(265,330+500,296,1);
+    G = vec4(472,330+500,406,1);
+    H = vec4(314,330+500,456,1);
 
 
 
@@ -295,10 +295,10 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // Sphere
     float radius = 60;
     float empty = 0;
-    A = vec4(200, 230+600, 150, 1);
+    A = vec4(200, 230+500, 150, 1);
     vec3 emptyv3 =  vec3(0,0,0);
     shapes.push_back( new Sphere( A, radius, blue, "sphere1", { new Translucent() }) );
-    A = vec4(350, 400+600, 350, 1);
+    A = vec4(350, 400+500, 350, 1);
     radius = 70;
     shapes.push_back( new Sphere( A, radius ,red, "sphere2", { new Translucent(true, false), new Specular() }) );
 }

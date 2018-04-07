@@ -149,11 +149,11 @@ int main( int argc, char* argv[] ) {
     float** displacement = genHeightMap();
     float L = 555;
 
-    vec4 A(L,0,0,1);
-    vec4 B(0,0,0,1);
-    vec4 C(L,0,L,1);
-    vec4 D(0,0,L,1);
-    Terrain* terrain = new Terrain(displacement, 555, 555, B, A, D, C);
+    vec4 A(L-20,0,-100,1);
+    vec4 B(0-20,0,-100,1);
+    vec4 C(L-20,0,L+-100,1);
+    vec4 D(0-20,0,L+-100,1);
+    Terrain* terrain = new Terrain(displacement, 512, 512, B, A, D, C);
     shapes.push_back(terrain);
     auto started = std::chrono::high_resolution_clock::now();
     Draw(screen, camera, lights, shapes, tree);
