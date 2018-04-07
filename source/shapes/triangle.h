@@ -96,7 +96,6 @@ public:
         vec3 indirectLight = lightSource->getIndirectLight();
 
 
-
         for(int a = 0; a < materials.size(); a++){
             colors.push_back(materials[a]->material_color(intersection, primary_ray, shapes, lightSource, directLight, indirectLight));
         }

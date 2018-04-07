@@ -22,7 +22,7 @@ public:
     }
 
     virtual vec3 getDirectLight(Intersection& point, const std::vector<Shape2D*>& shapes) override {
-        vec4 point_position = point.shape2D->id == "Terrain" ? scalevec4(point.position) : point.position;
+        vec4 point_position =point.position;
         float dist = glm::distance(position, point_position);
         
         vec3 surfaceNormal =  point.shape2D->getnormal(point);
@@ -37,13 +37,13 @@ public:
     }
 
     virtual bool isOccluded(Intersection& point, const std::vector<Shape2D*>& shapes) override {
-        vec4 point_position = point.shape2D->id == "Terrain" ? scalevec4(point.position) : point.position;
+        vec4 point_position =  point.position;
         Intersection intersect; 
         vec4 shadow_dir = glm::normalize(point_position - position);
         Ray shadow_ray(position + shadow_dir * 0.05f, shadow_dir);
-        Shape2D* excludedShape = point.shape2D->id == "Terrain" ? nullptr : point.shape2D;
+        Shape2D* excludedShape =point.shape2D;
         if(shadow_ray.ClosestIntersection(shapes, intersect, "Smoke", excludedShape)){
-            vec4 intersect_position = intersect.shape2D->id == "Terrain" ? scalevec4(intersect.position) : intersect.position;
+            vec4 intersect_position =  intersect.position;
             float distA = glm::distance(point_position, position);
             float distB = glm::distance(intersect_position, position);
 

@@ -45,7 +45,7 @@ public:
             if((shapes[i]->intersect(*(this), (vec3) direction,
                 intersectionPoint)) && (shapes[i] != exclusion)){
                 
-                float d = shapes[i]->id == "Terrain" ? glm::distance(scalevec4(intersectionPoint), position) : glm::distance(intersectionPoint, position);
+                float d =  glm::distance(intersectionPoint, position);
 
                 if (d < closestIntersection.distance) {
                     closestIntersection.position = intersectionPoint;
@@ -78,7 +78,7 @@ public:
             if((shapes[i]->intersect(*(this), (vec3) direction,
                 intersectionPoint)) && (shapes[i] != exclusion)){
 
-                float d = shapes[i]->id == "Terrain" ? glm::distance(scalevec4(intersectionPoint), position) : glm::distance(intersectionPoint, position);
+                float d =  glm::distance(intersectionPoint, position);
 
                 std::vector<Material*>::iterator it = std::find_if(shapes[i]->materials.begin(), shapes[i]->materials.end(), find_material(material_type));
                 if(it != shapes[i]->materials.end()){
@@ -110,7 +110,7 @@ public:
             if((shapes[i]->intersect(*(this), (vec3) direction,
                 intersectionPoint)) && (shapes[i]->id != exclusion_id)){
                     
-                float d = shapes[i]->id == "Terrain" ? glm::distance(scalevec4(intersectionPoint), position) : glm::distance(intersectionPoint, position);
+                float d =  glm::distance(intersectionPoint, position);
 
                 if (d < closestIntersection.distance) {
                     closestIntersection.position = intersectionPoint;

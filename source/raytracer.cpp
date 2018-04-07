@@ -139,7 +139,7 @@ int main( int argc, char* argv[] ) {
     Camera camera(vec4(0.45, 0.5, -1.5, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
-    LoadTestModel(shapes);
+    // LoadTestModel(shapes);
     
     SDL_Event event;
     int runProgram = 0;
@@ -147,9 +147,14 @@ int main( int argc, char* argv[] ) {
     KDNode tree;// = *KDNode().buildTree(shapes, 0);
 
     float** displacement = genHeightMap();
+    float L = 555;
 
-    // Terrain* terrain = new Terrain(displacement, 512, 512, vec4(200, 300, -300, 1));
-    // shapes.push_back(terrain);
+    vec4 A(L,0,0,1);
+    vec4 B(0,0,0,1);
+    vec4 C(L,0,L,1);
+    vec4 D(0,0,L,1);
+    Terrain* terrain = new Terrain(displacement, 512, 512, B, A, D, C);
+    shapes.push_back(terrain);
     auto started = std::chrono::high_resolution_clock::now();
     Draw(screen, camera, lights, shapes, tree);
     auto done = std::chrono::high_resolution_clock::now();
