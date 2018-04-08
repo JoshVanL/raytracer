@@ -163,8 +163,8 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     shapes.push_back( new Triangle( H, F, D, white, "wall",   {new Texture("source/materials/textures/wall1.bmp",false)} ) ); 
 
     // Ceiling
-    // shapes.push_back( new Triangle( E, F, G, white ,"wall",    {new Texture("source/materials/textures/ceil.bmp",true)}) );
-    // shapes.push_back( new Triangle( F, H, G, white , "wall",   {new Texture("source/materials/textures/ceil.bmp",true)}) );
+    shapes.push_back( new Triangle( E, F, G, white ,"wall",    {new Texture("source/materials/textures/ceil.bmp",true)}) );
+    shapes.push_back( new Triangle( F, H, G, white , "wall",   {new Texture("source/materials/textures/ceil.bmp",true)}) );
     // Back wall
     shapes.push_back( new Triangle( G, D, C, white, "wall",   {new Texture("source/materials/textures/water.bmp",false)}) );
     shapes.push_back( new Triangle( G, H, D, white, "wall",   {new Texture("source/materials/textures/water.bmp",false)}) );

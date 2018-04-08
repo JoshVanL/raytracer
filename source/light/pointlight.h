@@ -8,7 +8,7 @@ using glm::vec3;
 class PointLight : public LightSource {
 public:
 
-    PointLight( const vec4& pos         = vec4(0.45, -0.5, -1.0, 1), 
+    PointLight( const vec4& pos         = vec4(0.45, -1, -1.0, 1), 
                 const glm::vec3& col    = vec3(1, 1, 1), 
                 const float& pow        = 10.f) 
     : LightSource(pos, col, pow){
@@ -31,7 +31,7 @@ public:
         float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
         
         if (isOccluded(point, shapes)) {
-            return vec3(0.0005, 0.0005, 0.0005);
+            return vec3(0.0005, 0.0005, 0.0005) * point.shape2D->color;
         }
         return color * powPerSurface;
     }

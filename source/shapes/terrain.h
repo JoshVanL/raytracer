@@ -17,8 +17,8 @@ public:
     vec4 br;
     vec4 tl;
     vec4 tr;
-    Terrain(float** hmap, float h, float w, vec4 bl, vec4 br, vec4 tl, vec4 tr): heightmap(hmap), height(h), width(w),
-    bl(scalevec4(bl)), br(scalevec4(br)), tl(scalevec4(tl)), tr(scalevec4(tr)), Shape2D(vec3(0.3, 0.5, 0.3), std::initializer_list<Material*>(), "Terrain"){
+    Terrain(float** hmap, float h, float w, vec4 bl, vec4 br, vec4 tl, vec4 tr, vec3 color): heightmap(hmap), height(h), width(w),
+    bl(scalevec4(bl)), br(scalevec4(br)), tl(scalevec4(tl)), tr(scalevec4(tr)), Shape2D(color, std::initializer_list<Material*>(), "Terrain"){
         printf("%f %f %f\n", scalevec4(bl).x, scalevec4(bl).y, scalevec4(bl).z);
     }
     virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint, glm::vec2* uv = nullptr) 
@@ -35,7 +35,7 @@ public:
 
             if(p.x < bl.x  && p.x > br.x && p.z < tl.z  && p.z > bl.z){
                 // printf("true\n");
-                if(p.y < 0 + 0.3f && p.y > -0.2 * (heightmap[(int) (u * width) ][(int) (v * height)  ])+ 0.3f  )
+                if(p.y < 0 + 0.3f && p.y > -0.15f * (heightmap[(int) (u * width) ][(int) (v * height)  ])+ 0.3f  )
                 { 
                     intersectionpoint = p;
                     return true;
@@ -67,7 +67,7 @@ public:
 
         /* Calculating Specular Component */
         vec3 specular_component = new_specular_highlight * directLight * vec3(1,1,1);
-        vec3 diffuse_component = intersection.shape2D->color * projection_factor * (directLight+indirectLight) * 2.5f;
+        vec3 diffuse_component = intersection.shape2D->color * projection_factor * (directLight+indirectLight) * 3.5f;
 
         return specular_component * Ks +  diffuse_component * Kd ;
 
@@ -80,13 +80,24 @@ public:
         float v = height*((p.z - br.z) / (tl.z - br.z) );
         
         // printf("%f %f \n", u, v);
-        float down =    unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v-1))]  );
-        float up =      unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v+1))]  );
-        float left =    unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u-1))] [(int)v]                                    );
-        float right =   unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u+1))] [(int)v]                                    );
+        float down  =       unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v-1))]  );
+        float up    =       unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v+1))]  );
+        float left  =       unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u-1))] [(int)v]                                    );
+        float right =       unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u+1))] [(int)v]                                    );
+
+        // float TL    =       unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u-1))][max(0, min( (int) height - 1, (int)v+1))]  );
+        // float TR    =       unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u+1))][max(0, min( (int) height - 1, (int)v+1))]  );
+        // float BL    =       unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u-1))][max(0, min( (int) height - 1, (int)v-1))]  );
+        // float BR    =       unscalefloat(heightmap[max(0, min( (int) width - 1, (int)u+1))][max(0, min( (int) height - 1, (int)v-1))]  );
+
         vec3 yz = vec3(intersection.position.x, up, intersection.position.z + 1.f) - vec3(intersection.position.x, down, intersection.position.z - 1.f);
         vec3 yx = vec3(intersection.position.x + 1.f, left, intersection.position.z) - vec3(intersection.position.x - 1.f, right, intersection.position.z);
-        return glm::normalize(cross(yx, yz));
+
+        // vec3 diag1 = vec3(intersection.position.x - 1.f, TL, intersection.position.z + 1.f) - vec3(intersection.position.x + 1.f, BR, intersection.position.z - 1.f);
+        // vec3 diag2 = vec3(intersection.position.x + 1.f, TR, intersection.position.z + 1.f) - vec3(intersection.position.x - 1.f, BL, intersection.position.z - 1.f);
+
+                   
+        return  glm::normalize(cross(yx, yz));
     }
 
     virtual glm::vec4 toworldcoordinates(glm::vec4 cam_intersect){
