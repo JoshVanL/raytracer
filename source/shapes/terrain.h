@@ -35,7 +35,7 @@ public:
 
             if(p.x < bl.x  && p.x > br.x && p.z < tl.z  && p.z > bl.z){
                 // printf("true\n");
-                if(p.y > -1.1 && p.y < 0.2 * (heightmap[(int) (u * width) ][(int) (v * height)  ]) -1.1f )
+                if(p.y < 0 + 0.3f && p.y > -0.2 * (heightmap[(int) (u * width) ][(int) (v * height)  ])+ 0.3f  )
                 { 
                     intersectionpoint = p;
                     return true;
@@ -46,19 +46,38 @@ public:
     }
 
     virtual  glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)   {
+        int specular_exponent = 100;
+        float Kd = 0.8; // diffuse weight 
+        float Ks = 0.3; // specular weight 
         vec3 directLight   = lightSource->getDirectLight(intersection, shapes);
         vec3 indirectLight = lightSource->getIndirectLight();
         vec3 l = (vec3) intersection.direction;
         vec3 norm = intersection.shape2D->getnormal(intersection);
         float prop = dot(normalize(norm), l);
         float projection_factor = std::max(prop, 0.0f);
-        return intersection.shape2D->color * projection_factor * (directLight+indirectLight) * 3.5f;
+
+        vec3 reflected_dir = normalize(2.0f * dot(l, norm) * norm - l);
+
+        //Viewing direction
+        vec3 v = normalize(-vec3(l));
+
+        //Calculate component of viewing direction in the direction of reflected ray
+        float specular_highlight = dot(v, reflected_dir);
+        float new_specular_highlight = glm::pow(specular_highlight, specular_exponent);
+
+        /* Calculating Specular Component */
+        vec3 specular_component = new_specular_highlight * directLight * vec3(1,1,1);
+        vec3 diffuse_component = intersection.shape2D->color * projection_factor * (directLight+indirectLight) * 2.5f;
+
+        return specular_component * Ks +  diffuse_component * Kd ;
+
+        
     }
 
     virtual  vec3 getnormal(Intersection& intersection){
         vec4 p = intersection.position;
-        float u = 512*((p.x - br.x) / (bl.x - br.x) );
-        float v = 512*((p.z - br.z) / (tl.z - br.z) );
+        float u = width*((p.x - br.x) / (bl.x - br.x) );
+        float v = height*((p.z - br.z) / (tl.z - br.z) );
         
         // printf("%f %f \n", u, v);
         float down =    unscalefloat(heightmap[(int)u]                                  [max(0, min( (int) height - 1, (int)v-1))]  );

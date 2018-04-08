@@ -57,7 +57,16 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
     vector<vec3> line(SCREEN_HEIGHT, vec3(0, 0, 0));
     vector<vector<vec3>> colors(SCREEN_WIDTH, line);
-
+    for(int i=0; i<SCREEN_WIDTH; i++) {
+        for(int j=0; j<SCREEN_HEIGHT; j++) {
+            Ray ray     = camera.createNewRay(i,j);
+            Intersection intersection;
+            intersection.distance = std::numeric_limits<float>::max();
+            
+            colors[i][j] = (vec3(   0.55f, 0.80f, 1.f ) * (SCREEN_HEIGHT-j)) / SCREEN_HEIGHT;
+            
+        }
+    } 
 #pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
@@ -149,12 +158,12 @@ int main( int argc, char* argv[] ) {
     float** displacement = genHeightMap();
     float L = 555;
 
-    vec4 A(L-20,0,-100,1);
-    vec4 B(0-20,0,-100,1);
-    vec4 C(L-20,0,L+-100,1);
-    vec4 D(0-20,0,L+-100,1);
-    Terrain* terrain = new Terrain(displacement, 512, 512, B, A, D, C);
-    shapes.push_back(terrain);
+    vec4 A(3*L/2,0,-400,1);
+    vec4 B(-L/2,0,-400,1);
+    vec4 C(3*L/2,0,L+-400,1);
+    vec4 D(-L/2,0,L+-400,1);
+    Terrain* terrain1 = new Terrain(displacement, 1024, 1024, B, A, D, C);
+    shapes.push_back(terrain1);
     auto started = std::chrono::high_resolution_clock::now();
     Draw(screen, camera, lights, shapes, tree);
     auto done = std::chrono::high_resolution_clock::now();
