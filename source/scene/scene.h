@@ -12,6 +12,7 @@
 #include "../shapes/terrain.h"
 #include "../shapes/sphere.h"
 #include "../shapes/rectangle.h"
+#include "../shapes/cloud.h"
 #include "../materials/portal.h"
 #include "../materials/material.h"
 #include "../materials/translucent.h"
@@ -68,8 +69,8 @@ void readMeshData(std::string filepath, std::vector<Shape2D*>& shapes){
             counter = 0;
         }
     }
-    
 }
+
 vec4 scalevec4(vec4 v) {
         v *= 2/555;
         v -= vec4(1,1,1,1);
@@ -79,6 +80,7 @@ vec4 scalevec4(vec4 v) {
         return v;
     
 }
+
 void LoadTest(std::vector<Shape2D*>& shapes){
     using glm::vec3; 
     using glm::vec4;
@@ -89,8 +91,8 @@ void LoadTest(std::vector<Shape2D*>& shapes){
     vec4 D(0,0,L,1);
 
     shapes.push_back( new Rectangle(A, B, C, D, white , "wall", {new Specular()}));
-
 }
+
 void LoadTestModel( std::vector<Shape2D*>& shapes, std::vector<LightSource*>& lights  )
 {
    
@@ -100,13 +102,29 @@ void LoadTestModel( std::vector<Shape2D*>& shapes, std::vector<LightSource*>& li
     // Defines colors:
     
 
+
+
+
+    LightSource* lightA = new PointLight();
+    LightSource* lightB = new PointLight(vec4(1, 1.5, -3, 1), vec3(1,1,1), 10.f);
+    lights.push_back(lightB);
+    lights.push_back(lightA);
+
+
     // ---------------------------------------------------------------------------
     // Room
 
     float L = 555;
 
     float** displacement = PerlinNoise::genHeightMap();
+    // vec4 cloud_A(2.5*L, -500, 1000, 1);
+    // vec4 cloud_B(2.5*L, 1000, 1000, 1);
+    // vec4 cloud_C(-L, -500, 1000, 1);
+    // vec4 cloud_D(-L, 1000, 1000, 1);
 
+    // Cloud* cloud = new Cloud(displacement, 0, 200, 200, cloud_B, white);
+    // shapes.push_back(cloud);
+    // return;
     vec4 terrain_A(2.75*L ,0,-800,1);
     vec4 terrain_B(-1*L ,0,-800,1);
     vec4 terrain_C(2.75*L ,0,L-400,1);
@@ -271,18 +289,6 @@ void LoadTestModel( std::vector<Shape2D*>& shapes, std::vector<LightSource*>& li
     A = vec4(350, 400+500, 350, 1);
     radius = 70;
     shapes.push_back( new Sphere( A, radius ,red, "sphere2", { new Translucent(true, false), new Specular() }) );
-
-
-
-
-
-    LightSource* lightA = new PointLight();
-    LightSource* lightB = new PointLight(vec4(1, 1.5, -3, 1), vec3(1,1,1), 10.f);
-    lights.push_back(lightB);
-    lights.push_back(lightA);
-
-
-
 
 
 

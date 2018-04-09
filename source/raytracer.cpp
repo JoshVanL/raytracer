@@ -42,7 +42,7 @@ using glm::mat4;
 /* FUNCTIONS                                                                   */
 void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource*> lights, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram, KDNode& tree);
 void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, const vector<Shape2D*>& shapes, KDNode& tree);
-
+float** displacement;
 
 int scount = 0;
 
@@ -57,7 +57,9 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 #pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
-            colors[i][j] = (vec3(   0.65, 1.f, 1.f )) * ((float)SCREEN_HEIGHT-(float)j) / ((float)SCREEN_HEIGHT);
+            colors[i][j] = glm::mix(vec3(   0.65, 1.f, 1.f ) * ((float)SCREEN_HEIGHT-(float)j) / (float)SCREEN_HEIGHT, 
+                                     vec3(0.717f,0.423f,0.043f), 
+                                     (float)j*0.7f/(float)SCREEN_HEIGHT);
         }
     } 
 // Trace objects
@@ -138,7 +140,7 @@ int main( int argc, char* argv[] ) {
     vector<LightSource*> lights;
     vector<Shape2D*> shapes;
     LoadTestModel(shapes, lights);
-    
+    displacement = PerlinNoise::genHeightMap();
     SDL_Event event;
     int runProgram = 0;
 
