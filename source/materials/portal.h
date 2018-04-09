@@ -16,7 +16,7 @@ class Portal : public Material {
 public:
 
     float area;
-    Triangle* triA, triB, triC, triD;
+    Triangle* triA, *triB, *triC, *triD;
     Portal( Triangle* triA,
             Triangle* triB,
             Triangle* triC,

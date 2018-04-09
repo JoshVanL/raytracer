@@ -36,10 +36,8 @@ using glm::mat4;
 #define SCREEN_HEIGHT 1800
 #define FULLSCREEN_MODE false
 #define INDIRECT_LIGHT  vec3(0.3,0.2,0.18)
-#define ANG 0.1
 #define NUM_THREADS 16
 
-bool LCTRL = false;
 /* ----------------------------------------------------------------------------*/
 /* FUNCTIONS                                                                   */
 void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource*> lights, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram, KDNode& tree);
@@ -55,13 +53,14 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
     vector<vec3> line(SCREEN_HEIGHT, vec3(0, 0, 0));
     vector<vector<vec3>> colors(SCREEN_WIDTH, line);
+// Fill sky
 #pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
-
             colors[i][j] = (vec3(   0.65, 1.f, 1.f )) * ((float)SCREEN_HEIGHT-(float)j) / ((float)SCREEN_HEIGHT);
         }
     } 
+// Trace objects
 #pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
@@ -89,15 +88,15 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
             }
         }
     } 
-
-if(camera.currentEffect != nullptr){
-    vector<vec3> nline(SCREEN_HEIGHT, vec3(0, 0, 0));
-    vector<vector<vec3>> ncolors(SCREEN_WIDTH, line);
-    camera.currentEffect->applyCameraEffect(colors, ncolors, SCREEN_HEIGHT, SCREEN_WIDTH);
-    colors.clear();
-    colors = ncolors;
-}    
-
+// Apply camera effects
+    if(camera.currentEffect != nullptr){
+        vector<vec3> nline(SCREEN_HEIGHT, vec3(0, 0, 0));
+        vector<vector<vec3>> ncolors(SCREEN_WIDTH, line);
+        camera.currentEffect->applyCameraEffect(colors, ncolors, SCREEN_HEIGHT, SCREEN_WIDTH);
+        colors.clear();
+        colors = ncolors;
+    }
+// Draw to screen
 #pragma omp parallel for schedule(static)
     for (int i = 1; i < SCREEN_WIDTH - 1; i += 2) {
         for (int j = 1; j < SCREEN_HEIGHT - 1; j += 2) {
