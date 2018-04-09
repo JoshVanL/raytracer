@@ -14,7 +14,7 @@ public:
     float** colormap;
     float height, width;
     bool isOcean;
-    vec3 secondary_color[2] = {vec3(0.737f, 0.929f, 0.569f) , vec3(0.231f, 0.518f, 0.443f)};
+    vec3 secondary_color[2] = {vec3(0.737f, 0.929f, 0.1f) , vec3(0.231f, 0.518f, 0.443f)};
     vec4 bottom_left;
     vec4 bl;
     vec4 br;
@@ -57,18 +57,7 @@ public:
         }
         return false;
     }
-    int modu(float a, float b){
-        if(a < 0){
-            float a_p = abs(a);
-            while(a < 0){
-                a+= a_p;
-            }
-            return (int)a;
-        }
-        else{
-            return ((int)a % (int)b + (int)a) % (int)b;
-        }
-    }
+
     virtual  glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)   {
         /*  -           -           -           -           -           -    */
         vec4 p = intersection.position;
@@ -78,11 +67,10 @@ public:
         vec3 indirectLight = lightSource->getIndirectLight();
         vec3 l = (vec3) intersection.direction;
         vec3 norm = intersection.shape2D->getnormal(intersection);
-        float prop = dot(normalize(norm), l);
-        float projection_factor = std::max(prop, 0.05f);
+        float projection_factor = std::max(dot(normalize(norm), l), 0.05f);
         /*  -           -           -           -           -           -    */
         if(isOcean){
-            return intersection.shape2D->color * heightmap[(int)((int)u_ ) % (int)width][(int)((int)v_ ) % (int)height] * projection_factor;
+            return intersection.shape2D->color * heightmap[(int)((int)u_ ) % (int)width][(int)((int)v_ ) % (int)height] * projection_factor * (2.5f - (v_ * 2.f)/height);
         }
         /*  -           -           -           -           -           -    */
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -114,6 +102,18 @@ public:
 private:
     virtual bool isEqual(const Shape2D& other) const {
         return true;
+    }
+    int modu(float a, float b){
+        if(a < 0){
+            float a_p = abs(a);
+            while(a < 0){
+                a+= a_p;
+            }
+            return (int)a;
+        }
+        else{
+            return ((int)a % (int)b + (int)a) % (int)b;
+        }
     }
 };
 

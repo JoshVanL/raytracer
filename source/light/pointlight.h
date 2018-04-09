@@ -8,7 +8,7 @@ using glm::vec3;
 class PointLight : public LightSource {
 public:
 
-    PointLight( const vec4& pos         = vec4(0.45, -1, -1.0, 1), 
+    PointLight( const vec4& pos         = vec4(0.45, -1, -0.5, 1), 
                 const glm::vec3& col    = vec3(1, 1, 1), 
                 const float& pow        = 10.f,
                 const bool prescaled    = true) 

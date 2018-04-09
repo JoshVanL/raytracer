@@ -41,7 +41,6 @@ using glm::mat4;
 #define NUM_THREADS 16
 
 bool LCTRL = false;
-Terrain* terrain;
 /* ----------------------------------------------------------------------------*/
 /* FUNCTIONS                                                                   */
 void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource*> lights, Keyboard& keyboard, vector<Shape2D*>& shapes, int& runProgram, KDNode& tree);
@@ -71,7 +70,7 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
             Intersection intersection;
             intersection.distance = std::numeric_limits<float>::max();
             
-            /*if(tree.hit(ray, intersection)) {
+            if(tree.hit(ray, intersection)) {
                 vec3 color(0,0,0);
                 for(int k = 0; k < lights.size(); k++){
                     color += intersection.shape2D->getcolor(intersection, ray, shapes, lights[k]);
@@ -79,7 +78,7 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
                 colors[i][j] = color;
             }
-            else*/ 
+            else
             if(ray.ClosestIntersection(shapes, intersection)){
                 vec3 color(0,0,0);
                 for(int k = 0; k < lights.size(); k++){
@@ -133,48 +132,20 @@ void Update(screen* screen, SDL_Event& event, Camera& camera, vector<LightSource
 }
 
 int main( int argc, char* argv[] ) {
-
-  
     
     screen *screen = InitializeSDL( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, FULLSCREEN_MODE );
-    vector<LightSource*> lights;
-    LightSource* lightA = new PointLight();
-    LightSource* lightB = new PointLight(vec4(1, 1.5, -3, 1), vec3(1,1,1), 10.f);
 
-    lights.push_back(lightB);
-    lights.push_back(lightA);
-
-    Camera camera(vec4(0.45, -0.5, -2.0, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
+    Camera camera(vec4(0.45, -0.5, -2.1, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
+    vector<LightSource*> lights;
     vector<Shape2D*> shapes;
-    LoadTestModel(shapes);
+    LoadTestModel(shapes, lights);
     
     SDL_Event event;
     int runProgram = 0;
 
-    KDNode tree;// = *KDNode().buildTree(shapes, 0);
-
-    float** displacement1 = genHeightMap();
-    float** displacement2 = genHeightMap();
-    float L = 555;
-
-    vec4 A(2.75*L ,0,-800,1);
-    vec4 B(-1*L ,0,-800,1);
-    vec4 C(2.75*L ,0,L-400,1);
-    vec4 D(-1*L ,0,L-400,1);
-
-    vec4 A2(8*L/2,0,L-400,1);
-    vec4 B2(-6*L/2,0,L-400,1);
-    vec4 C2(8*L/2,0,L+800,1);
-    vec4 D2(-6*L/2,0,L+800,1);
-
-    Terrain* terrain1 = new Terrain(displacement1, 1500, 1500, B, A, D, C,vec3(0.1f, 0.2f,0.1f));
-    Terrain* terrain2 = new Terrain(displacement2, 1024, 1024, B2, A2, D2, C2, vec3(0.4f, 1.f, 0.8f) ,true);
-    shapes.push_back(terrain1);    
-    shapes.push_back(terrain2);
-    auto started = std::chrono::high_resolution_clock::now();
+    KDNode tree = *KDNode().buildTree(shapes, 0);
     Draw(screen, camera, lights, shapes, tree);
-    auto done = std::chrono::high_resolution_clock::now();
 
     SDL_Renderframe(screen);
 
