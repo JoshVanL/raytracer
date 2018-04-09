@@ -16,6 +16,7 @@
 #include "../materials/translucent.h"
 #include "../materials/specular.h"
 #include "../materials/diffuse.h"
+#include "../materials/luminous.h"
 #include "../materials/texture.h"
 #include "../materials/smoke.h"
 #include "../materials/mirror.h"
@@ -301,6 +302,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     A = vec4(350, 400+500, 350, 1);
     radius = 70;
     shapes.push_back( new Sphere( A, radius ,red, "sphere2", { new Translucent(true, false), new Specular() }) );
+
 }
 
 

@@ -57,6 +57,7 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
     vector<vec3> line(SCREEN_HEIGHT, vec3(0, 0, 0));
     vector<vector<vec3>> colors(SCREEN_WIDTH, line);
+#pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
 
@@ -138,9 +139,11 @@ int main( int argc, char* argv[] ) {
     screen *screen = InitializeSDL( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, FULLSCREEN_MODE );
     vector<LightSource*> lights;
     LightSource* lightA = new PointLight();
-    LightSource* lightB = new PointLight(vec4(0.45, -2, 2, 1), vec3(1,1,1), 100.f);
-    lights.push_back(lightA);
+    LightSource* lightB = new PointLight(vec4(1, 1.5, -3, 1), vec3(1,1,1), 10.f);
+
     lights.push_back(lightB);
+    lights.push_back(lightA);
+
     Camera camera(vec4(0.45, -0.5, -2.0, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<Shape2D*> shapes;
@@ -151,27 +154,24 @@ int main( int argc, char* argv[] ) {
 
     KDNode tree;// = *KDNode().buildTree(shapes, 0);
 
-    float** displacement = genHeightMap();
+    float** displacement1 = genHeightMap();
+    float** displacement2 = genHeightMap();
     float L = 555;
 
-    vec4 A(2*L/2,0,-800,1);
-    vec4 B(-1.5*L/2,0,-800,1);
-    vec4 C(2*L/2,0,L+-400,1);
-    vec4 D(-1.5*L/2,0,L+-400,1);
+    vec4 A(2.75*L ,0,-800,1);
+    vec4 B(-1*L ,0,-800,1);
+    vec4 C(2.75*L ,0,L-400,1);
+    vec4 D(-1*L ,0,L-400,1);
 
     vec4 A2(8*L/2,0,L-400,1);
     vec4 B2(-6*L/2,0,L-400,1);
     vec4 C2(8*L/2,0,L+800,1);
     vec4 D2(-6*L/2,0,L+800,1);
 
-    vec4 A3(2*L/2 + 1.75*L,0,-800,1);
-    vec4 B3(-1.5*L/2 + 1.75*L,0,-800,1);
-    vec4 C3(2*L/2 + 1.75*L,0,L+-400,1);
-    vec4 D3(-1.5*L/2 + 1.75*L,0,L+-400,1);
-    Terrain* terrain1 = new Terrain(displacement, 1024, 1024, B, A, D, C, (vec3(34.f/255.f,139.f/255.f,34.f/255.f)));
-    Terrain* terrain3 = new Terrain(displacement, 1024, 1024, B3, A3, D3, C3, (vec3(34.f/255.f,139.f/255.f,34.f/255.f)));
-    Terrain* terrain2 = new Terrain(displacement, 1024, 1024, B2, A2, D2, C2, (vec3(0.f/255.f,191.f/255.f,255.f/255.f)));
-    shapes.push_back(terrain1);    shapes.push_back(terrain2); shapes.push_back(terrain3);
+    Terrain* terrain1 = new Terrain(displacement1, 1500, 1500, B, A, D, C,vec3(0.1f, 0.2f,0.1f));
+    Terrain* terrain2 = new Terrain(displacement2, 1024, 1024, B2, A2, D2, C2, vec3(0.4f, 1.f, 0.8f) ,true);
+    shapes.push_back(terrain1);    
+    shapes.push_back(terrain2);
     auto started = std::chrono::high_resolution_clock::now();
     Draw(screen, camera, lights, shapes, tree);
     auto done = std::chrono::high_resolution_clock::now();

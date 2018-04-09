@@ -10,11 +10,14 @@ public:
 
     PointLight( const vec4& pos         = vec4(0.45, -1, -1.0, 1), 
                 const glm::vec3& col    = vec3(1, 1, 1), 
-                const float& pow        = 10.f) 
-    : LightSource(pos, col, pow){
+                const float& pow        = 10.f,
+                const bool prescaled    = true) 
+    : LightSource(prescale_check(pos,prescaled), col, pow){
 
     };
-
+    vec4 prescale_check(vec4 t_pos, bool prescaled){
+        return prescaled ? t_pos : scalevec4(t_pos);
+    }
     virtual vec3 lightAtPosition(Intersection& point, const std::vector<Shape2D*>& shapes) override {
         vec3 directlight    = getDirectLight(point, shapes);
         vec3 indirectlight  = getIndirectLight(); 
@@ -31,7 +34,7 @@ public:
         float powPerSurface = (power * std::max(dotProduct, 0.f))/(4 * PI * pow(dist, 2));
         
         if (isOccluded(point, shapes)) {
-            return vec3(0.0005, 0.0005, 0.0005) * point.shape2D->color;
+            return vec3(0.0005, 0.0005, 0.0005);
         }
         return color * powPerSurface;
     }
