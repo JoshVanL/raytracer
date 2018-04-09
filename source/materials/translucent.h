@@ -22,12 +22,17 @@ public:
                 const float& transparency = 0.7f,
                 const float& refractive_index = 0.7f) :
                 Material("Translucent", HIGHGLOSS, transparency), refractive_index(refractive_index), air_refractive_index(1.f),
-                isReflective(isReflective), isRefractive(isRefractive) {
+                isReflective(isReflective), isRefractive(isRefractive)
+    {
     }
 
-    virtual vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes,  LightSource* lightSource,
-                                        vec3 directLight,
-                                        vec3 indirectLight)  override {
+    virtual vec3 material_color(    Intersection& intersection, 
+                                    const Ray& primary_ray, 
+                                    const std::vector<Shape2D*>& shapes,  
+                                    LightSource* lightSource,
+                                    vec3 directLight,
+                                    vec3 indirectLight)  override 
+    {
         if(isRefractive || isReflective){
             Shape2D* shape2D            = intersection.shape2D;
             glm::vec3 normal            = glm::normalize((vec3) shape2D->getnormal(intersection));
@@ -73,11 +78,14 @@ public:
     }
 
     //Returns the color of final ray intersection point
-    vec3 recurse_ray(const Ray& primary_ray, Intersection intersection, 
-                 Shape2D* t_shape, const std::vector<Shape2D*>& shapes, 
-                 LightSource* lightSource,
-                 vec4 (Translucent::*direction_function)(Intersection, Shape2D*),
-                 Translucent& callerObj) {
+    vec3 recurse_ray(   const Ray& primary_ray, 
+                        Intersection intersection, 
+                        Shape2D* t_shape, 
+                        const std::vector<Shape2D*>& shapes, 
+                        LightSource* lightSource,
+                        vec4 (Translucent::*direction_function)(Intersection, Shape2D*),
+                        Translucent& callerObj) 
+    {
 
         int currentdepth = primary_ray.bounces;
         if(currentdepth >= primary_ray.max_depth)
@@ -95,7 +103,8 @@ public:
         
     } 
  
-    vec4 reflect_direction(Intersection intersection, Shape2D* t_shape){
+    vec4 reflect_direction(Intersection intersection, Shape2D* t_shape)
+    {
         vec4 incident_ray = -intersection.direction;
         vec3 incoming_3d = normalize(vec3(intersection.direction));
         vec3 norm3d = t_shape->getnormal(intersection);
@@ -108,7 +117,8 @@ public:
         return (dot(incident_ray, norm) * norm) * 2.f - incident_ray;
     }
 
-    vec4 refract_direction(Intersection intersection, Shape2D* t_shape){
+    vec4 refract_direction(Intersection intersection, Shape2D* t_shape)
+    {
 
         vec3 normal_3d = normalize(t_shape->getnormal(intersection));
         vec3 incoming_3d = normalize(vec3(intersection.direction));

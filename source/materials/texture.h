@@ -30,7 +30,10 @@ public:
     float Kd = 0.8; // diffuse weight
     float Ks = 0.3; // specular weight
 
-    Texture(const char* imagePath, bool isHorizontal) : Material("Texture"),isHorizontal(isHorizontal) {
+    Texture(const char* imagePath, 
+            bool isHorizontal) : 
+            Material("Texture"), isHorizontal(isHorizontal) 
+    {
 #pragma omp critical
         {
         diffuse_shader = new Diffuse();
@@ -56,9 +59,13 @@ public:
         return vec3(pixels[3 * (x * width + y) + 2], pixels[3 * (x * width + y) + 1], pixels[3 * (x * width + y)]);
     }
 
-    virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource,
+    virtual glm::vec3 material_color(   Intersection& intersection, 
+                                        const Ray& primary_ray, 
+                                        const std::vector<Shape2D*>& shapes, 
+                                        LightSource* lightSource,
                                         vec3 directLight,
-                                        vec3 indirectLight) override {
+                                        vec3 indirectLight) override 
+    {
 
         vec3 l = (vec3) (lightSource->position - intersection.position);
         vec3 surface_normal = normalize(intersection.shape2D->getnormal(intersection));

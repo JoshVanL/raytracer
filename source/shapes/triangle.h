@@ -34,10 +34,12 @@ public:
             v0((scalevec4(v0))), v1(scalevec4(v1)), v2(scalevec4(v2)), normal(ComputeNormal())
     {
     }
-    void addMaterial(Material* mat){
+    void addMaterial(Material* mat)
+    {
         materials.push_back(mat);
     }
-    vector<Material*> check_mats(vector<Material*> mats){
+    vector<Material*> check_mats(vector<Material*> mats)
+    {
         if(mats.empty()){
             vector<Material*> initmaterials;
             Diffuse* dif = new Diffuse();
@@ -46,7 +48,6 @@ public:
         }
         return mats;
     }
-
     Triangle(glm::vec4 v0, 
              glm::vec4 v1, 
              glm::vec4 v2, 
@@ -60,8 +61,8 @@ public:
     {
     }
 
-    virtual vec2 getUV(Intersection& intersectpoint) override {
-
+    virtual vec2 getUV(Intersection& intersectpoint) override 
+    {
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
         vec3 b = vec3(intersectpoint.position.x - v0.x, intersectpoint.position.y - v0.y, intersectpoint.position.z - v0.z);
@@ -70,7 +71,11 @@ public:
         return vec2(x.y,x.z);
     }
     
-    virtual bool intersect(Ray& ray, vec3 dir, vec4& intersectionpoint, glm::vec2* uv = nullptr) override {
+    virtual bool intersect( Ray& ray, 
+                            vec3 dir, 
+                            vec4& intersectionpoint, 
+                            glm::vec2* uv = nullptr) override 
+    {
         vec3 e1 = vec3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         vec3 e2 = vec3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
         vec3 b = vec3(ray.position.x - v0.x, ray.position.y - v0.y, ray.position.z - v0.z);
@@ -87,7 +92,11 @@ public:
         return false;
     }
 
-    virtual glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource) override{
+    virtual glm::vec3 getcolor( Intersection& intersection, 
+                                const Ray& primary_ray, 
+                                const std::vector<Shape2D*>& shapes, 
+                                LightSource* lightSource) override
+    {
         if(materials.empty())  {printf("empty\n"); return color;}
         vector<vec3> colors;
 

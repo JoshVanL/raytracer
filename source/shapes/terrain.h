@@ -34,7 +34,7 @@ public:
     {
        
     }
-    virtual bool intersect(Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint, glm::vec2* uv = nullptr) 
+    virtual bool intersect( Ray& ray, glm::vec3 dir, glm::vec4& intersectionpoint, glm::vec2* uv = nullptr) 
     {
         const float delt = 0.01f;
         const float mint = 0.001f;
@@ -59,7 +59,7 @@ public:
     }
 
     virtual  glm::vec3 getcolor(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource)   {
-        /*  -           -           -           -           -           -    */
+        /**/
         vec4 p = intersection.position;
         float u_ = width - width*((p.x - br.x) / (bl.x - br.x) );
         float v_ = height - height*((p.z - br.z) / (tl.z - br.z) );
@@ -68,11 +68,11 @@ public:
         vec3 l = (vec3) intersection.direction;
         vec3 norm = intersection.shape2D->getnormal(intersection);
         float projection_factor = std::max(dot(normalize(norm), l), 0.05f);
-        /*  -           -           -           -           -           -    */
+        /**/
         if(isOcean){
             return intersection.shape2D->color * heightmap[(int)((int)u_ ) % (int)width][(int)((int)v_ ) % (int)height] * projection_factor * (2.5f - (v_ * 2.f)/height);
         }
-        /*  -           -           -           -           -           -    */
+        /**/
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         vec3 colormap_color = glm::mix(intersection.shape2D->color, secondary_color[r > 0.5],  heightmap[modu(u_ * 12, width) ][modu(v_ * 12,height) ]);
         return colormap_color * projection_factor;

@@ -19,8 +19,8 @@ public:
     Material(std::string material_type, 
              GlossType glossType = HIGHGLOSS, 
              const float& trans = 0.f) : 
-
-             gloss(new Gloss(glossType)), material_type(material_type), transparency(trans){
+             gloss(new Gloss(glossType)), material_type(material_type), transparency(trans)
+    {
  
     };
     virtual glm::vec3 material_color(   Intersection& intersection, 

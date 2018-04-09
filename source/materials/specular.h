@@ -15,11 +15,15 @@ public:
     float Kd = 0.8; // diffuse weight 
     float Ks = 0.3; // specular weight 
 
-    Specular(): diffuse_shader(new Diffuse()), Material("Specular"){
+    Specular(): diffuse_shader(new Diffuse()), Material("Specular")
+    {
 
     };
 
-    virtual glm::vec3 material_color(Intersection& intersection, const Ray& primary_ray, const std::vector<Shape2D*>& shapes, LightSource* lightSource,
+    virtual glm::vec3 material_color(   Intersection& intersection, 
+                                        const Ray& primary_ray, 
+                                        const std::vector<Shape2D*>& shapes, 
+                                        LightSource* lightSource,
                                         vec3 directLight,
                                         vec3 indirectLight){
          //Calculate reflection ray direction

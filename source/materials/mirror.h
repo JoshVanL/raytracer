@@ -18,12 +18,13 @@ public:
     const bool isRefractive;
     int count = 0;
 
-    Mirror(const bool isReflective = true,
+    Mirror(     const bool isReflective = true,
                 const bool isRefractive = false,
                 const float& transparency = 0.8f,
                 const float& refractive_index = 0.9f) :
                 Material("Mirror", HIGHGLOSS, transparency), refractive_index(refractive_index), air_refractive_index(1.f),
-                isReflective(isReflective), isRefractive(isRefractive) {
+                isReflective(isReflective), isRefractive(isRefractive) 
+    {
     }
 
     virtual vec3 material_color(Intersection& intersection, 
@@ -97,7 +98,8 @@ public:
         }
     }
     vec4 reflect_direction(Intersection intersection, 
-                           Shape2D* t_shape){
+                           Shape2D* t_shape)
+    {
         vec4 incident_ray = -intersection.direction;
         vec3 norm3d = t_shape->getnormal(intersection);
         vec4 norm = vec4(norm3d.x,norm3d.y,norm3d.z,1);
@@ -105,7 +107,8 @@ public:
     }
 
     vec4 refract_direction(Intersection intersection, 
-                           Shape2D* t_shape){
+                           Shape2D* t_shape)
+    {
 
         vec3 normal_3d = normalize(t_shape->getnormal(intersection));
         vec3 incoming_3d = normalize(vec3(intersection.direction));

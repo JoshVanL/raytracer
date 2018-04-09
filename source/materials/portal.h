@@ -16,11 +16,8 @@ class Portal : public Material {
 public:
 
     float area;
-    Triangle* triA;
-    Triangle* triB;
-    Triangle* triC;
-    Triangle* triD;
-    Portal(   Triangle* triA,
+    Triangle* triA, triB, triC, triD;
+    Portal( Triangle* triA,
             Triangle* triB,
             Triangle* triC,
             Triangle* triD)
@@ -78,7 +75,6 @@ public:
                 return std::make_pair(new_ray, triB);
             }
         }
-        printf("failed\n");
     }
     
     glm::vec4 TransformTriSpace(Triangle* from_tri, Triangle* to_tri, Intersection& intersect)

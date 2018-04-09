@@ -45,7 +45,6 @@ public:
         if(shadow_ray.ClosestIntersection(shapes, intersect, "Smoke", excludedShape)){
           std::vector<Material*>::iterator it = std::find_if(intersect.shape2D->materials.begin(), intersect.shape2D->materials.end(), Ray::find_material("Luminous"));
             if(it != intersect.shape2D->materials.end()){
-                printf("yay\n");// << "yay\n";
                 return false; 
             }
             vec4 intersect_position =  intersect.position;
