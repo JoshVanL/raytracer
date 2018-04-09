@@ -13,7 +13,6 @@ using namespace std;
 class Ray;
 class Material;
 class Intersection;
-class Shape3D;
 class LightSource;
 
 class Shape2D{
@@ -23,13 +22,11 @@ public:
     std::string id;
     vec3    color;
     vector<Material*> materials;
-    Shape3D* shape3D = nullptr;
     
     Shape2D(){};
     Shape2D(vec3 color,
             vector<Material*> materials, 
-            std::string id,
-            Shape3D* shape3D = nullptr): 
+            std::string id): 
             color(color), id(id),materials(materials) {
     };
 

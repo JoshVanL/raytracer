@@ -15,7 +15,6 @@ using glm::vec4;
 class Portal : public Material {
 public:
 
-    Shape3D* shape3D = nullptr;
     float area;
     Triangle* triA;
     Triangle* triB;

@@ -17,7 +17,6 @@ using glm::mat3;
 class Triangle : public Shape2D
 {
 public:
-    Shape3D* shape3D = nullptr;
     float area;
     glm::vec4 v0;
     glm::vec4 v1;

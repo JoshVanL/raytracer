@@ -18,7 +18,6 @@
 #include "camera/camera.h"
 #include "scene/keyboard.h"
 #include "scene/kd-tree.h"
-#include "shapes/water.h"
 #include "shapes/triangle.h"
 #include "shapes/terrain.h"
 #include "shapes/sphere.h"

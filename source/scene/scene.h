@@ -12,7 +12,6 @@
 #include "../shapes/terrain.h"
 #include "../shapes/sphere.h"
 #include "../shapes/rectangle.h"
-#include "../shapes/wave.h"
 #include "../materials/portal.h"
 #include "../materials/material.h"
 #include "../materials/translucent.h"
@@ -106,7 +105,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes, std::vector<LightSource*>& li
 
     float L = 555;
 
-    float** displacement = genHeightMap();
+    float** displacement = PerlinNoise::genHeightMap();
 
     vec4 terrain_A(2.75*L ,0,-800,1);
     vec4 terrain_B(-1*L ,0,-800,1);
