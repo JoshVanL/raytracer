@@ -12,7 +12,7 @@ class Terrain : public Shape2D {
 public:
     float** heightmap;
     float** colormap;
-    float height, width;
+    float height, width, scaled_width, center_x;
     bool isOcean;
     vec3 secondary_color[2] = {vec3(0.737f, 0.929f, 0.1f) , vec3(0.231f, 0.518f, 0.443f)};
     vec4 bottom_left;
@@ -29,8 +29,11 @@ public:
             vec4 tr, 
             vec3 color, 
             const bool isOcean = false) : 
-            heightmap(hmap), height(h), width(w), bl(scalevec4(bl)), br(scalevec4(br)), tl(scalevec4(tl)), tr(scalevec4(tr)), isOcean(isOcean), 
-            Shape2D(color, std::initializer_list<Material*>(), "Terrain")
+            heightmap(hmap), height(h), width(w), isOcean(isOcean), 
+            bl(scalevec4(bl)), br(scalevec4(br)), tl(scalevec4(tl)), tr(scalevec4(tr)), 
+            scaled_width(scalevec4(bl).x - scalevec4(br).x), 
+            center_x(scalevec4(br).x + (scalevec4(bl).x - scalevec4(br).x)/2.f),
+            Shape2D(color, std::initializer_list<Material*>(), "Terrain")          
     {
        
     }
@@ -70,7 +73,8 @@ public:
         float projection_factor = std::max(dot(normalize(norm), l), 0.05f);
         /**/
         if(isOcean){
-            return intersection.shape2D->color * heightmap[(int)((int)u_ ) % (int)width][(int)((int)v_ ) % (int)height] * projection_factor * (2.5f - (v_ * 2.f)/height);
+            vec3 col = glm::mix(vec3(0.913f, 0.439f, 0.145f), intersection.shape2D->color, 40.f * pow(abs(p.x - center_x)/scaled_width,3.f) + 0.35f);
+            return col * heightmap[(int)((int)u_ ) % (int)width][(int)((int)v_ ) % (int)height] * projection_factor * (2.5f - (v_ * 2.f)/height);
         }
         /**/
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);

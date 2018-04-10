@@ -78,9 +78,18 @@ vec4 scalevec4(vec4 v) {
         v.y *= -1;
         v.w = 1.0;
         return v;
-    
 }
-
+vec3 scalevec3(vec3 v) {
+    v *= 2/555;
+    v -= vec3(1,1,1);
+    v.x *= -1;
+    v.y *= -1;
+    return v;
+}
+float scalefloat(float v) {
+    v *= 2/555;
+    return v;
+}
 void LoadTest(std::vector<Shape2D*>& shapes){
     using glm::vec3; 
     using glm::vec4;

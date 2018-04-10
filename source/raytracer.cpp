@@ -53,15 +53,26 @@ void Draw(screen* screen, const Camera& camera, vector<LightSource*> lights, con
 
     vector<vec3> line(SCREEN_HEIGHT, vec3(0, 0, 0));
     vector<vector<vec3>> colors(SCREEN_WIDTH, line);
+
 // Fill sky
+    vec3 skycenter(SCREEN_WIDTH/2,SCREEN_HEIGHT/2,SCREEN_WIDTH);
+    vec3 skyNormal(0.f,0.f,-1.f);
+    vec3 sunposition(SCREEN_WIDTH/2,SCREEN_HEIGHT*(2.5),SCREEN_WIDTH/2);
+    float maxdist  = glm::distance(sunposition, vec3(0,0,SCREEN_WIDTH))/250.f;
 #pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
         for(int j=0; j<SCREEN_HEIGHT; j++) {
-            colors[i][j] = glm::mix(vec3(   0.65, 1.f, 1.f ) * ((float)SCREEN_HEIGHT-(float)j) / (float)SCREEN_HEIGHT, 
-                                     vec3(0.717f,0.423f,0.043f), 
-                                     (float)j*0.7f/(float)SCREEN_HEIGHT);
+            vec3 point_position(float(i), float(j), float(SCREEN_WIDTH));
+            float dist = glm::distance(sunposition, point_position)/250.f;
+            vec3 pointToLight =   glm::normalize(sunposition - point_position);
+            float dotProduct = glm::dot(skyNormal, pointToLight);
+            float powPerSurface = (90.f * std::max(dotProduct, 0.f))/( PI * pow(dist, 1.5f));
+            vec3 plain_col = glm::mix(vec3(   0.65, 1.f, 1.f ) * (float(SCREEN_HEIGHT)-float(j)) / float(SCREEN_HEIGHT), 
+                                    vec3(0.717f,0.423f,0.043f), 
+                                    float(j)*0.7f/float(SCREEN_HEIGHT));
+            colors[i][j] = glm::mix(plain_col, vec3(0.913f, 0.439f, 0.145f), max(maxdist - dist - 2.f, 0.f)) * powPerSurface;
         }
-    } 
+    }
 // Trace objects
 #pragma omp parallel for schedule(static)
     for(int i=0; i<SCREEN_WIDTH; i++) {
