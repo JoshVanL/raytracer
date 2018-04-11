@@ -145,7 +145,7 @@ void LoadTestModel( std::vector<Shape2D*>& shapes, std::vector<LightSource*>& li
     vec4 ocean_D(-6*L/2,0,L+800,1);
 
     Terrain* terrain = new Terrain(displacement, 1500, 1500, terrain_B, terrain_A, terrain_D, terrain_C, vec3(0.1f, 0.2f,0.1f));
-    Terrain* ocean = new Terrain(displacement, 1024, 1024, ocean_B, ocean_A, ocean_D, ocean_C, vec3(0.4f, 1.f, 0.8f), true);
+    Terrain* ocean = new Terrain(displacement, 1024, 1024, ocean_B, ocean_A, ocean_D, ocean_C, vec3(0.2, 0.458, 0.701), true);
     shapes.push_back(terrain);    
     shapes.push_back(ocean);
 

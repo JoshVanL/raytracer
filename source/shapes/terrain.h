@@ -73,8 +73,9 @@ public:
         float projection_factor = std::max(dot(normalize(norm), l), 0.05f);
         /**/
         if(isOcean){
-            vec3 col = glm::mix(vec3(0.913f, 0.439f, 0.145f), intersection.shape2D->color, 40.f * pow(abs(p.x - center_x)/scaled_width,3.f) + 0.35f);
-            return col * heightmap[(int)((int)u_ ) % (int)width][(int)((int)v_ ) % (int)height] * projection_factor * (2.5f - (v_ * 2.f)/height);
+            float lerpscale = 40.f * pow(abs(p.x - center_x)/scaled_width,3.f) + 0.2f;
+            vec3 col = glm::mix(vec3(0.913f, 0.439f, 0.145f), intersection.shape2D->color,lerpscale);
+            return col * heightmap[(int)((int)u_ ) % (int)width][(int)((int)v_ ) % (int)height] * projection_factor * (2.5f - (v_ * 2.5f)/height);
         }
         /**/
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
