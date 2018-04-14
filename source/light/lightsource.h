@@ -5,7 +5,10 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "../rendering/pixel.h"
+#include "../rendering/rasteriser.h"
 
+#define SCREEN_WIDTH 1000
+#define SCREEN_HEIGHT 1000
 
 #define PI           3.14159265358979323846
 using glm::vec3;
@@ -13,16 +16,19 @@ using glm::vec3;
 class LightSource{
 public:
     ////////////////////////
-    glm::vec3 indirect_light = vec3(0.3f,0.3f,0.3f);
+    glm::vec3 indirect_light = vec3(0.1f,0.1f,0.1f);
     glm::vec3 indirect_light_powperarea = vec3( 0.3f, 0.3f, 0.3f );
-    int SCREEN_WIDTH =1000;
-    int SCREEN_HEIGHT =1000;
+    //int SCREEN_WIDTH =1000;
+    //int SCREEN_HEIGHT =1000;
     ////////////////////////
 
     glm::vec4 position;
     glm::vec3 color;
-    Pixel shadowBuffer[1000][1000];
-    
+
+    Pixel shadowBuffer[SCREEN_HEIGHT][SCREEN_WIDTH];
+    Pixel translatedBuffer[SCREEN_HEIGHT][SCREEN_WIDTH];
+
+
     glm::vec3 power;
 
     LightSource(glm::vec4 pos, glm::vec3 col, vec3 pow) :
@@ -30,14 +36,165 @@ public:
 
     };
     LightSource(){
-        position    = glm::vec4(0, 0.5, -0.7, 1.0);
-        color       = glm::vec3(1,1,1);
+        position    = glm::vec4(0.9, 0.5, -0.7, 1.0);
+        color       = glm::vec3(0.8,0.3,0.3);
         power       = vec3( 6, 3, 2 );
     }
 
-    // void fillShadowBuffer(){
-    //     // Draw()
-    // }
+    void FillShadowBuffer(vector<Shape2D*>& shapes, const vec3& camera){
+
+        memset(&shadowBuffer, 0, sizeof(shadowBuffer));
+
+        //fprintf(stdout, "%f %f %f\n", position.x, position.y, position.z);
+        //fprintf(stdout, "%f %f %f\n", camera.x, camera.y, camera.z);
+        //float diffx = camera.x - position.x;
+        //float diffy = camera.y - position.y;
+        //float diffz = camera.z - position.z;
+        //fprintf(stdout, "%f %f %f\n", diffx, camera.x, position.x);
+        //fprintf(stdout, "%f %f %f\n", diffy, camera.y, position.y);
+        //fprintf(stdout, "%f %f %f\n", diffz, camera.z, position.z);
+
+        vec3 pos = vec3(position);
+
+        for ( uint32_t i = 0; i < shapes.size(); i++) {
+            vector<vec4> verticies = shapes[i]->verticies();
+            RenderPolygon(pos, verticies, shapes[i], camera);
+        }
+
+        BuildTranslatedBuffer(pos, camera);
+    }
+
+    void BuildTranslatedBuffer(const vec3& origin, const vec3& camera) {
+        memset(&translatedBuffer, 0, sizeof(translatedBuffer));
+
+        //vec3 AB = origin  - camera;
+        //printf("%f %f %f\n", AB.x, AB.y, AB.z);
+        //
+        for(int i = 0; i < SCREEN_HEIGHT; i++){
+            for(int j = 0; j < SCREEN_WIDTH; j++){
+                translatedBuffer[i][j].x = 0;
+                translatedBuffer[i][j].y = 0;
+                //if (translatedBuffer[i][j].x != 0 || translatedBuffer[i][j].y != 0 ) {
+                //printf("%d %d\n", translatedBuffer[i][j].x, translatedBuffer[i][j].y);
+                //}
+            }
+        }
+
+
+        for(int i = 0; i < SCREEN_HEIGHT; i++){
+            for(int j = 0; j < SCREEN_WIDTH; j++){
+                Pixel pixel;
+                VertexShader(shadowBuffer[i][i].pos3d, camera, pixel);
+                //if (!shadowBuffer[i][j].pos3d.x == 0 &&  !shadowBuffer[i][j].pos3d.y == 0) {
+                //    printf("%d %d %f %f %f\n", i, j, shadowBuffer[i][j].pos3d.x, shadowBuffer[i][j].pos3d.y,shadowBuffer[i][j].pos3d.y);
+                //}
+                //
+        //static void VertexShader(const vec4& v, const vec3& origin, Pixel& p, Shape2D* shape) {
+                //printf("%d %d\n", pixel.x, pixel.y);
+                //translatedBuffer[pixel.x][pixel.y] = shadowBuffer[i][j];
+                translatedBuffer[pixel.x][pixel.y] = pixel;
+                translatedBuffer[pixel.x][pixel.y].shape = shadowBuffer[i][j].shape;
+                //if (shadowBuffer[i][j].x != 0) {
+                //    printf("%d %d %d %d %d %d\n", i, j, shadowBuffer[i][j].x, shadowBuffer[i][j].y, pixel.x, pixel.y);
+                //}
+            }
+        }
+
+        for(int i = 0; i < SCREEN_HEIGHT; i++){
+            for(int j = 0; j < SCREEN_WIDTH; j++){
+                if (translatedBuffer[i][j].x != 0 || translatedBuffer[i][j].y != 0 ) {
+                //printf("%d %d\n", translatedBuffer[i][j].x, translatedBuffer[i][j].y);
+                }
+            }
+        }
+
+    }
+
+    void RenderPolygon( const vec3& origin, const vector<vec4>& vertices, Shape2D* shape, const vec3& camera) {
+        int V = vertices.size();
+        vector<Pixel> vertexPixels( V );
+        for( int i=0; i<V; i++ ) {
+            Rasteriser::VertexShader(vertices[i], origin, vertexPixels[i], shape);
+        }
+
+        vector<Pixel> leftPixels;
+        vector<Pixel> rightPixels;
+        Rasteriser::ComputePolygonRows(origin, vertexPixels, leftPixels, rightPixels );
+        for (int i = 0; i < leftPixels.size(); i++) {
+            RenderLine(origin, leftPixels[i], rightPixels[i], camera);
+        }
+    }
+
+    void RenderLine(const vec3& origin, const Pixel& a, const Pixel& b, const vec3& camera) {
+        int dx = abs(a.x - b.x);
+        int dy = abs(a.y - b.y);
+        int pixels = max(dx, dy) + 1;
+
+        //int diffx = camera.x - origin.x;
+        //int diffy = camera.y - origin.y;
+        //fprintf(stdout, "%f %f %f\n", diffx, camera.x, origin.x);
+        //fprintf(stdout, "%f %f %f\n", diffy, camera.y, origin.y);
+
+        vector<Pixel> line(pixels);
+        Pixel::Interpolate(origin, a, b, line);
+        for (int i = 0; i < line.size(); i++) {
+            //Check if pixel is within viewport
+            if(line[i].x > 0 && line[i].y > 0 && line[i].x < SCREEN_WIDTH && line[i].y < SCREEN_HEIGHT){
+                if (line[i].zinv > shadowBuffer[line[i].x][line[i].y].zinv) {
+                    shadowBuffer[line[i].x][line[i].y] = line[i];
+                }
+            }
+        }
+    }
+
+    void VertexShader(const vec3& v, const vec3& origin, Pixel& p) {
+        vec3 v_prime = v - vec3(origin.x, origin.y, origin.z);
+
+        p.x = Camera::FOCAL_LENGTH * (v_prime.x / v_prime.z) + (SCREEN_WIDTH / 2);
+        p.y = Camera::FOCAL_LENGTH * (v_prime.y / v_prime.z) + (SCREEN_HEIGHT / 2);
+        p.zinv = 1 / v_prime.z;
+        p.pos3d = vec3(v);
+    }
+
+    //static void RenderColor(){
+    //    memset(&frameBuffer, 0, sizeof(frameBuffer));
+    //    for(int i = 0; i < SCREEN_HEIGHT; i++){
+    //        for(int j = 0; j < SCREEN_WIDTH; j++){
+    //            frameBuffer[i][j] = vec3(0,0,0);
+    //            for(int c = max(i-1, 0); c < min(i+2,SCREEN_HEIGHT); c++){
+    //                for(int d = max(j-1, 0); d < min(j+1,SCREEN_WIDTH); d++){
+    //                    if(shadowBuffer[c][d].shape != nullptr)
+    //                        frameBuffer[i][j] += shadowBuffer[c][d].shape->getcolor(shadwBuffer[c][d].pos3d);
+    //                }
+    //            }
+    //            frameBuffer[i][j] /= 8.f;
+    //        }
+    //    }
+    //}
+
+    //static void RenderLight(LightSource* lightSource, bool saveColorToShape = false){
+    //    for(int i = 0; i < SCREEN_HEIGHT; i++){
+    //        for(int j = 0; j < SCREEN_WIDTH; j++){
+    //            vec3 color = frameBuffer[i][j];
+    //            if(shadowBuffer[i][j].shape == nullptr) {
+    //                frameBuffer[i][j] = color;
+    //            }
+    //            else {
+    //                vec3 dis = (vec3)(lightSource->position) - shadowBuffer[i][j].pos3d;
+    //                float r = glm::length(dis);
+    //                r = 4.0 * 3.1415926 * r * r;
+
+    //                float result =  dis.x *  shadowBuffer[i][j].shape->ComputeNormal().x + 
+    //                                dis.y *  shadowBuffer[i][j].shape->ComputeNormal().y + 
+    //                                dis.z *  shadowBuffer[i][j].shape->ComputeNormal().z;
+
+    //                vec3 light_area = result / r * LIGHTPOWER;
+    //                light_area = (INDIRECTLIGHTPOWERPERAREA + light_area);
+    //                frameBuffer[i][j] = color * light_area;
+    //            }
+    //        }
+    //    }
+    //}
 
     // void LightDraw(vector<Shape2D*>& shapes) {
     //     memset(shadowBuffer, 0, sizeof(shadowBuffer));

@@ -33,6 +33,8 @@ public:
     static void Draw(screen* screen, const vec3& origin, LightSource* lightSource, vector<Shape2D*>& shapes, bool draw = true) {
         memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
 
+        lightSource->FillShadowBuffer(shapes, origin);
+
         omp_set_num_threads(NUM_THREADS);
 
         memset(&depthBuffer, 0, sizeof(depthBuffer));
@@ -115,7 +117,13 @@ public:
 
                     vec3 light_area = result / r * LIGHTPOWER;
                     light_area = (INDIRECTLIGHTPOWERPERAREA + light_area);
-                    frameBuffer[i][j] = color * light_area;
+                    //if (lightSource->translatedBuffer[i][j].shape == depthBuffer[i][j].shape) {
+                    //printf("%d %d\n", lightSource->translatedBuffer[i][j].x, lightSource->translatedBuffer[i][j].y);
+                    if (lightSource->translatedBuffer[i][j].x == 0 && lightSource->translatedBuffer[i][j].x == 0) {
+                        frameBuffer[i][j] = color * light_area;
+                    } else {
+                        frameBuffer[i][j] = color * vec3(0.2, 0.2, 0.2);
+                    }
                 }
             }
         }
@@ -131,4 +139,4 @@ public:
 
 };
 
-#endif 
+#endif
