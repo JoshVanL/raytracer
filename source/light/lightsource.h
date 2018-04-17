@@ -25,34 +25,35 @@ public:
     glm::vec4 position;
     glm::vec3 color;
 
-    Pixel shadowBuffer[SCREEN_HEIGHT][SCREEN_WIDTH];
-    Pixel translatedBuffer[SCREEN_HEIGHT][SCREEN_WIDTH];
+    Pixel **shadowBuffer;
+    Pixel **translatedBuffer;
 
 
     glm::vec3 power;
 
     LightSource(glm::vec4 pos, glm::vec3 col, vec3 pow) :
-        position(pos),color(col), power(pow) {
+        position(pos),color(col), power(pow), shadowBuffer((Pixel**) malloc(sizeof(Pixel*) * SCREEN_HEIGHT)), translatedBuffer((Pixel**) malloc(sizeof(Pixel*) * SCREEN_HEIGHT)) {
 
     };
     LightSource(){
         position    = glm::vec4(0.9, 0.5, -0.7, 1.0);
         color       = glm::vec3(0.8,0.3,0.3);
         power       = vec3( 6, 3, 2 );
+        shadowBuffer = (Pixel**)(malloc(sizeof(Pixel*) * SCREEN_HEIGHT));
+        translatedBuffer = ((Pixel**) malloc(sizeof(Pixel*) * SCREEN_HEIGHT));
     }
 
     void FillShadowBuffer(vector<Shape2D*>& shapes, const vec3& camera){
 
-        memset(&shadowBuffer, 0, sizeof(shadowBuffer));
-
-        //fprintf(stdout, "%f %f %f\n", position.x, position.y, position.z);
-        //fprintf(stdout, "%f %f %f\n", camera.x, camera.y, camera.z);
-        //float diffx = camera.x - position.x;
-        //float diffy = camera.y - position.y;
-        //float diffz = camera.z - position.z;
-        //fprintf(stdout, "%f %f %f\n", diffx, camera.x, position.x);
-        //fprintf(stdout, "%f %f %f\n", diffy, camera.y, position.y);
-        //fprintf(stdout, "%f %f %f\n", diffz, camera.z, position.z);
+        for(int i = 0; i < SCREEN_HEIGHT; i++){
+            shadowBuffer[i] = (Pixel*) malloc(sizeof(Pixel) * SCREEN_WIDTH);
+            translatedBuffer[i] = (Pixel*) malloc(sizeof(Pixel) * SCREEN_WIDTH);
+            for(int j = 0; j < SCREEN_HEIGHT; j++){
+                shadowBuffer[i][j] = Pixel();
+                translatedBuffer[i][j] = Pixel();
+            }
+        }
+        // memset(shadowBuffer, 0, sizeof(Pixel) * SCREEN_WIDTH * SCREEN_HEIGHT);
 
         vec3 pos = vec3(position);
 
@@ -65,10 +66,9 @@ public:
     }
 
     void BuildTranslatedBuffer(const vec3& origin, const vec3& camera) {
-        memset(&translatedBuffer, 0, sizeof(translatedBuffer));
+        // memset(translatedBuffer, 0, sizeof(translatedBuffer) * SCREEN_WIDTH * SCREEN_HEIGHT);
 
         //vec3 AB = origin  - camera;
-        //printf("%f %f %f\n", AB.x, AB.y, AB.z);
         //
         for(int i = 0; i < SCREEN_HEIGHT; i++){
             for(int j = 0; j < SCREEN_WIDTH; j++){
@@ -84,7 +84,7 @@ public:
         for(int i = 0; i < SCREEN_HEIGHT; i++){
             for(int j = 0; j < SCREEN_WIDTH; j++){
                 Pixel pixel;
-                VertexShader(shadowBuffer[i][i].pos3d, camera, pixel);
+                VertexShader(shadowBuffer[i][j].pos3d, camera, pixel);
                 //if (!shadowBuffer[i][j].pos3d.x == 0 &&  !shadowBuffer[i][j].pos3d.y == 0) {
                 //    printf("%d %d %f %f %f\n", i, j, shadowBuffer[i][j].pos3d.x, shadowBuffer[i][j].pos3d.y,shadowBuffer[i][j].pos3d.y);
                 //}
@@ -94,20 +94,12 @@ public:
                 //translatedBuffer[pixel.x][pixel.y] = shadowBuffer[i][j];
                 translatedBuffer[pixel.x][pixel.y] = pixel;
                 translatedBuffer[pixel.x][pixel.y].shape = shadowBuffer[i][j].shape;
-                //if (shadowBuffer[i][j].x != 0) {
+                // printf("%f : ", translatedBuffer[pixel.x][pixel.y].zinv);
+                // //if (shadowBuffer[i][j].x != 0) {
                 //    printf("%d %d %d %d %d %d\n", i, j, shadowBuffer[i][j].x, shadowBuffer[i][j].y, pixel.x, pixel.y);
                 //}
             }
         }
-
-        for(int i = 0; i < SCREEN_HEIGHT; i++){
-            for(int j = 0; j < SCREEN_WIDTH; j++){
-                if (translatedBuffer[i][j].x != 0 || translatedBuffer[i][j].y != 0 ) {
-                //printf("%d %d\n", translatedBuffer[i][j].x, translatedBuffer[i][j].y);
-                }
-            }
-        }
-
     }
 
     void RenderPolygon( const vec3& origin, const vector<vec4>& vertices, Shape2D* shape, const vec3& camera) {

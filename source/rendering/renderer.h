@@ -103,7 +103,7 @@ public:
         for(int i = 0; i < SCREEN_HEIGHT; i++){
             for(int j = 0; j < SCREEN_WIDTH; j++){
                 vec3 color = frameBuffer[i][j];
-                if(depthBuffer[i][j].shape == nullptr) {
+                if(lightSource->translatedBuffer[i][j].shape == nullptr) {
                     frameBuffer[i][j] = color;
                 }
                 else {
@@ -119,7 +119,7 @@ public:
                     light_area = (INDIRECTLIGHTPOWERPERAREA + light_area);
                     //if (lightSource->translatedBuffer[i][j].shape == depthBuffer[i][j].shape) {
                     //printf("%d %d\n", lightSource->translatedBuffer[i][j].x, lightSource->translatedBuffer[i][j].y);
-                    if (lightSource->translatedBuffer[i][j].x == 0 && lightSource->translatedBuffer[i][j].x == 0) {
+                    if (lightSource->translatedBuffer[i][j].zinv < depthBuffer[i][j].zinv) {
                         frameBuffer[i][j] = color * light_area;
                     } else {
                         frameBuffer[i][j] = color * vec3(0.2, 0.2, 0.2);
