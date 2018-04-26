@@ -49,8 +49,6 @@ public:
         vec3 light = lightSource->lightAtPosition(intersection, shapes);
         float t_obj = clamp(pow(smoke_dist, 3) * 5, 0.0, 1.0);
 
-        // For shorter distances in the smoke, more light makes it through.
-        // Therefore do 1 minus.
         vec3 m = vec3(1,1,1 ) - (3.0f * (t_obj * light));
 
         return mix(vec3(0.8, .8, .8), col, m);
