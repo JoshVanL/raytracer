@@ -32,12 +32,10 @@ public:
 
     static void Draw(screen* screen, const vec3& origin, LightSource* lightSource, vector<Shape2D*>& shapes, bool draw = true) {
         memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
-        printf("HERE\n");
 
         //lightSource->FillShadowBuffer(shapes, origin);
-        printf("HERE\n");
 
-        omp_set_num_threads(NUM_THREADS);
+        //omp_set_num_threads(NUM_THREADS);
 
         memset(&depthBuffer, 0, sizeof(depthBuffer));
 
@@ -59,7 +57,7 @@ public:
         for( int i=0; i<V; i++ ) {
             Rasteriser::VertexShader(vertices[i], origin, vertexPixels[i], shape);
         }
- 
+
         vector<Pixel> leftPixels;
         vector<Pixel> rightPixels;
         Rasteriser::ComputePolygonRows(origin, vertexPixels, leftPixels, rightPixels );
