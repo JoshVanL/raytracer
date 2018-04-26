@@ -69,8 +69,28 @@ public:
             permutationTable[tableSize + i] = permutationTable[i];
         }
     }
-
-    float eval(const vec3 &p, vec3& derivs) const 
+    void grad_dot_app(float grads[],  int xi0, int yi0, int zi0, int xi1, int yi1, int zi1, 
+                                    float x0, float x1, float  y0, float y1, float z0, float z1) const {
+        grads[0] = gradientDotV(hash(xi0, yi0, zi0), x0, y0, z0);
+        grads[1] = gradientDotV(hash(xi1, yi0, zi0), x1, y0, z0);
+        grads[2] = gradientDotV(hash(xi0, yi1, zi0), x0, y1, z0);
+        grads[3] = gradientDotV(hash(xi1, yi1, zi0), x1, y1, z0);
+        grads[4] = gradientDotV(hash(xi0, yi0, zi1), x0, y0, z1);
+        grads[5] = gradientDotV(hash(xi1, yi0, zi1), x1, y0, z1);
+        grads[6] = gradientDotV(hash(xi0, yi1, zi1), x0, y1, z1);
+        grads[7] = gradientDotV(hash(xi1, yi1, zi1), x1, y1, z1);
+    }
+    void k_coeff_app (float k[], float grads[]) const{
+        k[0] = grads[0];
+        k[1] = (grads[1] - grads[0]);
+        k[2] = (grads[2] - grads[0]);
+        k[3] = (grads[4] - grads[0]);
+        k[4] = (grads[0] + grads[3] - grads[1]  - grads[2] );
+        k[5] = (grads[0] + grads[5] - grads[1] - grads[4] );
+        k[6] = (grads[0] + grads[6] - grads[2]  - grads[4] );
+        k[7] = (grads[1] + grads[2] + grads[4]  + grads[7] - grads[0] - grads[3] - grads[5]  - grads[6]);
+    }
+    float perlin(const vec3 &p, vec3& derivs) const 
     {
         int xi0 = ((int)std::floor(p.x)) & tableSizeMask;
         int yi0 = ((int)std::floor(p.y)) & tableSizeMask;
@@ -93,33 +113,29 @@ public:
         float y0 = ty, y1 = ty - 1;
         float z0 = tz, z1 = tz - 1;
 
-        float a = gradientDotV(hash(xi0, yi0, zi0), x0, y0, z0);
-        float b = gradientDotV(hash(xi1, yi0, zi0), x1, y0, z0);
-        float c = gradientDotV(hash(xi0, yi1, zi0), x0, y1, z0);
-        float d = gradientDotV(hash(xi1, yi1, zi0), x1, y1, z0);
-        float e = gradientDotV(hash(xi0, yi0, zi1), x0, y0, z1);
-        float f = gradientDotV(hash(xi1, yi0, zi1), x1, y0, z1);
-        float g = gradientDotV(hash(xi0, yi1, zi1), x0, y1, z1);
-        float h = gradientDotV(hash(xi1, yi1, zi1), x1, y1, z1);
-
         float du = quinticDeriv(tx);
         float dv = quinticDeriv(ty);
         float dw = quinticDeriv(tz);
 
-        float k0 = a;
-        float k1 = (b - a);
-        float k2 = (c - a);
-        float k3 = (e - a);
-        float k4 = (a + d - b - c);
-        float k5 = (a + f - b - e);
-        float k6 = (a + g - c - e);
-        float k7 = (b + c + e + h - a - d - f - g);
+        float grads[8];
+        float k[8];
 
-        derivs.x = du *(k1 + k4 * v + k5 * w + k7 * v * w);
-        derivs.y = dv *(k2 + k4 * u + k6 * w + k7 * v * w);
-        derivs.z = dw *(k3 + k5 * u + k6 * v + k7 * v * w);
+        grad_dot_app(grads, xi0, yi0, zi0, xi1, yi1, zi1, x0, x1, y0, y1, z0, z1);
+        k_coeff_app(k, grads);
 
-        return k0 + k1 * u + k2 * v + k3 * w + k4 * u * v + k5 * u * w + k6 * v * w + k7 * u * v * w;
+
+        derivs.x = du *(k[1] + k[4] * v + k[5] * w + k[7] * v * w);
+        derivs.y = dv *(k[2] + k[4] * u + k[6] * w + k[7] * v * w);
+        derivs.z = dw *(k[3] + k[5] * u + k[6] * v + k[7] * v * w);
+
+        return      k[0] + 
+                    k[1] * u + 
+                    k[2] * v + 
+                    k[3] * w + 
+                    k[4] * u * v + 
+                    k[5] * u * w + 
+                    k[6] * v * w + 
+                    k[7] * u * v * w;
     }
 
 
@@ -132,7 +148,7 @@ public:
         vec3 derivs;
         for (uint32_t i = 0; i < poly->numVertices; ++i) {
             vec3 p((poly->vertices[i].x + 0.5), 0, (poly->vertices[i].z + 0.5));
-            poly->vertices[i].y = noise.eval(p, derivs);
+            poly->vertices[i].y = noise.perlin(p, derivs);
             vec3 tangent(1, derivs.x, 0); 
             vec3 bitangent(0, derivs.z, 1); 
             poly->normals[i] = glm::normalize(vec3(-derivs.x, 1, -derivs.z));
@@ -145,7 +161,7 @@ public:
         for (uint32_t j = 0; j < height; ++j) {
             heightMap[j] = (float*) malloc(width*sizeof(float)); 
             for (uint32_t i = 0; i < width; ++i) {
-                heightMap[j][i] = (noise.eval(vec3(i, 0, j) * (1.f/ 64.f), derivs) + 1) * 0.5;
+                heightMap[j][i] = (noise.perlin(vec3(i, 0, j) * (1.f/ 64.f), derivs) + 1) * 0.5;
             }
         }
 
@@ -157,9 +173,6 @@ public:
         return permutationTable[permutationTable[permutationTable[x] + y] + z];
     }
 
-    // Compute dot product between vector from cell corners to P with predefined gradient directions
-    //    perm: a value between 0 and 255
-    //    float x, float y, float z: coordinates of vector from cell corner to shaded point
     float gradientDotV( uint8_t perm, // a value between 0 and 255
                         float x, float y, float z) const
     {
