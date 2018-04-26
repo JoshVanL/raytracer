@@ -122,24 +122,24 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     H = vec4(314,330,456,1);
 
     // Front
-    shapes.push_back( new Triangle(E,B,A,blue, new Texture("source/materials/textures/wood.bmp")));
-    shapes.push_back( new Triangle(E,F,B,blue, new Texture("source/materials/textures/wood.bmp")));
+    //shapes.push_back( new Triangle(E,B,A,blue, new Texture("source/materials/textures/wood.bmp")));
+    //shapes.push_back( new Triangle(E,F,B,blue, new Texture("source/materials/textures/wood.bmp")));
 
-    // Front
-    shapes.push_back( new Triangle(F,D,B,blue, new Texture("source/materials/textures/wood.bmp")));
-    shapes.push_back( new Triangle(F,H,D,blue, new Texture("source/materials/textures/wood.bmp")));
+    //// Front
+    //shapes.push_back( new Triangle(F,D,B,blue, new Texture("source/materials/textures/wood.bmp")));
+    //shapes.push_back( new Triangle(F,H,D,blue, new Texture("source/materials/textures/wood.bmp")));
 
-    // BACK
-    shapes.push_back( new Triangle(H,C,D,blue, new Texture("source/materials/textures/wood.bmp")));
-    shapes.push_back( new Triangle(H,G,C,blue, new Texture("source/materials/textures/wood.bmp")));
+    //// BACK
+    //shapes.push_back( new Triangle(H,C,D,blue, new Texture("source/materials/textures/wood.bmp")));
+    //shapes.push_back( new Triangle(H,G,C,blue, new Texture("source/materials/textures/wood.bmp")));
 
-    // LEFT
-    shapes.push_back( new Triangle(G,E,C,blue, new Texture("source/materials/textures/wood.bmp")));
-    shapes.push_back( new Triangle(E,A,C,blue, new Texture("source/materials/textures/wood.bmp")));
+    //// LEFT
+    //shapes.push_back( new Triangle(G,E,C,blue, new Texture("source/materials/textures/wood.bmp")));
+    //shapes.push_back( new Triangle(E,A,C,blue, new Texture("source/materials/textures/wood.bmp")));
 
-    // TOP
-    shapes.push_back( new Triangle(G,F,E,blue, new Texture("source/materials/textures/wood.bmp")));
-    shapes.push_back( new Triangle(G,H,F,blue, new Texture("source/materials/textures/wood.bmp")));
+    //// TOP
+    //shapes.push_back( new Triangle(G,F,E,blue, new Texture("source/materials/textures/wood.bmp")));
+    //shapes.push_back( new Triangle(G,H,F,blue, new Texture("source/materials/textures/wood.bmp")));
 
     // ---------------------------------------------------------------------------
     // Sphere
@@ -153,16 +153,24 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     //
 
-    vector<Shape2D*> chair = uploadModel("source/assets/chair.obj", "source/assets/wood.bmp", vec4(300, 0, 20, 1), vec4(500, 200, 200, 1));
-
+    vector<Shape2D*> chair = uploadModel("source/assets/chair.obj", "source/assets/red.bmp", vec4(300, 0, 20, 1), vec4(500, 180, 200, 1), vec3(0.5, 0.5, 0.5));
     for (int i = 0; i < chair.size(); i++) {
         shapes.push_back(chair[i]);
     }
 
-    vector<Shape2D*> teapot = uploadModel("source/assets/teapot.obj", "source/assets/wood.bmp", vec4(100, 180, 20, 1), vec4(300, 280, 200, 1));
-
+    vector<Shape2D*> teapot = uploadModel("source/assets/teapot.obj", "source/assets/wood.bmp", vec4(100, 180, 20, 1), vec4(300, 280, 200, 1), vec3(0.7, 0.7, 0.5));
     for (int i = 0; i < teapot.size(); i++) {
         shapes.push_back(teapot[i]);
+    }
+
+    vector<Shape2D*> plane = uploadModel("source/assets/plane.obj", "source/assets/green.bmp", vec4(100, 350, 220, 1), vec4(300, 450, 400, 1), vec3(0.5, 0.4, 0.8));
+    for (int i = 0; i < plane.size(); i++) {
+        shapes.push_back(plane[i]);
+    }
+
+    vector<Shape2D*> sky = uploadModel("source/assets/skyscraper.obj", "source/assets/metal.bmp", vec4(100, 0, 300, 1), vec4(600, 500, 400, 1), vec3(1, 1, 1));
+    for (int i = 0; i < sky.size(); i++) {
+        shapes.push_back(sky[i]);
     }
 
 }

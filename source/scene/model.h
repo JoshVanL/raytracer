@@ -24,22 +24,60 @@ static vec4 parse_vec3(FILE *file) {
 
 static vector<ivec3> parse_index(FILE *file, vector<ivec3>& normals) {
     vector<ivec3> index;
-        ivec4 normal;
+    ivec4 normal;
     char mystring [40] = {0};
     if ( fgets (mystring , 40, file) != NULL ) {
         int nums = 0;
+        int spaces = 0;
         for(int i = 0; i < 40; i++) {
             if (mystring[i] == '/') {
                 nums++;
             }
+
+            if (mystring[i] == ' ') {
+                spaces++;
+            }
         }
 
-        // Kinda hacky
         if (nums == 0) {
+            int i[10];
 
-            ivec3 i;
-            sscanf(mystring, "%d %d %d", &i.x, &i.y, &i.z);
-            index.push_back(i);
+            switch (spaces) {
+                case 3:
+                    sscanf(mystring, "%d %d %d", &i[0], &i[1], &i[2]);
+                    break;
+                case 4:
+                    sscanf(mystring, "%d %d %d %d", &i[0], &i[1], &i[2], &i[3]);
+                    break;
+                case 5:
+                    sscanf(mystring, "%d %d %d %d %d", &i[0], &i[1], &i[2], &i[3], &i[4]);
+                    break;
+                case 6:
+                    sscanf(mystring, "%d %d %d %d %d %d", &i[0], &i[1], &i[2], &i[3], &i[4], &i[5]);
+                    break;
+                case 7:
+                    sscanf(mystring, "%d %d %d %d %d %d %d", &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6]);
+                    break;
+                case 8:
+                    sscanf(mystring, "%d %d %d %d %d %d %d %d", &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]);
+                    break;
+                case 9:
+                    sscanf(mystring, "%d %d %d %d %d %d %d %d %d", &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7], &i[8]);
+                    break;
+            }
+
+            if (spaces > 2 && spaces < 10) {
+                for (int j = 0; j < spaces-2; j++) {
+                    for (int k = 1; k < spaces-1; k++) {
+                        for (int l = 2; l < spaces; l++) {
+                            if (j != k && j != l && j != l) {
+                                index.push_back(ivec3(i[j], i[k], i[l]));
+                            }
+                        }
+                    }
+                }
+            }
+
 
         } else if (nums == 3) {
 
@@ -87,7 +125,7 @@ static vec3 pixel(vec3 pos, Texture* tex) {
     return tex->get_pixel(x, y) / vec3(255, 255, 255);
 }
 
-static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string texture_path, vec4 min, vec4 max){
+static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string texture_path, vec4 min, vec4 max, vec3 color){
     vector<Shape2D*> triangles;
     vector<vec4> vertices;
     vector<ivec3> indexes;
@@ -163,7 +201,8 @@ static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string 
 
         vec3 pix;
         if (textures.size() == 0) {
-            pix = vec3(0.95, 0.95, 0.95);
+            //pix = color;
+            pix = pixel(vec3(fmod(vertices[i].x, 1), fmod(vertices[i].y, 1), fmod(vertices[i].z, 1)), tex);
         } else {
             pix = pixel(textures[normals[i].x], tex);
         }

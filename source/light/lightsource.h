@@ -7,8 +7,8 @@
 #include "../rendering/pixel.h"
 #include "../rendering/rasteriser.h"
 
-#define SCREEN_WIDTH 1000
-#define SCREEN_HEIGHT 1000
+#define SCREEN_WIDTH 2000
+#define SCREEN_HEIGHT 2000
 
 #define PI           3.14159265358979323846
 using glm::vec3;
@@ -36,7 +36,7 @@ public:
 
     };
     LightSource(){
-        position    = glm::vec4(0.9, 0.5, -0.7, 1.0);
+        position    = glm::vec4(0.5, 0.7, -0.1, 1.0);
         color       = glm::vec3(0.8,0.3,0.3);
         power       = vec3( 6, 3, 2 );
         shadowBuffer = (Pixel**)(malloc(sizeof(Pixel*) * SCREEN_HEIGHT));

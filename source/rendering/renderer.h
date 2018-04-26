@@ -7,8 +7,6 @@
 #include <SDL2/SDL.h>
 #include <omp.h>
 
-#define SCREEN_WIDTH 1000
-#define SCREEN_HEIGHT 1000
 #define FULLSCREEN_MODE false
 #define ANG 0.1
 #define NUM_THREADS 16
@@ -33,10 +31,6 @@ public:
     static void Draw(screen* screen, const vec3& origin, LightSource* lightSource, vector<Shape2D*>& shapes, bool draw = true) {
         memset(screen->buffer, 0, screen->height*screen->width*sizeof(uint32_t));
 
-        //lightSource->FillShadowBuffer(shapes, origin);
-
-        //omp_set_num_threads(NUM_THREADS);
-
         memset(&depthBuffer, 0, sizeof(depthBuffer));
 
         for ( uint32_t i = 0; i < shapes.size(); i++) {
@@ -45,6 +39,11 @@ public:
         }
         RenderColor();
         RenderLight(lightSource);
+        LightSource* topLight = new LightSource();
+        topLight->position = glm::vec4(0.5, 0.02, -0.3, 1.0);
+        topLight->power = glm::vec3(6, 6, 6);
+        topLight->color = glm::vec3(0.6, 0.6, 0.6);
+        RenderLight(topLight);
         if(draw){
             RenderFrameBuffer(screen);
         };
@@ -94,7 +93,7 @@ public:
                             frameBuffer[i][j] += depthBuffer[c][d].shape->getcolor(depthBuffer[c][d].pos3d);
                     }
                 }
-                frameBuffer[i][j] /= 8.f;
+                frameBuffer[i][j] /= 6.f;
             }
         }
     }
@@ -117,13 +116,7 @@ public:
 
                     vec3 light_area = result / r * LIGHTPOWER;
                     light_area = (INDIRECTLIGHTPOWERPERAREA + light_area);
-                    //if (lightSource->translatedBuffer[i][j].shape == depthBuffer[i][j].shape) {
-                    //printf("%d %d\n", lightSource->translatedBuffer[i][j].x, lightSource->translatedBuffer[i][j].y);
-                    //if (lightSource->translatedBuffer[i][j].zinv < depthBuffer[i][j].zinv) {
-                        frameBuffer[i][j] = color * light_area;
-                    //} else {
-                    //    frameBuffer[i][j] = color * vec3(0.2, 0.2, 0.2);
-                    //}
+                    frameBuffer[i][j] = color * light_area;
                 }
             }
         }
