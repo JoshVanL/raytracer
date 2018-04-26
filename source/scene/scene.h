@@ -153,16 +153,16 @@ void LoadTestModel( std::vector<Shape2D*>& shapes )
     // ---------------------------------------------------------------------------
     //
 
-    vector<Shape2D*> chair = uploadModel("source/assets/chair.obj", "source/assets/wood.bmp", vec4(300, 0, 20, 1), vec4(500, 100, 200, 1));
+    vector<Shape2D*> chair = uploadModel("source/assets/chair.obj", "source/assets/wood.bmp", vec4(300, 0, 20, 1), vec4(500, 200, 200, 1));
 
     for (int i = 0; i < chair.size(); i++) {
         shapes.push_back(chair[i]);
     }
 
-    vector<Shape2D*> pumpkin = uploadModel("source/assets/teapot.obj", "source/assets/wood.bmp", vec4(100, 180, 20, 1), vec4(300, 280, 200, 1));
+    vector<Shape2D*> teapot = uploadModel("source/assets/teapot.obj", "source/assets/wood.bmp", vec4(100, 180, 20, 1), vec4(300, 280, 200, 1));
 
-    for (int i = 0; i < pumpkin.size(); i++) {
-        shapes.push_back(pumpkin[i]);
+    for (int i = 0; i < teapot.size(); i++) {
+        shapes.push_back(teapot[i]);
     }
 
 }

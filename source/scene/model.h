@@ -13,7 +13,6 @@
 using glm::ivec3;
 using glm::ivec4;
 
-vector<vec4> normals;
 
 static vec4 parse_vec3(FILE *file) {
     vec4 normal;
@@ -23,9 +22,9 @@ static vec4 parse_vec3(FILE *file) {
     return normal;
 }
 
-static vector<ivec3> parse_index(FILE *file) {
-    vec4 normal;
+static vector<ivec3> parse_index(FILE *file, vector<ivec3>& normals) {
     vector<ivec3> index;
+        ivec4 normal;
     char mystring [40] = {0};
     if ( fgets (mystring , 40, file) != NULL ) {
         int nums = 0;
@@ -47,17 +46,17 @@ static vector<ivec3> parse_index(FILE *file) {
             ivec3 i;
             sscanf(mystring, "%d/%d %d/%d %d/%d", &i.x, &normal.x, &i.y, &normal.y, &i.z, &normal.z);
             index.push_back(i);
-            normals.push_back(normal);
+            normals.push_back(vec3(abs(normal.x), abs(normal.y), abs(normal.z)));
 
         } else if (nums == 4) {
 
             ivec4 i;
             sscanf(mystring, "%d/%d %d/%d %d/%d %d/%d", &i.x, &normal.x, &i.y, &normal.y, &i.z, &normal.z, &normal.w, &i.w);
             index.push_back(ivec3(i.x, i.y, i.z));
+            normals.push_back(vec3(abs(normal.x), abs(normal.y), abs(normal.z)));
             index.push_back(ivec3(i.x, i.w, i.y));
-            normals.push_back(normal);
+            normals.push_back(vec3(abs(normal.x), abs(normal.w), abs(normal.y)));
         }
-
     }
 
 
@@ -81,8 +80,10 @@ static vec4 scale(vec4 x, vec4 min, vec4 max, vec4 a, vec4 b) {
 }
 
 static vec3 pixel(vec3 pos, Texture* tex) {
-    float x = pos.x * tex->width;
-    float y = pos.y * tex->height;
+    float x = abs((pos.x * tex->width)) + 300;
+    float y = abs((pos.y * tex->height)) + 300;
+    x = fmod(x, tex->width-100);
+    y = fmod(y, tex->height-100);
     return tex->get_pixel(x, y) / vec3(255, 255, 255);
 }
 
@@ -91,6 +92,7 @@ static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string 
     vector<vec4> vertices;
     vector<ivec3> indexes;
     vector<vec3> textures;
+    vector<ivec3> normals;
     FILE *file = fopen(obj_file_path.c_str(), "r");
     if (file == NULL) {
         std::cout << "Failed to open file " << obj_file_path << std::endl;
@@ -107,8 +109,6 @@ static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string 
     Texture* tex = new Texture(texture_path.c_str());
 
     while (true) {
-
-        bool stop = false;
 
         int read_result = fscanf(file, "%s", line);
         if (read_result == EOF) {
@@ -142,7 +142,7 @@ static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string 
         }
 
         if (strcmp(line, "f") == 0) {
-            vector<ivec3> index = parse_index(file);
+            vector<ivec3> index = parse_index(file, normals);
             for (int i = 0; i < index.size(); i++) {
                 indexes.push_back(index[i]);
             }
@@ -152,6 +152,7 @@ static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string 
             textures.push_back(parse_texture(file));
         }
 
+
     }
 
     fclose(file);
@@ -160,7 +161,13 @@ static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string 
 
     for (int i=0; i<indexes.size(); i++) {
 
-        vec3 pix = vec3(0.6, 0.6, 0.8);
+        vec3 pix;
+        if (textures.size() == 0) {
+            pix = vec3(0.95, 0.95, 0.95);
+        } else {
+            pix = pixel(textures[normals[i].x], tex);
+        }
+
         triangles.push_back(new Triangle(
                     scale(vertices[indexes[i].x-1], minV, maxV, min, max),
                     scale(vertices[indexes[i].y-1], minV, maxV, min, max),

@@ -15,7 +15,7 @@
 
 #define INDIRECT_LIGHT vec3(0.3,0.3,0.3)
 #define LIGHTPOS vec3(0,0.5,-0.7)
-#define LIGHTPOWER vec3( 6, 3, 2 )
+#define LIGHTPOWER vec3( 8, 5, 4 )
 #define INDIRECTLIGHTPOWERPERAREA vec3( 0.3f, 0.3f, 0.3f )
 
 using namespace std;
