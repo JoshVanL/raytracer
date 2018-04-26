@@ -14,9 +14,9 @@ class Camera {
 public:
 
     /////////////////////// GLOBAL VARS //////////////////////////////
-    const static int SCREEN_WIDTH = 1000;
-    const static int SCREEN_HEIGHT = 1000;
-    constexpr static float FOCAL_LENGTH = 1000;
+    const static int SCREEN_WIDTH = 1500;
+    const static int SCREEN_HEIGHT = 1500;
+    constexpr static float FOCAL_LENGTH = 1500;
     const bool FULLSCREEN_MODE = false;
     const vec3 INDIRECT_LIGHT  = vec3(0.3,0.2,0.18);
     const float ANG = 0.1;

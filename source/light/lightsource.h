@@ -7,8 +7,8 @@
 #include "../rendering/pixel.h"
 #include "../rendering/rasteriser.h"
 
-#define SCREEN_WIDTH 2000
-#define SCREEN_HEIGHT 2000
+#define SCREEN_WIDTH 1500
+#define SCREEN_HEIGHT 1500
 
 #define PI           3.14159265358979323846
 using glm::vec3;
