@@ -44,15 +44,6 @@ public:
             pixels[i].pos3d.z = 1 / pixels[i].zinv + origin.z;
         }
     }
-
-    // static Pixel transformScreens(Pixel lightPixel, const vec4& cameraOrigin, Shape2D* shape){
-    //     Pixel cameraPixel;
-    //     vec4 point4d(lightPixel.pos3d, 1);
-    //     // VertexShader(point4d, cameraOrigin, cameraPixel, shape);
-    //     return cameraPixel;
-    // }
-    
-
 };
 
 #endif

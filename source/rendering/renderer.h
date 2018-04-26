@@ -40,7 +40,7 @@ public:
         RenderColor();
         RenderLight(lightSource);
         LightSource* topLight = new LightSource();
-        topLight->position = glm::vec4(0.5, 0.02, -0.3, 1.0);
+        topLight->position = glm::vec4(0.8, -0.12, -0.3, 1.0);
         topLight->power = glm::vec3(6, 6, 6);
         topLight->color = glm::vec3(0.6, 0.6, 0.6);
         RenderLight(topLight);

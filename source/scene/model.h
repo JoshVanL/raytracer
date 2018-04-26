@@ -94,6 +94,19 @@ static vector<ivec3> parse_index(FILE *file, vector<ivec3>& normals) {
             normals.push_back(vec3(abs(normal.x), abs(normal.y), abs(normal.z)));
             index.push_back(ivec3(i.x, i.w, i.y));
             normals.push_back(vec3(abs(normal.x), abs(normal.w), abs(normal.y)));
+        } else if (nums == 6) {
+            ivec4 i;
+            sscanf(mystring, "%d//%d %d//%d %d//%d", &i.x, &normal.x, &i.y, &normal.y, &i.z, &normal.z);
+            index.push_back(ivec3(i.x, i.y, i.z));
+            normals.push_back(vec3(abs(normal.x), abs(normal.y), abs(normal.z)));
+        } else if (nums == 8) {
+            ivec4 i;
+            ivec4 nil;
+            sscanf(mystring, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d", &i.x, &normal.x, &nil.x, &i.y, &normal.y, &nil.y, &i.z, &normal.z, &nil.z, &normal.w, &i.w, &nil.w);
+            index.push_back(ivec3(i.x, i.y, i.z));
+            normals.push_back(vec3(abs(normal.x), abs(normal.y), abs(normal.z)));
+            index.push_back(ivec3(i.x, i.w, i.y));
+            normals.push_back(vec3(abs(normal.x), abs(normal.w), abs(normal.y)));
         }
     }
 
@@ -125,8 +138,7 @@ static vec3 pixel(vec3 pos, Texture* tex) {
     return tex->get_pixel(x, y) / vec3(255, 255, 255);
 }
 
-static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string texture_path, vec4 min, vec4 max, vec3 color){
-    vector<Shape2D*> triangles;
+void uploadModel(std::string obj_file_path, std::string texture_path, vec4 min, vec4 max, vector<Shape2D*>& shapes){
     vector<vec4> vertices;
     vector<ivec3> indexes;
     vector<vec3> textures;
@@ -201,20 +213,17 @@ static std::vector<Shape2D*> uploadModel(std::string obj_file_path, std::string 
 
         vec3 pix;
         if (textures.size() == 0) {
-            //pix = color;
             pix = pixel(vec3(fmod(vertices[i].x, 1), fmod(vertices[i].y, 1), fmod(vertices[i].z, 1)), tex);
         } else {
             pix = pixel(textures[normals[i].x], tex);
         }
 
-        triangles.push_back(new Triangle(
+        shapes.push_back(new Triangle(
                     scale(vertices[indexes[i].x-1], minV, maxV, min, max),
                     scale(vertices[indexes[i].y-1], minV, maxV, min, max),
                     scale(vertices[indexes[i].z-1], minV, maxV, min, max),
                     pix, nullptr));
 
     }
-
-    return triangles;
 }
 #endif
