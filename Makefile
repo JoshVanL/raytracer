@@ -13,7 +13,7 @@ RAYEXEC=$(B_DIR)/$(RAY)
 RASEXEC=$(B_DIR)/$(RAS)
 
 # default build settings
-CC_OPTS=-fopenmp -O3 -std=c++11 -c -lglfw3 -pipe -Wno-switch -ggdb -DGLEW_BUILD  -g3 -ggdb -pthread -lSOIL -lm
+CC_OPTS=-fopenmp -O3 -std=c++11 -c -lglfw3 -pipe -Wno-switch -ggdb -DGLEW_BUILD  -g3 -ggdb -lm
 
 #links { "SOIL", "glfw3", "opengl32", "gdi32", "glu32" }
 
@@ -21,9 +21,9 @@ CC=g++
 
 ########
 #       SDL options
-SDL_CFLAGS := $(shell sdl2-config --cflags) -lSOIL -lglut -lGLU -lGL
+SDL_CFLAGS := $(shell sdl2-config --cflags)
 GLM_CFLAGS := -I$(GLMDIR)
-SDL_LDFLAGS := $(shell sdl2-config --libs) -lSOIL -lGL
+SDL_LDFLAGS := $(shell sdl2-config --libs)
 
 RAYOBJ = $(B_DIR)/$(RAY).o
 RASOBJ = $(B_DIR)/$(RAS).o
