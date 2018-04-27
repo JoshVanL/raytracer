@@ -1,4 +1,4 @@
 To run, simply:
 
 make
-./build/raytracer
+./build/rasterizer
