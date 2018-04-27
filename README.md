@@ -1,3 +1,4 @@
-# COMS30115
+To run, simply:
 
-This is the repository for the Computer Graphics unit COMS30115 at the University of Bristol.
+make
+./build/raytracer
