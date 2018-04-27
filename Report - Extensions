@@ -1,0 +1,6 @@
+Rasterizer Extensions
+- Camera and point light movement
+- Texture mapping
+- Loading of .obj models
+- point light
+- point light shading
