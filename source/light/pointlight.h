@@ -1,7 +1,6 @@
 #ifndef POINTLIGHT_H
 #define POINTLIGHT_H
 #include "lightsource.h"
-#include <glm/gtx/simd_vec4.hpp> 
 using glm::vec4;
 using glm::vec3;
 

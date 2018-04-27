@@ -147,7 +147,7 @@ int main( int argc, char* argv[] ) {
     
     screen *screen = InitializeSDL( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, FULLSCREEN_MODE );
 
-    Camera camera(vec4(0.45, -0.5, -2.1, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
+    Camera camera(vec4(0.45, -0.5, -2.0, 1), SCREEN_WIDTH/2, CameraEffectType::NONE);
     Keyboard keyboard;
     vector<LightSource*> lights;
     vector<Shape2D*> shapes;
